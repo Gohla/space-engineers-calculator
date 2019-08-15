@@ -1,9 +1,11 @@
+use std::collections::HashMap;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::path::Path;
 
 use roxmltree::{Document, Node};
 
+use crate::components::Components;
 use crate::gas_properties::GasProperties;
 use crate::localization::Localization;
 use crate::xml::{NodeExt, read_string_from_file};
@@ -17,7 +19,7 @@ pub enum GridType {
 
 impl GridType {
   pub fn from_def(def: &Node) -> Self {
-    match def.get_child_elem("CubeSize").unwrap().text().unwrap() {
+    match def.child_elem("CubeSize").unwrap().text().unwrap() {
       "Small" => GridType::Small,
       "Large" => GridType::Large,
       t => panic!("Unrecognized grid size {}", t),
@@ -28,7 +30,7 @@ impl GridType {
 
 /// Data which can be created from a definition in a SBC XML file.
 pub trait FromDef: Clone + Debug {
-  fn from_def(def: &Node) -> Self;
+  fn from_def(def: &Node, entity_components: &Node) -> Self;
 }
 
 
@@ -37,7 +39,8 @@ pub trait FromDef: Clone + Debug {
 pub struct Block<T> {
   pub name: String,
   pub grid_type: GridType,
-  pub mass: u64,
+  pub components: HashMap<String, f64>,
+  pub has_physics: bool,
   pub details: T,
 }
 
@@ -45,16 +48,32 @@ impl<T> Block<T> {
   pub fn name<'a>(&'a self, localization: &'a Localization) -> &'a str {
     localization.get(&self.name).unwrap_or(&self.name)
   }
+
+  pub fn mass(&self, components: &Components) -> f64 {
+    let mut mass = 0.0;
+    if !self.has_physics { return mass }
+    for (component_id, count) in self.components.iter() {
+      if let Some(component) = components.get(&component_id) {
+        mass += component.mass * *count;
+      }
+    }
+    mass
+  }
 }
 
 impl<T: FromDef> Block<T> {
-  pub fn from_def(def: &Node) -> Self {
-    let name = def.get_child_elem("DisplayName").unwrap().text().unwrap();
-    let name = name.to_string();
+  pub fn from_def(def: &Node, entity_components: &Node) -> Self {
+    let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
+    let mut components = HashMap::new();
     let grid_type = GridType::from_def(def);
-    let mass = 0; // TODO: parse components and add up to get mass.
-    let details = T::from_def(def);
-    Block { name, grid_type, mass, details }
+    for component in def.child_elem("Components").unwrap().children_elems("Component") {
+      if let (Some(component_id), Some(count)) = (component.parse_attribute("Subtype").unwrap(), component.parse_attribute("Count").unwrap()) {
+        components.entry(component_id).and_modify(|c| *c += count).or_insert(count);
+      }
+    }
+    let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
+    let details = T::from_def(def, entity_components);
+    Block { name, grid_type, components, has_physics, details }
   }
 }
 
@@ -67,11 +86,11 @@ impl<T: FromDef> Deref for Block<T> {
 }
 
 
-/// Battery block.
+/// Battery.
 #[derive(Copy, Clone, Debug)]
 pub struct Battery {
-  /// Power storage (MWh)
-  pub storage: f64,
+  /// Power capacity (MWh)
+  pub capacity: f64,
   /// Maximum power input (MW)
   pub input: f64,
   /// Maximum power output (MW)
@@ -79,11 +98,11 @@ pub struct Battery {
 }
 
 impl FromDef for Battery {
-  fn from_def(def: &Node) -> Self {
-    let storage: f64 = def.parse_child_elem("MaxStoredPower").unwrap().unwrap();
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let capacity: f64 = def.parse_child_elem("MaxStoredPower").unwrap().unwrap();
     let input: f64 = def.parse_child_elem("RequiredPowerInput").unwrap().unwrap();
     let output: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
-    Battery { storage, input, output }
+    Battery { capacity, input, output }
   }
 }
 
@@ -98,7 +117,7 @@ pub enum ThrusterType {
 
 impl ThrusterType {
   pub fn from_def(def: &Node) -> Self {
-    match def.get_child_elem("ThrusterType").unwrap().text().unwrap() {
+    match def.child_elem("ThrusterType").unwrap().text().unwrap() {
       "Ion" => ThrusterType::Ion,
       "Atmospheric" => ThrusterType::Atmospheric,
       "Hydrogen" => ThrusterType::Hydrogen,
@@ -107,7 +126,7 @@ impl ThrusterType {
   }
 }
 
-/// Thruster block.
+/// Thruster.
 #[derive(Clone, Debug)]
 pub struct Thruster {
   /// Thruster type
@@ -154,10 +173,10 @@ impl Thruster {
 }
 
 impl FromDef for Thruster {
-  fn from_def(def: &Node) -> Self {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
     let ty = ThrusterType::from_def(def);
     let force = def.parse_child_elem("ForceMagnitude").unwrap().unwrap();
-    let fuel_gas_id = def.get_child_elem("FuelConverter").map(|n| n.first_element_child().unwrap().parse_child_elem("SubtypeId").unwrap().unwrap());
+    let fuel_gas_id = def.child_elem("FuelConverter").map(|n| n.first_element_child().unwrap().parse_child_elem("SubtypeId").unwrap().unwrap());
     let max_consumption = def.parse_child_elem("MaxPowerConsumption").unwrap().unwrap();
     let min_consumption = def.parse_child_elem("MinPowerConsumption").unwrap().unwrap();
     let min_planetary_influence = def.parse_child_elem("MinPlanetaryInfluence").unwrap().unwrap_or(1.0);
@@ -170,36 +189,237 @@ impl FromDef for Thruster {
 }
 
 
+/// Hydrogen engine.
+#[derive(Clone, Debug)]
+pub struct HydrogenEngine {
+  /// Fuel capacity (L)
+  pub fuel_capacity: f64,
+  /// Maximum power generation (MW)
+  pub max_power_generation: f64,
+  /// Maximum fuel consumption (L/s)
+  pub max_fuel_consumption: f64,
+}
+
+impl FromDef for HydrogenEngine {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let fuel_capacity: f64 = def.parse_child_elem("FuelCapacity").unwrap().unwrap();
+    let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
+    // HACK: hardcoded fuel consumption.
+    let max_fuel_consumption: f64 = match fuel_capacity as u64 {
+      16000 => 100.0, // Small grid
+      500000 => 1000.0, // Large grid
+      _ => panic!("Unrecognized hydrogen engine {:?}", def),
+    };
+    HydrogenEngine { fuel_capacity, max_power_generation, max_fuel_consumption }
+  }
+}
+
+
+/// Reactor
+#[derive(Clone, Debug)]
+pub struct Reactor {
+  /// Maximum power generation (MW)
+  pub max_power_generation: f64,
+  /// Maximum fuel usage (#/s)
+  pub max_fuel_consumption: f64,
+}
+
+impl FromDef for Reactor {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
+    // HACK: hardcoded fuel consumption.
+    let max_fuel_consumption: f64 = match max_power_generation as u64 {
+      0 => 0.00014, // Small grid, small reactor
+      14 => 0.0041, // Small grid, large reactor
+      15 => 0.00417, // Large grid, small reactor
+      300 => 0.08333, // Large grid, large reactor,
+      _ => panic!("Unrecognized reactor {:?}", def),
+    };
+    Reactor { max_power_generation, max_fuel_consumption }
+  }
+}
+
+
+/// Generator (O2/H2)
+#[derive(Clone, Debug)]
+pub struct Generator {
+  /// Ice consumption (#/s)
+  pub ice_consumption: f64,
+  /// Inventory volume - ice only (L)
+  pub inventory_volume_ice: f64,
+  /// Operational power consumption (MW)
+  pub operational_power_consumption: f64,
+  /// Idle power consumption (MW)
+  pub idle_power_consumption: f64,
+  /// Oxygen generation (L/s)
+  pub oxygen_generation: f64,
+  /// Hydrogen generation (L/s)
+  pub hydrogen_generation: f64,
+}
+
+impl FromDef for Generator {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let ice_consumption: f64 = def.parse_child_elem("IceConsumptionPerSecond").unwrap().unwrap();
+    let inventory_volume_ice: f64 = def.parse_child_elem::<f64>("InventoryMaxVolume").unwrap().unwrap() * 1000.0;
+    let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption").unwrap().unwrap();
+    let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption").unwrap().unwrap();
+    let mut oxygen_generation = 100.0;
+    let mut hydrogen_generation = 100.0;
+    for gas_info in def.child_elem("ProducedGases").unwrap().children_elems("GasInfo") {
+      let gas_id: String = gas_info.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
+      let ice_to_gas_ratio: f64 = gas_info.parse_child_elem("IceToGasRatio").unwrap().unwrap();
+      let gas_generation = ice_consumption * ice_to_gas_ratio;
+      *(match gas_id.as_ref() {
+        "Oxygen" => &mut oxygen_generation,
+        "Hydrogen" => &mut hydrogen_generation,
+        _ => panic!("Unrecognized gas ID {} in generator {:?}", gas_id, def),
+      }) = gas_generation;
+    }
+    Generator {
+      ice_consumption,
+      inventory_volume_ice,
+      operational_power_consumption,
+      idle_power_consumption,
+      oxygen_generation,
+      hydrogen_generation
+    }
+  }
+}
+
+/// Hydrogen tank
+#[derive(Clone, Debug)]
+pub struct HydrogenTank {
+  /// Hydrogen capacity (L)
+  pub capacity: f64,
+  /// Operational power consumption (MW)
+  pub operational_power_consumption: f64,
+  /// Idle power consumption (MW)
+  pub idle_power_consumption: f64,
+}
+
+impl FromDef for HydrogenTank {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let capacity: f64 = def.parse_child_elem("Capacity").unwrap().unwrap();
+    let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption").unwrap().unwrap();
+    let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption").unwrap().unwrap();
+    HydrogenTank { capacity, operational_power_consumption, idle_power_consumption }
+  }
+}
+
+
+/// Container
+#[derive(Clone, Debug)]
+pub struct Container {
+  /// Inventory capacity (L)
+  pub capacity: f64,
+}
+
+impl FromDef for Container {
+  fn from_def(def: &Node, entity_components: &Node) -> Self {
+    let subtype_id: String = def.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
+    let mut capacity = 0.0;
+    for entity_component in entity_components.children_elems("EntityComponent") {
+      if let Some("MyObjectBuilder_InventoryComponentDefinition") = entity_component.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
+        let entity_component_subtype_id: String = entity_component.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
+        if subtype_id != entity_component_subtype_id { continue }
+        let size = entity_component.child_elem("Size").unwrap();
+        let x: f64 = size.parse_attribute("x").unwrap().unwrap();
+        let y: f64 = size.parse_attribute("x").unwrap().unwrap();
+        let z: f64 = size.parse_attribute("x").unwrap().unwrap();
+        capacity = x * y * z * 1000.0;
+        break;
+      }
+    }
+    if capacity == 0.0 {
+      panic!("Unrecognized container {:?}", def);
+    }
+    Container { capacity }
+  }
+}
+
+
+#[derive(Clone, Debug)]
+pub struct Cockpit {
+  /// Whether 'cockpit' has an inventory.
+  pub has_inventory: bool,
+  /// Inventory capacity (L)
+  pub capacity: f64,
+}
+
+impl FromDef for Cockpit {
+  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+    let has_inventory = def.parse_child_elem("HasInventory").unwrap().unwrap_or(true);
+    // HACK: hardcoded inventory capacity.
+    let capacity = if has_inventory { 1000.0 } else { 0.0 };
+    Cockpit { has_inventory, capacity }
+  }
+}
+
 #[derive(Clone, Debug)]
 pub struct Blocks {
   pub batteries: Vec<Block<Battery>>,
   pub thrusters: Vec<Block<Thruster>>,
+  pub hydrogen_engines: Vec<Block<HydrogenEngine>>,
+  pub reactors: Vec<Block<Reactor>>,
+  pub generators: Vec<Block<Generator>>,
+  pub hydrogen_tanks: Vec<Block<HydrogenTank>>,
+  pub containers: Vec<Block<Container>>,
+  pub cockpits: Vec<Block<Cockpit>>,
 }
 
 impl Blocks {
-  pub fn from_data<P: AsRef<Path>>(cubeblocks_sbc_path: P) -> Blocks {
-    let string = read_string_from_file(cubeblocks_sbc_path).unwrap();
-    let doc = Document::parse(&string).unwrap();
+  pub fn from_data<P: AsRef<Path>>(cubeblocks_sbc_path: P, entitycomponents_sbc_path: P) -> Blocks {
+    let cubeblocks_string = read_string_from_file(cubeblocks_sbc_path).unwrap();
+    let cubeblocks_doc = Document::parse(&cubeblocks_string).unwrap();
+
+    let entitycomponents_string = read_string_from_file(entitycomponents_sbc_path).unwrap();
+    let entitycomponents_doc = Document::parse(&entitycomponents_string).unwrap();
+    let entitycomponents_root_node = entitycomponents_doc.root().first_element_child().unwrap();
+    let entitycomponents_node = entitycomponents_root_node.child_elem("EntityComponents").unwrap();
 
     let mut batteries = Vec::new();
     let mut thrusters = Vec::new();
+    let mut hydrogen_engines = Vec::new();
+    let mut reactors = Vec::new();
+    let mut generators = Vec::new();
+    let mut hydrogen_tanks = Vec::new();
+    let mut containers = Vec::new();
+    let mut cockpits = Vec::new();
 
-    for def in doc.root().first_element_child().unwrap().first_element_child().unwrap().children() {
-      if !def.is_element() { continue }
+    for def in cubeblocks_doc.root().first_element_child().unwrap().first_element_child().unwrap().children_elems("Definition") {
       if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
         match ty {
           "MyObjectBuilder_BatteryBlockDefinition" => {
-            batteries.push(Block::<Battery>::from_def(&def));
+            batteries.push(Block::<Battery>::from_def(&def, &entitycomponents_node));
           }
           "MyObjectBuilder_ThrustDefinition" => {
-            thrusters.push(Block::<Thruster>::from_def(&def));
+            thrusters.push(Block::<Thruster>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_HydrogenEngineDefinition" => {
+            hydrogen_engines.push(Block::<HydrogenEngine>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_ReactorDefinition" => {
+            reactors.push(Block::<Reactor>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_OxygenGeneratorDefinition" => {
+            generators.push(Block::<Generator>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_GasTankDefinition" => {
+            if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
+            hydrogen_tanks.push(Block::<HydrogenTank>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_CargoContainerDefinition" => {
+            containers.push(Block::<Container>::from_def(&def, &entitycomponents_node));
+          }
+          "MyObjectBuilder_CockpitDefinition" => {
+            cockpits.push(Block::<Cockpit>::from_def(&def, &entitycomponents_node));
           }
           _ => {}
         }
       }
     }
 
-    Blocks { batteries, thrusters }
+    Blocks { batteries, thrusters, hydrogen_engines, reactors, generators, hydrogen_tanks, containers, cockpits }
   }
 }
 

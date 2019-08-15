@@ -3,7 +3,7 @@ use std::path::Path;
 
 use roxmltree::Document;
 
-use crate::xml::read_string_from_file;
+use crate::xml::{NodeExt, read_string_from_file};
 
 #[derive(Clone, Debug)]
 pub struct Localization {
@@ -17,9 +17,7 @@ impl Localization {
 
     let mut localization = HashMap::new();
 
-    for node in doc.root().first_element_child().unwrap().children() {
-      if !node.is_element() { continue }
-      if !node.has_tag_name("data") { continue }
+    for node in doc.root().first_element_child().unwrap().children_elems("data") {
       if let Some(name) = node.attribute("name") {
         if let Some(value_node) = node.first_element_child() {
           if let Some(value) = value_node.text() {

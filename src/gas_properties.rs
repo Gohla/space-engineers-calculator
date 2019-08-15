@@ -18,6 +18,7 @@ impl GasProperty {
   }
 }
 
+
 #[derive(Clone, Debug)]
 pub struct GasProperties {
   pub gas_properties: HashMap<String, GasProperty>,
@@ -30,9 +31,8 @@ impl GasProperties {
 
     let mut gas_properties = HashMap::new();
 
-    for gas in doc.root().first_element_child().unwrap().first_element_child().unwrap().children() {
-      if !gas.is_element() { continue }
-      let id: String = gas.get_child_elem("Id").unwrap()
+    for gas in doc.root().first_element_child().unwrap().first_element_child().unwrap().children_elems("Gas") {
+      let id: String = gas.child_elem("Id").unwrap()
         .parse_child_elem("SubtypeId").unwrap().unwrap();
       let name = id.clone();
       let energy_density = gas.parse_child_elem("EnergyDensity").unwrap().unwrap_or(0.0);
