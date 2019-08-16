@@ -5,10 +5,10 @@ use std::path::Path;
 
 use roxmltree::{Document, Node};
 
-use crate::components::Components;
-use crate::gas_properties::GasProperties;
-use crate::localization::Localization;
-use crate::xml::{NodeExt, read_string_from_file};
+use super::components::Components;
+use super::gas_properties::GasProperties;
+use super::localization::Localization;
+use super::xml::{NodeExt, read_string_from_file};
 
 /// Grid type.
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug)]
@@ -355,6 +355,7 @@ impl FromDef for Cockpit {
   }
 }
 
+
 #[derive(Clone, Debug)]
 pub struct Blocks {
   pub batteries: Vec<Block<Battery>>,
@@ -368,7 +369,11 @@ pub struct Blocks {
 }
 
 impl Blocks {
-  pub fn from_data<P: AsRef<Path>>(cubeblocks_sbc_path: P, entitycomponents_sbc_path: P) -> Blocks {
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir: P) -> Self {
+    Self::from_sbc_files(se_dir.as_ref().join("Content/Data/CubeBlocks.sbc"), se_dir.as_ref().join("Content/Data/EntityComponents.sbc"))
+  }
+
+  pub fn from_sbc_files<P: AsRef<Path>>(cubeblocks_sbc_path: P, entitycomponents_sbc_path: P) -> Self {
     let cubeblocks_string = read_string_from_file(cubeblocks_sbc_path).unwrap();
     let cubeblocks_doc = Document::parse(&cubeblocks_string).unwrap();
 
@@ -419,7 +424,7 @@ impl Blocks {
       }
     }
 
-    Blocks { batteries, thrusters, hydrogen_engines, reactors, generators, hydrogen_tanks, containers, cockpits }
+    Self { batteries, thrusters, hydrogen_engines, reactors, generators, hydrogen_tanks, containers, cockpits }
   }
 }
 

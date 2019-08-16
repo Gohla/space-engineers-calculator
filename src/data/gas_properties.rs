@@ -3,8 +3,8 @@ use std::path::Path;
 
 use roxmltree::Document;
 
-use crate::localization::Localization;
-use crate::xml::{NodeExt, read_string_from_file};
+use super::localization::Localization;
+use super::xml::{NodeExt, read_string_from_file};
 
 #[derive(Clone, Debug)]
 pub struct GasProperty {
@@ -25,7 +25,11 @@ pub struct GasProperties {
 }
 
 impl GasProperties {
-  pub fn from_data<P: AsRef<Path>>(gasproperties_sbc_path: P) -> GasProperties {
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir: P) -> Self {
+    Self::from_sbc_file(se_dir.as_ref().join("Content/Data/GasProperties.sbc"))
+  }
+
+  pub fn from_sbc_file<P: AsRef<Path>>(gasproperties_sbc_path: P) -> Self {
     let string = read_string_from_file(gasproperties_sbc_path).unwrap();
     let doc = Document::parse(&string).unwrap();
 

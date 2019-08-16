@@ -3,8 +3,8 @@ use std::path::Path;
 
 use roxmltree::Document;
 
-use crate::localization::Localization;
-use crate::xml::{NodeExt, read_string_from_file};
+use super::localization::Localization;
+use super::xml::{NodeExt, read_string_from_file};
 
 #[derive(Clone, Debug)]
 pub struct Component {
@@ -26,7 +26,11 @@ pub struct Components {
 }
 
 impl Components {
-  pub fn from_data<P: AsRef<Path>>(components_sbc_path: P) -> Components {
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir: P) -> Self {
+    Self::from_sbc_file(se_dir.as_ref().join("Content/Data/Components.sbc"))
+  }
+
+  pub fn from_sbc_file<P: AsRef<Path>>(components_sbc_path: P) -> Self {
     let string = read_string_from_file(components_sbc_path).unwrap();
     let doc = Document::parse(&string).unwrap();
 
@@ -40,7 +44,7 @@ impl Components {
       components.insert(id, Component { name, mass, volume });
     }
 
-    Components { components }
+    Self { components }
   }
 
   pub fn get(&self, id: &str) -> Option<&Component> {

@@ -5,5 +5,12 @@ authors = ["Gabriel Konat <gabrielkonat@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-azul = "0.1"
 roxmltree = "0.7"
+
+[dependencies.gtk]
+version = "0.7.0"
+features = ["v3_16"]
+
+[dependencies.gio]
+version = ""
+features = ["v2_44"]

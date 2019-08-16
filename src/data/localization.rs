@@ -3,7 +3,7 @@ use std::path::Path;
 
 use roxmltree::Document;
 
-use crate::xml::{NodeExt, read_string_from_file};
+use super::xml::{NodeExt, read_string_from_file};
 
 #[derive(Clone, Debug)]
 pub struct Localization {
@@ -11,7 +11,11 @@ pub struct Localization {
 }
 
 impl Localization {
-  pub fn from_data<P: AsRef<Path>>(resx_path: P) -> Localization {
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir: P) -> Self {
+    Self::from_resx_file(se_dir.as_ref().join("Content/Data/Localization/MyTexts.resx"))
+  }
+
+  pub fn from_resx_file<P: AsRef<Path>>(resx_path: P) -> Self {
     let string = read_string_from_file(resx_path).unwrap();
     let doc = Document::parse(&string).unwrap();
 
@@ -27,7 +31,7 @@ impl Localization {
       }
     }
 
-    Localization { localization }
+    Self { localization }
   }
 
 
