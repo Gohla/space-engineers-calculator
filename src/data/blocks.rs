@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::ops::Deref;
@@ -37,6 +38,7 @@ pub trait FromDef: Clone + Debug {
 /// Common block data which can be created from a definition in a SBC XML file.
 #[derive(Clone, Debug)]
 pub struct Block<T> {
+  pub id: u64,
   pub name: String,
   pub grid_type: GridType,
   pub components: HashMap<String, f64>,
@@ -62,7 +64,7 @@ impl<T> Block<T> {
 }
 
 impl<T: FromDef> Block<T> {
-  pub fn from_def(def: &Node, entity_components: &Node) -> Self {
+  pub fn from_def(def: &Node, entity_components: &Node, id: u64) -> Self {
     let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
     let mut components = HashMap::new();
     let grid_type = GridType::from_def(def);
@@ -73,7 +75,27 @@ impl<T: FromDef> Block<T> {
     }
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
     let details = T::from_def(def, entity_components);
-    Block { name, grid_type, components, has_physics, details }
+    Block { id, name, grid_type, components, has_physics, details }
+  }
+}
+
+impl<T> PartialEq for Block<T> {
+  fn eq(&self, other: &Self) -> bool {
+    self.id.eq(&other.id)
+  }
+}
+
+impl<T> Eq for Block<T> {}
+
+impl<T> PartialOrd for Block<T> {
+  fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+    self.id.partial_cmp(&other.id)
+  }
+}
+
+impl<T> Ord for Block<T> {
+  fn cmp(&self, other: &Self) -> Ordering {
+    self.id.cmp(&other.id)
   }
 }
 
@@ -358,14 +380,14 @@ impl FromDef for Cockpit {
 
 #[derive(Clone, Debug)]
 pub struct Blocks {
-  pub batteries: Vec<Block<Battery>>,
-  pub thrusters: Vec<Block<Thruster>>,
-  pub hydrogen_engines: Vec<Block<HydrogenEngine>>,
-  pub reactors: Vec<Block<Reactor>>,
-  pub generators: Vec<Block<Generator>>,
-  pub hydrogen_tanks: Vec<Block<HydrogenTank>>,
-  pub containers: Vec<Block<Container>>,
-  pub cockpits: Vec<Block<Cockpit>>,
+  pub batteries: HashMap<u64, Block<Battery>>,
+  pub thrusters: HashMap<u64, Block<Thruster>>,
+  pub hydrogen_engines: HashMap<u64, Block<HydrogenEngine>>,
+  pub reactors: HashMap<u64, Block<Reactor>>,
+  pub generators: HashMap<u64, Block<Generator>>,
+  pub hydrogen_tanks: HashMap<u64, Block<HydrogenTank>>,
+  pub containers: HashMap<u64, Block<Container>>,
+  pub cockpits: HashMap<u64, Block<Cockpit>>,
 }
 
 impl Blocks {
@@ -382,49 +404,73 @@ impl Blocks {
     let entitycomponents_root_node = entitycomponents_doc.root().first_element_child().unwrap();
     let entitycomponents_node = entitycomponents_root_node.child_elem("EntityComponents").unwrap();
 
-    let mut batteries = Vec::new();
-    let mut thrusters = Vec::new();
-    let mut hydrogen_engines = Vec::new();
-    let mut reactors = Vec::new();
-    let mut generators = Vec::new();
-    let mut hydrogen_tanks = Vec::new();
-    let mut containers = Vec::new();
-    let mut cockpits = Vec::new();
+    let mut batteries = HashMap::new();
+    let mut thrusters = HashMap::new();
+    let mut hydrogen_engines = HashMap::new();
+    let mut reactors = HashMap::new();
+    let mut generators = HashMap::new();
+    let mut hydrogen_tanks = HashMap::new();
+    let mut containers = HashMap::new();
+    let mut cockpits = HashMap::new();
 
+    let mut id = 0;
     for def in cubeblocks_doc.root().first_element_child().unwrap().first_element_child().unwrap().children_elems("Definition") {
       if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
         match ty {
           "MyObjectBuilder_BatteryBlockDefinition" => {
-            batteries.push(Block::<Battery>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Battery>::from_def(&def, &entitycomponents_node, id);
+            batteries.insert(block.id, block);
           }
           "MyObjectBuilder_ThrustDefinition" => {
-            thrusters.push(Block::<Thruster>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Thruster>::from_def(&def, &entitycomponents_node, id);
+            thrusters.insert(block.id, block);
           }
           "MyObjectBuilder_HydrogenEngineDefinition" => {
-            hydrogen_engines.push(Block::<HydrogenEngine>::from_def(&def, &entitycomponents_node));
+            let block = Block::<HydrogenEngine>::from_def(&def, &entitycomponents_node, id);
+            hydrogen_engines.insert(block.id, block);
           }
           "MyObjectBuilder_ReactorDefinition" => {
-            reactors.push(Block::<Reactor>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Reactor>::from_def(&def, &entitycomponents_node, id);
+            reactors.insert(block.id, block);
           }
           "MyObjectBuilder_OxygenGeneratorDefinition" => {
-            generators.push(Block::<Generator>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Generator>::from_def(&def, &entitycomponents_node, id);
+            generators.insert(block.id, block);
           }
           "MyObjectBuilder_GasTankDefinition" => {
             if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
-            hydrogen_tanks.push(Block::<HydrogenTank>::from_def(&def, &entitycomponents_node));
+            let block = Block::<HydrogenTank>::from_def(&def, &entitycomponents_node, id);
+            hydrogen_tanks.insert(block.id, block);
           }
           "MyObjectBuilder_CargoContainerDefinition" => {
-            containers.push(Block::<Container>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Container>::from_def(&def, &entitycomponents_node, id);
+            containers.insert(block.id, block);
           }
           "MyObjectBuilder_CockpitDefinition" => {
-            cockpits.push(Block::<Cockpit>::from_def(&def, &entitycomponents_node));
+            let block = Block::<Cockpit>::from_def(&def, &entitycomponents_node, id);
+            cockpits.insert(block.id, block);
           }
           _ => {}
         }
       }
+      id += 1;
     }
 
     Self { batteries, thrusters, hydrogen_engines, reactors, generators, hydrogen_tanks, containers, cockpits }
+  }
+
+  pub fn small_and_large_sorted<'a, T, I: Iterator<Item=&'a Block<T>>>(iter: I) -> (Vec<&'a Block<T>>, Vec<&'a Block<T>>) {
+    let mut small_vec = Vec::new();
+    let mut large_vec = Vec::new();
+    for block in iter {
+      match block.grid_type {
+        GridType::Small => small_vec.push(block),
+        GridType::Large => large_vec.push(block),
+      }
+    }
+    small_vec.sort();
+    large_vec.sort();
+    (small_vec, large_vec)
   }
 }
 

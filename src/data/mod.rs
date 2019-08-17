@@ -31,49 +31,49 @@ impl Data {
     dbg!(&self.components);
     dbg!(&self.gas_properties);
 
-    for thruster in &self.blocks.thrusters {
+    for thruster in self.blocks.thrusters.values() {
       dbg!(thruster);
       dbg!(thruster.name(&self.localization));
       dbg!(thruster.mass(&self.components));
     }
 
-    for battery in &self.blocks.batteries {
+    for battery in self.blocks.batteries.values() {
       dbg!(battery);
       dbg!(battery.name(&self.localization));
       dbg!(battery.mass(&self.components));
     }
 
-    for hydrogen_engine in &self.blocks.hydrogen_engines {
+    for hydrogen_engine in self.blocks.hydrogen_engines.values() {
       dbg!(hydrogen_engine);
       dbg!(hydrogen_engine.name(&self.localization));
       dbg!(hydrogen_engine.mass(&self.components));
     }
 
-    for reactor in &self.blocks.reactors {
+    for reactor in self.blocks.reactors.values() {
       dbg!(reactor);
       dbg!(reactor.name(&self.localization));
       dbg!(reactor.mass(&self.components));
     }
 
-    for generator in &self.blocks.generators {
+    for generator in self.blocks.generators.values() {
       dbg!(generator);
       dbg!(generator.name(&self.localization));
       dbg!(generator.mass(&self.components));
     }
 
-    for hydrogen_tank in &self.blocks.hydrogen_tanks {
+    for hydrogen_tank in self.blocks.hydrogen_tanks.values() {
       dbg!(hydrogen_tank);
       dbg!(hydrogen_tank.name(&self.localization));
       dbg!(hydrogen_tank.mass(&self.components));
     }
 
-    for container in &self.blocks.containers {
+    for container in self.blocks.containers.values() {
       dbg!(container);
       dbg!(container.name(&self.localization));
       dbg!(container.mass(&self.components));
     }
 
-    for cockpit in &self.blocks.cockpits {
+    for cockpit in self.blocks.cockpits.values() {
       dbg!(cockpit);
       dbg!(cockpit.name(&self.localization));
       dbg!(cockpit.mass(&self.components));
