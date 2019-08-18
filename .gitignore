@@ -5,3 +5,6 @@
 # IntelliJ
 /.idea
 /*.iml
+
+# Glade
+/**/*.*~

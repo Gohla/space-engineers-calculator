@@ -75,13 +75,31 @@ impl MainWindow {
     self.create_block_inputs(data, data.blocks.containers.values(), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.containers);
   }
 
-  fn create_block_inputs<'a, T: 'a, I: Iterator<Item=&'a Block<T>>, F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy>(&self, data: &'a Data, iter: I, small_grid: &Grid, large_grid: &Grid, calculator_func: F) {
+  fn create_block_inputs<'a, T: 'a, I, F>(
+    &self,
+    data: &'a Data,
+    iter: I,
+    small_grid: &Grid,
+    large_grid: &Grid,
+    calculator_func: F
+  ) where
+    F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy,
+    I: Iterator<Item=&'a Block<T>>
+  {
     let (small, large) = Blocks::small_and_large_sorted(iter);
     self.create_block_input_grid(data, small, small_grid, calculator_func);
     self.create_block_input_grid(data, large, large_grid, calculator_func);
   }
 
-  fn create_block_input_grid<T, F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy>(&self, data: &Data, blocks: Vec<&Block<T>>, grid: &Grid, calculator_func: F) {
+  fn create_block_input_grid<T, F>(
+    &self,
+    data: &Data,
+    blocks: Vec<&Block<T>>,
+    grid: &Grid,
+    calculator_func: F
+  ) where
+    F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy
+  {
     for (index, block) in blocks.into_iter().enumerate() {
       let index = index as i32;
       grid.insert_row(index);
