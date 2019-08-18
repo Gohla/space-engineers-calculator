@@ -31,7 +31,6 @@ pub struct MainWindow {
 
   volume_mass_input_small: Grid,
   volume_mass_input_large: Grid,
-
   total_volume_any: Label,
   total_volume_ore: Label,
   total_volume_ice: Label,
@@ -45,8 +44,31 @@ pub struct MainWindow {
 
   acceleration_input_small: Grid,
   acceleration_input_large: Grid,
-
   thrusters: HashMap<ThrusterSide, ThrusterWidgets>,
+
+  power_input_small: Grid,
+  power_input_large: Grid,
+  power_generation: Label,
+  power_balance_idle: Label,
+  power_balance_misc: Label,
+  power_balance_upto_jump_drive: Label,
+  power_balance_upto_generator: Label,
+  power_balance_upto_up_down_thruster: Label,
+  power_balance_upto_front_back_thruster: Label,
+  power_balance_upto_left_right_thruster: Label,
+  power_balance_upto_battery: Label,
+  power_capacity_battery: Label,
+
+  hydrogen_input_small: Grid,
+  hydrogen_input_large: Grid,
+  hydrogen_generation: Label,
+  hydrogen_balance_idle: Label,
+  hydrogen_balance_engine: Label,
+  hydrogen_balance_upto_up_down_thruster: Label,
+  hydrogen_balance_upto_front_back_thruster: Label,
+  hydrogen_balance_upto_left_right_thruster: Label,
+  hydrogen_capacity_tank: Label,
+  hydrogen_capacity_engine: Label,
 
   // Rc to support usage in 'static closures by clone+move.
   data: Rc<Data>,
@@ -80,7 +102,6 @@ impl MainWindow {
 
     let volume_mass_input_small = builder.get_object("volume_mass_input_small").unwrap();
     let volume_mass_input_large = builder.get_object("volume_mass_input_large").unwrap();
-
     let total_volume_any = builder.get_object("total_volume_any").unwrap();
     let total_volume_ore = builder.get_object("total_volume_ore").unwrap();
     let total_volume_ice = builder.get_object("total_volume_ice").unwrap();
@@ -94,7 +115,6 @@ impl MainWindow {
 
     let acceleration_input_small = builder.get_object("acceleration_input_small").unwrap();
     let acceleration_input_large = builder.get_object("acceleration_input_large").unwrap();
-
     let mut thrusters = HashMap::default();
     for side in ThrusterSide::iter() {
       let side = *side;
@@ -121,6 +141,29 @@ impl MainWindow {
       thrusters.insert(side, thruster_widgets);
     }
 
+    let power_input_small = builder.get_object("power_input_small").unwrap();
+    let power_input_large = builder.get_object("power_input_large").unwrap();
+    let power_generation = builder.get_object("power_generation").unwrap();
+    let power_balance_idle = builder.get_object("power_balance_idle").unwrap();
+    let power_balance_misc = builder.get_object("power_balance_misc").unwrap();
+    let power_balance_upto_jump_drive = builder.get_object("power_balance_upto_jump_drive").unwrap();
+    let power_balance_upto_generator = builder.get_object("power_balance_upto_generator").unwrap();
+    let power_balance_upto_up_down_thruster = builder.get_object("power_balance_upto_up_down_thruster").unwrap();
+    let power_balance_upto_front_back_thruster = builder.get_object("power_balance_upto_front_back_thruster").unwrap();
+    let power_balance_upto_left_right_thruster = builder.get_object("power_balance_upto_left_right_thruster").unwrap();
+    let power_balance_upto_battery = builder.get_object("power_balance_upto_battery").unwrap();
+    let power_capacity_battery = builder.get_object("power_capacity_battery").unwrap();
+
+    let hydrogen_input_small = builder.get_object("hydrogen_input_small").unwrap();
+    let hydrogen_input_large = builder.get_object("hydrogen_input_large").unwrap();
+    let hydrogen_generation = builder.get_object("hydrogen_generation").unwrap();
+    let hydrogen_balance_idle = builder.get_object("hydrogen_balance_idle").unwrap();
+    let hydrogen_balance_engine = builder.get_object("hydrogen_balance_engine").unwrap();
+    let hydrogen_balance_upto_up_down_thruster = builder.get_object("hydrogen_balance_upto_up_down_thruster").unwrap();
+    let hydrogen_balance_upto_front_back_thruster = builder.get_object("hydrogen_balance_upto_front_back_thruster").unwrap();
+    let hydrogen_balance_upto_left_right_thruster = builder.get_object("hydrogen_balance_upto_left_right_thruster").unwrap();
+    let hydrogen_capacity_tank = builder.get_object("hydrogen_capacity_tank").unwrap();
+    let hydrogen_capacity_engine = builder.get_object("hydrogen_capacity_engine").unwrap();
 
     let calculator = Rc::new(RefCell::new(Calculator::new()));
 
@@ -139,7 +182,6 @@ impl MainWindow {
 
       volume_mass_input_small,
       volume_mass_input_large,
-
       total_volume_any,
       total_volume_ore,
       total_volume_ice,
@@ -153,8 +195,31 @@ impl MainWindow {
 
       acceleration_input_small,
       acceleration_input_large,
-
       thrusters,
+
+      power_input_small,
+      power_input_large,
+      power_generation,
+      power_balance_idle,
+      power_balance_misc,
+      power_balance_upto_jump_drive,
+      power_balance_upto_generator,
+      power_balance_upto_up_down_thruster,
+      power_balance_upto_front_back_thruster,
+      power_balance_upto_left_right_thruster,
+      power_balance_upto_battery,
+      power_capacity_battery,
+
+      hydrogen_input_small,
+      hydrogen_input_large,
+      hydrogen_generation,
+      hydrogen_balance_idle,
+      hydrogen_balance_engine,
+      hydrogen_balance_upto_up_down_thruster,
+      hydrogen_balance_upto_front_back_thruster,
+      hydrogen_balance_upto_left_right_thruster,
+      hydrogen_capacity_tank,
+      hydrogen_capacity_engine,
 
       data,
       calculator,
@@ -176,9 +241,17 @@ impl MainWindow {
     self.any_fill_with_steel_plates.set_and_recalc_on_change(&self, 0.0, |c| &mut c.any_fill_with_steel_plates);
 
     // Volume & Mass
-    self.clone().create_block_inputs(self.data.blocks.containers.values(), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.containers);
+    self.clone().create_block_inputs(self.data.blocks.containers.values().filter(|c| c.details.store_any), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.containers);
+    self.clone().create_block_inputs(self.data.blocks.cockpits.values().filter(|c| c.details.has_inventory), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.cockpits);
     // Acceleration
     self.clone().create_acceleration_block_inputs(self.data.blocks.thrusters.values(), &self.acceleration_input_small, &self.acceleration_input_large);
+    // Power
+    self.clone().create_block_inputs(self.data.blocks.hydrogen_engines.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.hydrogen_engines);
+    self.clone().create_block_inputs(self.data.blocks.reactors.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.reactors);
+    self.clone().create_block_inputs(self.data.blocks.batteries.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.batteries);
+    // Hydrogen
+    self.clone().create_block_inputs(self.data.blocks.generators.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.generators);
+    self.clone().create_block_inputs(self.data.blocks.hydrogen_tanks.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.hydrogen_tanks);
   }
 
 
@@ -205,8 +278,9 @@ impl MainWindow {
   ) where
     F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy
   {
+    let index_offset = grid.get_children().len() as i32;
     for (index, block) in blocks.into_iter().enumerate() {
-      let index = index as i32;
+      let index = index as i32 + index_offset;
       grid.insert_row(index as i32);
       let label = Self::create_static_label(block.name(&self.data.localization));
       grid.attach(&label, 0, index, 1, 1);
@@ -290,7 +364,7 @@ impl MainWindow {
     self.total_mass_filled.set(calculated.total_mass_filled);
     self.total_items_ice.set(calculated.total_items_ice);
     self.total_items_ore.set(calculated.total_items_ore);
-    self.total_items_steel_plates.set(calculated.total_items_steel_plates);
+    self.total_items_steel_plates.set(calculated.total_items_steel_plate);
     // Force & Acceleration
     for (side, a) in calculated.acceleration.iter() {
       let widgets = self.thrusters.get(side).unwrap();
@@ -300,6 +374,26 @@ impl MainWindow {
       widgets.acceleration_empty_gravity.set(a.acceleration_empty_gravity);
       widgets.acceleration_filled_gravity.set(a.acceleration_filled_gravity);
     }
+    // Power
+    self.power_generation.set(calculated.power_generation);
+    self.power_balance_idle.set(calculated.power_balance_idle);
+    self.power_balance_misc.set(calculated.power_balance_misc);
+    self.power_balance_upto_jump_drive.set(calculated.power_balance_upto_jump_drive);
+    self.power_balance_upto_generator.set(calculated.power_balance_upto_generator);
+    self.power_balance_upto_up_down_thruster.set(calculated.power_balance_upto_up_down_thruster);
+    self.power_balance_upto_front_back_thruster.set(calculated.power_balance_upto_front_back_thruster);
+    self.power_balance_upto_left_right_thruster.set(calculated.power_balance_upto_left_right_thruster);
+    self.power_balance_upto_battery.set(calculated.power_balance_upto_battery);
+    self.power_capacity_battery.set(calculated.power_capacity_battery);
+    // Hydrogen
+    self.hydrogen_generation.set(calculated.hydrogen_generation);
+    self.hydrogen_balance_idle.set(calculated.hydrogen_balance_idle);
+    self.hydrogen_balance_engine.set(calculated.hydrogen_balance_engine);
+    self.hydrogen_balance_upto_up_down_thruster.set(calculated.hydrogen_balance_upto_up_down_thruster);
+    self.hydrogen_balance_upto_front_back_thruster.set(calculated.hydrogen_balance_upto_front_back_thruster);
+    self.hydrogen_balance_upto_left_right_thruster.set(calculated.hydrogen_balance_upto_left_right_thruster);
+    self.hydrogen_capacity_tank.set(calculated.hydrogen_capacity_tank);
+    self.hydrogen_capacity_engine.set(calculated.hydrogen_capacity_engine);
   }
 
 
