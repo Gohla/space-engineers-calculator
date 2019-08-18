@@ -7,10 +7,11 @@ use gtk::prelude::*;
 use crate::data::Data;
 
 use self::main_window::MainWindow;
+use std::rc::Rc;
 
 pub mod main_window;
 
-pub fn run(data: &Data) {
+pub fn run(data: Rc<Data>) {
   let application = Application::new(None, Default::default()).expect("failed to initialize GTK application");
   let main_window = MainWindow::new(data);
   application.connect_activate(move |app| {

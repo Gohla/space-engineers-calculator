@@ -152,20 +152,20 @@ impl ThrusterType {
 #[derive(Clone, Debug)]
 pub struct Thruster {
   /// Thruster type
-  ty: ThrusterType,
+  pub ty: ThrusterType,
   /// Optional fuel gas ID, used to determine actual consumption.
-  fuel_gas_id: Option<String>,
+  pub fuel_gas_id: Option<String>,
   /// Force (N)
-  force: f64,
+  pub force: f64,
   /// Maximum consumption (MW for energy-based thrusters, otherwise max_consumption/<energy_density of fuel> L/s for fuel-based thrusters)
-  max_consumption: f64,
+  pub max_consumption: f64,
   /// Minimum consumption (MW for energy-based thrusters, otherwise min_consumption/<energy_density of fuel> L/s for fuel-based thrusters)
-  min_consumption: f64,
-  min_planetary_influence: f64,
-  max_planetary_influence: f64,
-  effectiveness_at_min_influence: f64,
-  effectiveness_at_max_influence: f64,
-  needs_atmosphere_for_influence: bool,
+  pub min_consumption: f64,
+  pub min_planetary_influence: f64,
+  pub max_planetary_influence: f64,
+  pub effectiveness_at_min_influence: f64,
+  pub effectiveness_at_max_influence: f64,
+  pub needs_atmosphere_for_influence: bool,
 }
 
 impl Thruster {
@@ -201,7 +201,7 @@ impl FromDef for Thruster {
     let fuel_gas_id = def.child_elem("FuelConverter").map(|n| n.first_element_child().unwrap().parse_child_elem("SubtypeId").unwrap().unwrap());
     let max_consumption = def.parse_child_elem("MaxPowerConsumption").unwrap().unwrap();
     let min_consumption = def.parse_child_elem("MinPowerConsumption").unwrap().unwrap();
-    let min_planetary_influence = def.parse_child_elem("MinPlanetaryInfluence").unwrap().unwrap_or(1.0);
+    let min_planetary_influence = def.parse_child_elem("MinPlanetaryInfluence").unwrap().unwrap_or(0.0);
     let max_planetary_influence = def.parse_child_elem("MaxPlanetaryInfluence").unwrap().unwrap_or(1.0);
     let effectiveness_at_min_influence = def.parse_child_elem("EffectivenessAtMinInfluence").unwrap().unwrap_or(1.0);
     let effectiveness_at_max_influence = def.parse_child_elem("EffectivenessAtMaxInfluence").unwrap().unwrap_or(1.0);
@@ -334,12 +334,15 @@ impl FromDef for HydrogenTank {
 pub struct Container {
   /// Inventory capacity (L)
   pub capacity: f64,
+  /// Stores any item?
+  pub store_any: bool,
 }
 
 impl FromDef for Container {
   fn from_def(def: &Node, entity_components: &Node) -> Self {
     let subtype_id: String = def.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
     let mut capacity = 0.0;
+    let mut store_any = false;
     for entity_component in entity_components.children_elems("EntityComponent") {
       if let Some("MyObjectBuilder_InventoryComponentDefinition") = entity_component.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
         let entity_component_subtype_id: String = entity_component.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
@@ -349,13 +352,14 @@ impl FromDef for Container {
         let y: f64 = size.parse_attribute("x").unwrap().unwrap();
         let z: f64 = size.parse_attribute("x").unwrap().unwrap();
         capacity = x * y * z * 1000.0;
+        store_any = entity_component.child_elem("InputConstraint").map_or(true, |_| false);
         break;
       }
     }
     if capacity == 0.0 {
       panic!("Unrecognized container {:?}", def);
     }
-    Container { capacity }
+    Container { capacity, store_any }
   }
 }
 
