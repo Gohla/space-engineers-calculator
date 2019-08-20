@@ -1,7 +1,7 @@
+use std::error::Error;
 use std::path::{Path, PathBuf};
 
-use gio::prelude::*;
-use gtk::{FileChooserAction, FileChooserNative, IsA, Window};
+use gtk::{ButtonsType, DialogFlags, FileChooserAction, FileChooserNative, IsA, MessageDialog, MessageType, Window};
 use gtk::prelude::*;
 
 pub struct FileDialog {
@@ -57,5 +57,49 @@ impl FileDialog {
 impl Drop for FileDialog {
   fn drop(&mut self) {
     self.chooser.destroy();
+  }
+}
+
+
+pub struct ErrorDialog {
+  message_dialog: MessageDialog,
+}
+
+impl ErrorDialog {
+  pub fn new<W: IsA<Window>>(parent: &W, text: &str) -> Self {
+    let message_dialog = MessageDialog::new(Some(parent), DialogFlags::MODAL, MessageType::Error, ButtonsType::Ok, text);
+    Self { message_dialog }
+  }
+
+  pub fn from_error_and_run<W: IsA<Window>, E: Error>(parent: &W, error: E) {
+    let error_dialog = Self::new(parent, &format!("{}", error));
+    error_dialog.run();
+  }
+
+  pub fn from_result_and_run<W: IsA<Window>, T, E: Error>(parent: &W, result: Result<T, E>) {
+    if let Err(error) = result {
+      Self::from_error_and_run(parent, error);
+    }
+  }
+
+  pub fn run(&self) {
+    self.message_dialog.run();
+  }
+}
+
+impl Drop for ErrorDialog {
+  fn drop(&mut self) {
+    self.message_dialog.destroy();
+  }
+}
+
+
+pub trait ErrorDialogResultExt {
+  fn show_error_as_dialog<W: IsA<Window>>(self, parent: &W);
+}
+
+impl<T, E: Error> ErrorDialogResultExt for Result<T, E> {
+  fn show_error_as_dialog<W: IsA<Window>>(self, parent: &W) {
+    ErrorDialog::from_result_and_run(parent, self);
   }
 }

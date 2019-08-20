@@ -2,9 +2,21 @@ use std::collections::HashMap;
 use std::io;
 
 use serde::{Deserialize, Serialize};
+use snafu::{ResultExt, Snafu};
 
 use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
+
+#[derive(Debug, Snafu)]
+pub enum Error {
+  #[snafu(display("Could not read calculator from JSON: {}", source))]
+  FromJSON { source: serde_json::Error, },
+  #[snafu(display("Could not write calculator to JSON: {}", source))]
+  ToJSON { source: serde_json::Error, },
+}
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
 pub enum ThrusterSide {
@@ -86,12 +98,13 @@ impl Calculator {
     }
   }
 
-  pub fn from_json<R: io::Read>(reader: R) -> serde_json::Result<Self> {
-    serde_json::from_reader(reader)
+  pub fn from_json<R: io::Read>(reader: R) -> Result<Self> {
+    serde_json::from_reader(reader).context(self::FromJSON)
   }
 
-  pub fn to_json<W: io::Write>(&self, writer: W) -> serde_json::Result<()> {
-    serde_json::to_writer_pretty(writer, self)
+  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<()> {
+    serde_json::to_writer_pretty(writer, self).context(self::ToJSON)?;
+    Ok(())
   }
 
   pub fn calculate(&self, data: &Data) -> Calculated {

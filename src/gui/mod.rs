@@ -1,19 +1,18 @@
-#![allow(dead_code, unused_imports)]
+use std::rc::Rc;
 
 use gio::prelude::*;
-use gtk::{Application, Grid};
-use gtk::prelude::*;
+use gtk::Application;
 
 use crate::data::Data;
 
 use self::main_window::MainWindow;
-use std::rc::Rc;
 
 pub mod main_window;
-pub mod file_dialog;
+pub mod dialog;
 
-pub fn run(data: Rc<Data>) {
+pub fn run(data: Data) {
   let application = Application::new(None, Default::default()).expect("failed to initialize GTK application");
+  let data = Rc::new(data);
   let main_window = MainWindow::new(data);
   application.connect_activate(move |app| {
     main_window.set_application(app);

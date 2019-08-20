@@ -1,24 +1,36 @@
-#![allow(dead_code, unused_imports)]
-
-use std::borrow::{Borrow, BorrowMut};
-use std::cell::{RefCell, RefMut};
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::env;
 use std::fmt::Display;
-use std::fs::File;
-use std::ops::{Deref, DerefMut};
+use std::fs::OpenOptions;
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
 
-use gio::prelude::*;
-use gtk::{Align, Application, ApplicationWindow, Button, Entry, FileChooser, FileChooserAction, FileChooserDialog, FileChooserNative, Grid, InputPurpose, Label, ResponseType, Window, WindowType};
+use gtk::{Align, Application, ApplicationWindow, Button, Entry, Grid, InputPurpose, Label};
 use gtk::prelude::*;
+use snafu::{ResultExt, Snafu};
 
 use crate::calc::{Calculator, ThrusterSide};
 use crate::data::blocks::{Block, BlockId, Blocks};
 use crate::data::Data;
-use crate::gui::file_dialog::FileDialog;
+use crate::gui::dialog::{ErrorDialogResultExt, FileDialog};
+
+#[derive(Debug, Snafu)]
+pub enum Error {
+  #[snafu(display("Could not open file '{}' for reading: {}", file_path.display(), source))]
+  OpenFile { file_path: PathBuf, source: std::io::Error, },
+  #[snafu(display("Could not deserialize data from file '{}': {}", file_path.display(), source))]
+  OpenDeserialize { file_path: PathBuf, source: crate::calc::Error, },
+  #[snafu(display("Could not open file '{}' for writing: {}", file_path.display(), source))]
+  SaveFile { file_path: PathBuf, source: std::io::Error, },
+  #[snafu(display("Could not serialize data to file '{}': {}", file_path.display(), source))]
+  SaveSerialize { file_path: PathBuf, source: crate::calc::Error, },
+}
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
 
 pub struct MainWindow {
   window: ApplicationWindow,
@@ -259,10 +271,9 @@ impl MainWindow {
     {
       let self_cloned = self.clone();
       self.open.connect_clicked(move |_| {
-        let state = self_cloned.state.deref().borrow();
-        let dialog = FileDialog::new_open(&self_cloned.window, state.current_dir_path.as_ref());
+        let dialog = FileDialog::new_open(&self_cloned.window, self_cloned.state.deref().borrow().current_dir_path.as_ref());
         if let Some(file_path) = dialog.run() {
-          self_cloned.open(file_path);
+          self_cloned.open(file_path).show_error_as_dialog(&self_cloned.window);
         }
       });
     }
@@ -270,13 +281,16 @@ impl MainWindow {
     {
       let self_cloned = self.clone();
       self.save.connect_clicked(move |_| {
-        let state = self_cloned.state.deref().borrow();
-        if let Some(current_file_path) = &state.current_file_path {
-          self_cloned.save(current_file_path)
+        let (current_dir_path, current_file_path) = {
+          let state = self_cloned.state.deref().borrow();
+          (state.current_dir_path.clone(), state.current_file_path.clone())
+        };
+        if let Some(current_file_path) = current_file_path {
+          self_cloned.save(current_file_path).show_error_as_dialog(&self_cloned.window);
         } else {
-          let dialog = FileDialog::new_save(&self_cloned.window, state.current_dir_path.as_ref(), state.current_file_path.as_ref());
+          let dialog = FileDialog::new_save(&self_cloned.window, current_dir_path, current_file_path);
           if let Some(file_path) = dialog.run() {
-            self_cloned.save(file_path);
+            self_cloned.save(file_path).show_error_as_dialog(&self_cloned.window);
           }
         }
       });
@@ -285,10 +299,13 @@ impl MainWindow {
     {
       let self_cloned = self.clone();
       self.save_as.connect_clicked(move |_| {
-        let state = self_cloned.state.deref().borrow();
-        let dialog = FileDialog::new_save(&self_cloned.window, state.current_dir_path.as_ref(), state.current_file_path.as_ref());
+        let (current_dir_path, current_file_path) = {
+          let state = self_cloned.state.deref().borrow();
+          (state.current_dir_path.clone(), state.current_file_path.clone())
+        };
+        let dialog = FileDialog::new_save(&self_cloned.window, current_dir_path, current_file_path);
         if let Some(file_path) = dialog.run() {
-          self_cloned.save(file_path);
+          self_cloned.save(file_path).show_error_as_dialog(&self_cloned.window);
         }
       });
     }
@@ -461,22 +478,27 @@ impl MainWindow {
   }
 
 
-  fn open<P: AsRef<Path>>(&self, path: P) {
-    if let Ok(reader) = File::open(path) {
-      if let Ok(calculator) = Calculator::from_json(reader) {
-        self.state.deref().borrow_mut().calculator = calculator;
-
-        let calculator = &self.state.deref().borrow().calculator;
-        self.gravity_multiplier.set(calculator.gravity_multiplier);
-        self.container_multiplier.set(calculator.container_multiplier);
-      }
-    }
+  fn open<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+    let file_path = file_path.as_ref();
+    let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
+    let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
+    self.gravity_multiplier.set(calculator.gravity_multiplier);
+    self.container_multiplier.set(calculator.container_multiplier);
+    let mut state = self.state.deref().borrow_mut();
+    state.current_file_path = Some(file_path.to_owned());
+    state.current_dir_path = file_path.parent().map(|p| p.to_owned());
+    state.calculator = calculator;
+    Ok(())
   }
 
-  fn save<P: AsRef<Path>>(&self, path: P) {
-    if let Ok(writer) = File::open(path) {
-      self.state.deref().borrow().calculator.to_json(writer).ok();
-    }
+  fn save<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+    let file_path = file_path.as_ref();
+    let writer = OpenOptions::new().write(true).create(true).open(file_path).context(self::SaveFile { file_path })?;
+    let mut state = self.state.deref().borrow_mut();
+    state.calculator.to_json(writer).context(self::SaveSerialize { file_path })?;
+    state.current_file_path = Some(file_path.to_owned());
+    state.current_dir_path = file_path.parent().map(|p| p.to_owned());
+    Ok(())
   }
 
 
@@ -490,7 +512,7 @@ impl MainWindow {
 }
 
 
-trait MyEntryExt {
+trait MyEntryExt: EntryExt {
   fn parse<T: FromStr + Copy>(&self, default: T) -> T;
   fn set<T: Display>(&self, value: T);
 

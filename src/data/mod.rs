@@ -1,5 +1,7 @@
 use std::path::Path;
 
+use snafu::{ResultExt, Snafu};
+
 use blocks::Blocks;
 use components::Components;
 use gas_properties::GasProperties;
@@ -11,6 +13,21 @@ pub mod gas_properties;
 pub mod localization;
 pub mod xml;
 
+#[derive(Debug, Snafu)]
+pub enum Error {
+  #[snafu(display("Could not read blocks: {}", source))]
+  ReadBlocks { source: blocks::Error, },
+  #[snafu(display("Could not read components: {}", source))]
+  ReadComponents { source: components::Error, },
+  #[snafu(display("Could not read gas properties: {}", source))]
+  ReadGasProperties { source: gas_properties::Error, },
+  #[snafu(display("Could not read localization: {}", source))]
+  ReadLocalization { source: localization::Error, },
+}
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;
+
+
 pub struct Data {
   pub blocks: Blocks,
   pub components: Components,
@@ -19,12 +36,13 @@ pub struct Data {
 }
 
 impl Data {
-  pub fn from_se_dir<P: AsRef<Path> + Copy>(se_dir: P) -> Self {
-    let blocks = Blocks::from_se_dir(se_dir);
-    let components = Components::from_se_dir(se_dir);
-    let gas_properties = GasProperties::from_se_dir(se_dir);
-    let localization = Localization::from_se_dir(se_dir);
-    Self { blocks, components, gas_properties, localization }
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self> {
+    let se_dir_path = se_dir_path.as_ref();
+    let blocks = Blocks::from_se_dir(se_dir_path).context(self::ReadBlocks)?;
+    let components = Components::from_se_dir(se_dir_path).context(self::ReadComponents)?;
+    let gas_properties = GasProperties::from_se_dir(se_dir_path).context(self::ReadGasProperties)?;
+    let localization = Localization::from_se_dir(se_dir_path).context(self::ReadLocalization)?;
+    Ok(Self { blocks, components, gas_properties, localization })
   }
 
   pub fn debug_print(&self) {

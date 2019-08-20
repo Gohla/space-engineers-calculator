@@ -63,8 +63,7 @@ impl<'a, 'input: 'a> Iterator for ElemChildren<'a, 'input> {
 
   fn next(&mut self) -> Option<Self::Item> {
     let mut elem = self.children.next();
-    while elem.is_some() {
-      let node = elem.unwrap();
+    while let Some(node) = elem {
       if !node.is_element() || !node.has_tag_name(self.tag) {
         elem = self.children.next();
       } else {
