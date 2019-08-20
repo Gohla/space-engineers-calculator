@@ -3,21 +3,29 @@
 use std::borrow::{Borrow, BorrowMut};
 use std::cell::{RefCell, RefMut};
 use std::collections::HashMap;
+use std::env;
 use std::fmt::Display;
+use std::fs::File;
 use std::ops::{Deref, DerefMut};
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
 
 use gio::prelude::*;
-use gtk::{Align, Application, ApplicationWindow, Entry, Grid, InputPurpose, Label};
+use gtk::{Align, Application, ApplicationWindow, Button, Entry, FileChooser, FileChooserAction, FileChooserDialog, FileChooserNative, Grid, InputPurpose, Label, ResponseType, Window, WindowType};
 use gtk::prelude::*;
 
 use crate::calc::{Calculator, ThrusterSide};
-use crate::data::blocks::{Block, Blocks};
+use crate::data::blocks::{Block, BlockId, Blocks};
 use crate::data::Data;
+use crate::gui::file_dialog::FileDialog;
 
 pub struct MainWindow {
   window: ApplicationWindow,
+
+  open: Button,
+  save: Button,
+  save_as: Button,
 
   gravity_multiplier: Entry,
   container_multiplier: Entry,
@@ -70,13 +78,12 @@ pub struct MainWindow {
   hydrogen_capacity_tank: Label,
   hydrogen_capacity_engine: Label,
 
-  // Rc to support usage in 'static closures by clone+move.
-  data: Rc<Data>,
   // Rc to support usage in 'static closures by clone+move, RefCell to support mutability in those closures.
-  calculator: Rc<RefCell<Calculator>>,
+  data: Rc<Data>,
+  state: Rc<RefCell<State>>,
 }
 
-pub struct ThrusterWidgets {
+struct ThrusterWidgets {
   force: Label,
   acceleration_empty_no_gravity: Label,
   acceleration_filled_no_gravity: Label,
@@ -84,11 +91,22 @@ pub struct ThrusterWidgets {
   acceleration_filled_gravity: Label,
 }
 
+struct State {
+  current_dir_path: Option<PathBuf>,
+  current_file_path: Option<PathBuf>,
+  calculator: Calculator,
+}
+
 impl MainWindow {
   pub fn new(data: Rc<Data>) -> Rc<Self> {
     let glade_src = include_str!("main_window.glade");
     let builder = gtk::Builder::new_from_string(glade_src);
-    let window: ApplicationWindow = builder.get_object("application_window").unwrap();
+
+    let window = builder.get_object("application_window").unwrap();
+
+    let open = builder.get_object("open").unwrap();
+    let save = builder.get_object("save").unwrap();
+    let save_as = builder.get_object("save_as").unwrap();
 
     let gravity_multiplier = builder.get_object("gravity_multiplier").unwrap();
     let container_multiplier = builder.get_object("container_multiplier").unwrap();
@@ -165,10 +183,18 @@ impl MainWindow {
     let hydrogen_capacity_tank = builder.get_object("hydrogen_capacity_tank").unwrap();
     let hydrogen_capacity_engine = builder.get_object("hydrogen_capacity_engine").unwrap();
 
-    let calculator = Rc::new(RefCell::new(Calculator::new()));
+    let state = Rc::new(RefCell::new(State {
+      current_dir_path: env::current_dir().ok(),
+      current_file_path: None,
+      calculator: Calculator::new()
+    }));
 
     let main_window = Rc::new(MainWindow {
       window,
+
+      open,
+      save,
+      save_as,
 
       gravity_multiplier,
       container_multiplier,
@@ -222,7 +248,7 @@ impl MainWindow {
       hydrogen_capacity_engine,
 
       data,
-      calculator,
+      state,
     });
     main_window.clone().initialize();
     main_window.clone().recalculate();
@@ -230,6 +256,44 @@ impl MainWindow {
   }
 
   fn initialize(self: Rc<Self>) {
+    {
+      let self_cloned = self.clone();
+      self.open.connect_clicked(move |_| {
+        let state = self_cloned.state.deref().borrow();
+        let dialog = FileDialog::new_open(&self_cloned.window, state.current_dir_path.as_ref());
+        if let Some(file_path) = dialog.run() {
+          self_cloned.open(file_path);
+        }
+      });
+    }
+
+    {
+      let self_cloned = self.clone();
+      self.save.connect_clicked(move |_| {
+        let state = self_cloned.state.deref().borrow();
+        if let Some(current_file_path) = &state.current_file_path {
+          self_cloned.save(current_file_path)
+        } else {
+          let dialog = FileDialog::new_save(&self_cloned.window, state.current_dir_path.as_ref(), state.current_file_path.as_ref());
+          if let Some(file_path) = dialog.run() {
+            self_cloned.save(file_path);
+          }
+        }
+      });
+    }
+
+    {
+      let self_cloned = self.clone();
+      self.save_as.connect_clicked(move |_| {
+        let state = self_cloned.state.deref().borrow();
+        let dialog = FileDialog::new_save(&self_cloned.window, state.current_dir_path.as_ref(), state.current_file_path.as_ref());
+        if let Some(file_path) = dialog.run() {
+          self_cloned.save(file_path);
+        }
+      });
+    }
+
+
     self.gravity_multiplier.set_and_recalc_on_change(&self, 1.0, |c| &mut c.gravity_multiplier);
     self.container_multiplier.set_and_recalc_on_change(&self, 1.0, |c| &mut c.container_multiplier);
     self.planetary_influence.set_and_recalc_on_change(&self, 1.0, |c| &mut c.planetary_influence);
@@ -262,7 +326,7 @@ impl MainWindow {
     large_grid: &Grid,
     calculator_func: F
   ) where
-    F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy,
+    F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy,
     I: Iterator<Item=&'a Block<T>>
   {
     let (small, large) = Blocks::small_and_large_sorted(iter);
@@ -276,7 +340,7 @@ impl MainWindow {
     grid: &Grid,
     calculator_func: F
   ) where
-    F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static + Copy
+    F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy
   {
     let index_offset = grid.get_children().len() as i32;
     for (index, block) in blocks.into_iter().enumerate() {
@@ -285,7 +349,7 @@ impl MainWindow {
       let label = Self::create_static_label(block.name(&self.data.localization));
       grid.attach(&label, 0, index, 1, 1);
       let entry = Self::create_entry();
-      entry.insert_and_recalc_on_change(&self, block.id, calculator_func);
+      entry.insert_and_recalc_on_change(&self, block.id.clone(), calculator_func);
       grid.attach(&entry, 1, index, 1, 1);
     }
   }
@@ -315,22 +379,22 @@ impl MainWindow {
       let label = Self::create_static_label(block.name(&self.data.localization));
       grid.attach(&label, 0, index, 1, 1);
       let entry_up = Self::create_entry();
-      entry_up.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Up).unwrap());
+      entry_up.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Up).unwrap());
       grid.attach(&entry_up, 1, index, 1, 1);
       let entry_down = Self::create_entry();
-      entry_down.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Down).unwrap());
+      entry_down.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Down).unwrap());
       grid.attach(&entry_down, 2, index, 1, 1);
       let entry_front = Self::create_entry();
-      entry_front.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Front).unwrap());
+      entry_front.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Front).unwrap());
       grid.attach(&entry_front, 3, index, 1, 1);
       let entry_back = Self::create_entry();
-      entry_back.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Back).unwrap());
+      entry_back.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Back).unwrap());
       grid.attach(&entry_back, 4, index, 1, 1);
       let entry_left = Self::create_entry();
-      entry_left.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Left).unwrap());
+      entry_left.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Left).unwrap());
       grid.attach(&entry_left, 5, index, 1, 1);
       let entry_right = Self::create_entry();
-      entry_right.insert_and_recalc_on_change(&self, block.id, |c| c.thrusters.get_mut(&ThrusterSide::Right).unwrap());
+      entry_right.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Right).unwrap());
       grid.attach(&entry_right, 6, index, 1, 1);
     }
   }
@@ -352,7 +416,7 @@ impl MainWindow {
 
 
   fn recalculate(&self) {
-    let calculated = self.calculator.deref().borrow().calculate(&self.data);
+    let calculated = self.state.deref().borrow().calculator.calculate(&self.data);
 
     // Volume & Mass
     self.total_volume_any.set(calculated.total_volume_any);
@@ -397,6 +461,25 @@ impl MainWindow {
   }
 
 
+  fn open<P: AsRef<Path>>(&self, path: P) {
+    if let Ok(reader) = File::open(path) {
+      if let Ok(calculator) = Calculator::from_json(reader) {
+        self.state.deref().borrow_mut().calculator = calculator;
+
+        let calculator = &self.state.deref().borrow().calculator;
+        self.gravity_multiplier.set(calculator.gravity_multiplier);
+        self.container_multiplier.set(calculator.container_multiplier);
+      }
+    }
+  }
+
+  fn save<P: AsRef<Path>>(&self, path: P) {
+    if let Ok(writer) = File::open(path) {
+      self.state.deref().borrow().calculator.to_json(writer).ok();
+    }
+  }
+
+
   pub fn set_application(&self, app: &Application) {
     self.window.set_application(Some(app));
   }
@@ -409,7 +492,9 @@ impl MainWindow {
 
 trait MyEntryExt {
   fn parse<T: FromStr + Copy>(&self, default: T) -> T;
-  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: u64, func: F);
+  fn set<T: Display>(&self, value: T);
+
+  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F);
   fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut Calculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F);
 }
 
@@ -418,10 +503,14 @@ impl MyEntryExt for Entry {
     self.get_text().map(|t| t.parse().unwrap_or(default)).unwrap_or(default)
   }
 
-  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<u64, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: u64, func: F) {
+  fn set<T: Display>(&self, value: T) {
+    self.set_text(&format!("{:.2}", value));
+  }
+
+  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
-      func(rc_clone.calculator.deref().borrow_mut().deref_mut()).insert(id, entry.parse(0));
+      func(&mut rc_clone.state.deref().borrow_mut().calculator).insert(id.clone(), entry.parse(0));
       rc_clone.recalculate();
     });
   }
@@ -429,7 +518,7 @@ impl MyEntryExt for Entry {
   fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut Calculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
-      *func(rc_clone.calculator.deref().borrow_mut().deref_mut()) = entry.parse(default);
+      *func(&mut rc_clone.state.deref().borrow_mut().calculator) = entry.parse(default);
       rc_clone.recalculate();
     });
   }

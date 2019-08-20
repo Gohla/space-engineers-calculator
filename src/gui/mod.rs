@@ -10,6 +10,7 @@ use self::main_window::MainWindow;
 use std::rc::Rc;
 
 pub mod main_window;
+pub mod file_dialog;
 
 pub fn run(data: Rc<Data>) {
   let application = Application::new(None, Default::default()).expect("failed to initialize GTK application");

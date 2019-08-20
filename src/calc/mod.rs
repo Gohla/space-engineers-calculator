@@ -1,9 +1,12 @@
 use std::collections::HashMap;
+use std::io;
 
-use crate::data::blocks::ThrusterType;
+use serde::{Deserialize, Serialize};
+
+use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
 pub enum ThrusterSide {
   Up,
   Down,
@@ -21,6 +24,7 @@ impl ThrusterSide {
   }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Calculator {
   pub gravity_multiplier: f64,
   pub container_multiplier: f64,
@@ -32,19 +36,18 @@ pub struct Calculator {
   pub any_fill_with_ore: f64,
   pub any_fill_with_steel_plates: f64,
 
-  // Volume & Mass
-  pub containers: HashMap<u64, u64>,
-  pub cockpits: HashMap<u64, u64>,
+  pub containers: HashMap<BlockId, u64>,
+  pub cockpits: HashMap<BlockId, u64>,
   // TODO: drills
 
-  pub thrusters: HashMap<ThrusterSide, HashMap<u64, u64>>,
+  pub thrusters: HashMap<ThrusterSide, HashMap<BlockId, u64>>,
 
-  pub hydrogen_engines: HashMap<u64, u64>,
-  pub reactors: HashMap<u64, u64>,
-  pub batteries: HashMap<u64, u64>,
+  pub hydrogen_engines: HashMap<BlockId, u64>,
+  pub reactors: HashMap<BlockId, u64>,
+  pub batteries: HashMap<BlockId, u64>,
 
-  pub generators: HashMap<u64, u64>,
-  pub hydrogen_tanks: HashMap<u64, u64>,
+  pub generators: HashMap<BlockId, u64>,
+  pub hydrogen_tanks: HashMap<BlockId, u64>,
 }
 
 impl Calculator {
@@ -81,6 +84,14 @@ impl Calculator {
       generators: Default::default(),
       hydrogen_tanks: Default::default(),
     }
+  }
+
+  pub fn from_json<R: io::Read>(reader: R) -> serde_json::Result<Self> {
+    serde_json::from_reader(reader)
+  }
+
+  pub fn to_json<W: io::Write>(&self, writer: W) -> serde_json::Result<()> {
+    serde_json::to_writer_pretty(writer, self)
   }
 
   pub fn calculate(&self, data: &Data) -> Calculated {

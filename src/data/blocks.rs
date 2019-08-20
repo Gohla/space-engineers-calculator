@@ -35,10 +35,14 @@ pub trait FromDef: Clone + Debug {
 }
 
 
+/// Alias for block identifiers.
+pub type BlockId = String;
+
 /// Common block data which can be created from a definition in a SBC XML file.
 #[derive(Clone, Debug)]
 pub struct Block<T> {
-  pub id: u64,
+  pub id: BlockId,
+  pub index: u64,
   pub name: String,
   pub grid_type: GridType,
   pub components: HashMap<String, f64>,
@@ -64,7 +68,11 @@ impl<T> Block<T> {
 }
 
 impl<T: FromDef> Block<T> {
-  pub fn from_def(def: &Node, entity_components: &Node, id: u64) -> Self {
+  pub fn from_def(def: &Node, entity_components: &Node, index: u64) -> Self {
+    let id_node = def.child_elem("Id").unwrap();
+    let type_id: String = id_node.parse_child_elem("TypeId").unwrap().unwrap();
+    let subtype_id = id_node.parse_child_elem("SubtypeId").unwrap().unwrap_or(String::new());
+    let id = type_id + "." + &subtype_id;
     let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
     let mut components = HashMap::new();
     let grid_type = GridType::from_def(def);
@@ -75,7 +83,7 @@ impl<T: FromDef> Block<T> {
     }
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
     let details = T::from_def(def, entity_components);
-    Block { id, name, grid_type, components, has_physics, details }
+    Block { id, index, name, grid_type, components, has_physics, details }
   }
 }
 
@@ -384,14 +392,14 @@ impl FromDef for Cockpit {
 
 #[derive(Clone, Debug)]
 pub struct Blocks {
-  pub batteries: HashMap<u64, Block<Battery>>,
-  pub thrusters: HashMap<u64, Block<Thruster>>,
-  pub hydrogen_engines: HashMap<u64, Block<HydrogenEngine>>,
-  pub reactors: HashMap<u64, Block<Reactor>>,
-  pub generators: HashMap<u64, Block<Generator>>,
-  pub hydrogen_tanks: HashMap<u64, Block<HydrogenTank>>,
-  pub containers: HashMap<u64, Block<Container>>,
-  pub cockpits: HashMap<u64, Block<Cockpit>>,
+  pub batteries: HashMap<BlockId, Block<Battery>>,
+  pub thrusters: HashMap<BlockId, Block<Thruster>>,
+  pub hydrogen_engines: HashMap<BlockId, Block<HydrogenEngine>>,
+  pub reactors: HashMap<BlockId, Block<Reactor>>,
+  pub generators: HashMap<BlockId, Block<Generator>>,
+  pub hydrogen_tanks: HashMap<BlockId, Block<HydrogenTank>>,
+  pub containers: HashMap<BlockId, Block<Container>>,
+  pub cockpits: HashMap<BlockId, Block<Cockpit>>,
 }
 
 impl Blocks {
@@ -423,36 +431,36 @@ impl Blocks {
         match ty {
           "MyObjectBuilder_BatteryBlockDefinition" => {
             let block = Block::<Battery>::from_def(&def, &entitycomponents_node, id);
-            batteries.insert(block.id, block);
+            batteries.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_ThrustDefinition" => {
             let block = Block::<Thruster>::from_def(&def, &entitycomponents_node, id);
-            thrusters.insert(block.id, block);
+            thrusters.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_HydrogenEngineDefinition" => {
             let block = Block::<HydrogenEngine>::from_def(&def, &entitycomponents_node, id);
-            hydrogen_engines.insert(block.id, block);
+            hydrogen_engines.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_ReactorDefinition" => {
             let block = Block::<Reactor>::from_def(&def, &entitycomponents_node, id);
-            reactors.insert(block.id, block);
+            reactors.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_OxygenGeneratorDefinition" => {
             let block = Block::<Generator>::from_def(&def, &entitycomponents_node, id);
-            generators.insert(block.id, block);
+            generators.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_GasTankDefinition" => {
             if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
             let block = Block::<HydrogenTank>::from_def(&def, &entitycomponents_node, id);
-            hydrogen_tanks.insert(block.id, block);
+            hydrogen_tanks.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_CargoContainerDefinition" => {
             let block = Block::<Container>::from_def(&def, &entitycomponents_node, id);
-            containers.insert(block.id, block);
+            containers.insert(block.id.clone(), block);
           }
           "MyObjectBuilder_CockpitDefinition" => {
             let block = Block::<Cockpit>::from_def(&def, &entitycomponents_node, id);
-            cockpits.insert(block.id, block);
+            cockpits.insert(block.id.clone(), block);
           }
           _ => {}
         }
