@@ -107,6 +107,18 @@ impl Calculator {
     Ok(())
   }
 
+  pub fn iter_block_counts(&self) -> impl Iterator<Item=(&BlockId, &u64)> {
+    vec![
+      self.containers.iter(),
+      self.cockpits.iter(),
+      self.hydrogen_engines.iter(),
+      self.reactors.iter(),
+      self.batteries.iter(),
+      self.generators.iter(),
+      self.hydrogen_tanks.iter(),
+    ].into_iter().flat_map(|it| it)
+  }
+
   pub fn calculate(&self, data: &Data) -> Calculated {
     let ice_weight_per_volume = 1.0 / 0.37; // TODO: derive from data
     let ice_items_per_volume = 1.0 / 0.37; // TODO: derive from data

@@ -89,9 +89,9 @@ pub struct MainWindow {
   hydrogen_capacity_tank: Label,
   hydrogen_capacity_engine: Label,
 
-  // Rc to support usage in 'static closures by clone+move, RefCell to support mutability in those closures.
   data: Data,
-  state: RefCell<State>,
+  state: RefCell<State> /* RefCell to support mutability for Rc<Self> in closures. */,
+  block_entries: RefCell<BlockEntries> /* RefCell to support mutability for Rc<Self>. */,
 }
 
 struct ThrusterWidgets {
@@ -106,6 +106,30 @@ struct State {
   current_dir_path: Option<PathBuf>,
   current_file_path: Option<PathBuf>,
   calculator: Calculator,
+}
+
+struct BlockEntries {
+  entries: HashMap<BlockId, Entry>,
+  up_entries: HashMap<BlockId, Entry>,
+  down_entries: HashMap<BlockId, Entry>,
+  front_entries: HashMap<BlockId, Entry>,
+  back_entries: HashMap<BlockId, Entry>,
+  left_entries: HashMap<BlockId, Entry>,
+  right_entries: HashMap<BlockId, Entry>,
+}
+
+impl BlockEntries {
+  fn iter_entries(&self) -> impl Iterator<Item=&Entry> {
+    vec![
+      self.entries.values(),
+      self.up_entries.values(),
+      self.down_entries.values(),
+      self.front_entries.values(),
+      self.back_entries.values(),
+      self.left_entries.values(),
+      self.right_entries.values(),
+    ].into_iter().flat_map(|it| it)
+  }
 }
 
 impl MainWindow {
@@ -199,6 +223,15 @@ impl MainWindow {
       current_file_path: None,
       calculator: Calculator::new()
     });
+    let block_entries = RefCell::new(BlockEntries {
+      entries: Default::default(),
+      up_entries: Default::default(),
+      down_entries: Default::default(),
+      front_entries: Default::default(),
+      back_entries: Default::default(),
+      left_entries: Default::default(),
+      right_entries: Default::default()
+    });
 
     let main_window = Rc::new(MainWindow {
       window,
@@ -260,6 +293,7 @@ impl MainWindow {
 
       data,
       state,
+      block_entries,
     });
     main_window.clone().initialize();
     main_window.clone().recalculate();
@@ -367,6 +401,7 @@ impl MainWindow {
       let entry = Self::create_entry();
       entry.insert_and_recalc_on_change(&self, block.id.clone(), calculator_func);
       grid.attach(&entry, 1, index, 1, 1);
+      self.block_entries.borrow_mut().entries.insert(block.id.clone(), entry.clone());
     }
   }
 
@@ -389,29 +424,42 @@ impl MainWindow {
     blocks: Vec<&Block<T>>,
     grid: &Grid,
   ) {
+    let mut block_entries = self.block_entries.borrow_mut();
     for (index, block) in blocks.into_iter().enumerate() {
       let index = index as i32 + 1;
       grid.insert_row(index as i32);
       let label = Self::create_static_label(block.name(&self.data.localization));
       grid.attach(&label, 0, index, 1, 1);
+
       let entry_up = Self::create_entry();
       entry_up.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Up).unwrap());
       grid.attach(&entry_up, 1, index, 1, 1);
+      block_entries.up_entries.insert(block.id.clone(), entry_up.clone());
+
       let entry_down = Self::create_entry();
       entry_down.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Down).unwrap());
       grid.attach(&entry_down, 2, index, 1, 1);
+      block_entries.down_entries.insert(block.id.clone(), entry_down.clone());
+
       let entry_front = Self::create_entry();
       entry_front.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Front).unwrap());
       grid.attach(&entry_front, 3, index, 1, 1);
+      block_entries.front_entries.insert(block.id.clone(), entry_front.clone());
+
       let entry_back = Self::create_entry();
       entry_back.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Back).unwrap());
       grid.attach(&entry_back, 4, index, 1, 1);
+      block_entries.back_entries.insert(block.id.clone(), entry_back.clone());
+
       let entry_left = Self::create_entry();
       entry_left.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Left).unwrap());
       grid.attach(&entry_left, 5, index, 1, 1);
+      block_entries.left_entries.insert(block.id.clone(), entry_left.clone());
+
       let entry_right = Self::create_entry();
       entry_right.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Right).unwrap());
       grid.attach(&entry_right, 6, index, 1, 1);
+      block_entries.right_entries.insert(block.id.clone(), entry_right.clone());
     }
   }
 
@@ -482,9 +530,37 @@ impl MainWindow {
     let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
     let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
 
-    // NOTE: setting Entries will trigger their signals, each which mutably borrow `state` and recalculates.
+    // PERF: setting Entries will trigger their signals, each which mutably borrow `state` and recalculates.
+
     self.gravity_multiplier.set(calculator.gravity_multiplier);
     self.container_multiplier.set(calculator.container_multiplier);
+    self.planetary_influence.set(calculator.planetary_influence);
+    self.additional_mass.set(calculator.additional_mass);
+    self.ice_only_fill.set(calculator.ice_only_fill);
+    self.ore_only_fill.set(calculator.ore_only_fill);
+    self.any_fill_with_ice.set(calculator.any_fill_with_ice);
+    self.any_fill_with_ore.set(calculator.any_fill_with_ore);
+    self.any_fill_with_steel_plates.set(calculator.any_fill_with_steel_plates);
+    {
+      fn set_entries_from<'a>(entries: &HashMap<BlockId, Entry>, iter: impl Iterator<Item=(&'a BlockId, &'a u64)>) {
+        for (block_id, count) in iter {
+          if let Some(entry) = entries.get(block_id) {
+            entry.set(count);
+          }
+        }
+      }
+      let block_entries = self.block_entries.borrow(); // Scoped borrow.
+      for entry in block_entries.iter_entries() {
+        entry.set("");
+      }
+      set_entries_from(&block_entries.entries, calculator.iter_block_counts());
+      set_entries_from(&block_entries.up_entries, calculator.thrusters.get(&ThrusterSide::Up).unwrap().iter());
+      set_entries_from(&block_entries.down_entries, calculator.thrusters.get(&ThrusterSide::Down).unwrap().iter());
+      set_entries_from(&block_entries.front_entries, calculator.thrusters.get(&ThrusterSide::Front).unwrap().iter());
+      set_entries_from(&block_entries.back_entries, calculator.thrusters.get(&ThrusterSide::Back).unwrap().iter());
+      set_entries_from(&block_entries.left_entries, calculator.thrusters.get(&ThrusterSide::Left).unwrap().iter());
+      set_entries_from(&block_entries.right_entries, calculator.thrusters.get(&ThrusterSide::Right).unwrap().iter());
+    }
 
     let mut state = self.state.borrow_mut();
     state.current_file_path = Some(file_path.to_owned());
