@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use std::env;
 use std::fmt::Display;
 use std::fs::OpenOptions;
-use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
@@ -91,8 +90,8 @@ pub struct MainWindow {
   hydrogen_capacity_engine: Label,
 
   // Rc to support usage in 'static closures by clone+move, RefCell to support mutability in those closures.
-  data: Rc<Data>,
-  state: Rc<RefCell<State>>,
+  data: Data,
+  state: RefCell<State>,
 }
 
 struct ThrusterWidgets {
@@ -110,7 +109,7 @@ struct State {
 }
 
 impl MainWindow {
-  pub fn new(data: Rc<Data>) -> Rc<Self> {
+  pub fn new(data: Data) -> Rc<Self> {
     let glade_src = include_str!("main_window.glade");
     let builder = gtk::Builder::new_from_string(glade_src);
 
@@ -195,11 +194,11 @@ impl MainWindow {
     let hydrogen_capacity_tank = builder.get_object("hydrogen_capacity_tank").unwrap();
     let hydrogen_capacity_engine = builder.get_object("hydrogen_capacity_engine").unwrap();
 
-    let state = Rc::new(RefCell::new(State {
+    let state = RefCell::new(State {
       current_dir_path: env::current_dir().ok(),
       current_file_path: None,
       calculator: Calculator::new()
-    }));
+    });
 
     let main_window = Rc::new(MainWindow {
       window,
@@ -271,7 +270,7 @@ impl MainWindow {
     {
       let self_cloned = self.clone();
       self.open.connect_clicked(move |_| {
-        let dialog = FileDialog::new_open(&self_cloned.window, self_cloned.state.deref().borrow().current_dir_path.as_ref());
+        let dialog = FileDialog::new_open(&self_cloned.window, self_cloned.state.borrow().current_dir_path.as_ref());
         if let Some(file_path) = dialog.run() {
           self_cloned.open(file_path).show_error_as_dialog(&self_cloned.window);
         }
@@ -282,7 +281,7 @@ impl MainWindow {
       let self_cloned = self.clone();
       self.save.connect_clicked(move |_| {
         let (current_dir_path, current_file_path) = {
-          let state = self_cloned.state.deref().borrow();
+          let state = self_cloned.state.borrow();
           (state.current_dir_path.clone(), state.current_file_path.clone())
         };
         if let Some(current_file_path) = current_file_path {
@@ -300,7 +299,7 @@ impl MainWindow {
       let self_cloned = self.clone();
       self.save_as.connect_clicked(move |_| {
         let (current_dir_path, current_file_path) = {
-          let state = self_cloned.state.deref().borrow();
+          let state = self_cloned.state.borrow();
           (state.current_dir_path.clone(), state.current_file_path.clone())
         };
         let dialog = FileDialog::new_save(&self_cloned.window, current_dir_path, current_file_path);
@@ -433,7 +432,7 @@ impl MainWindow {
 
 
   fn recalculate(&self) {
-    let calculated = self.state.deref().borrow().calculator.calculate(&self.data);
+    let calculated = self.state.borrow().calculator.calculate(&self.data);
 
     // Volume & Mass
     self.total_volume_any.set(calculated.total_volume_any);
@@ -482,9 +481,12 @@ impl MainWindow {
     let file_path = file_path.as_ref();
     let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
     let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
+
+    // NOTE: setting Entries will trigger their signals, each which mutably borrow `state` and recalculates.
     self.gravity_multiplier.set(calculator.gravity_multiplier);
     self.container_multiplier.set(calculator.container_multiplier);
-    let mut state = self.state.deref().borrow_mut();
+
+    let mut state = self.state.borrow_mut();
     state.current_file_path = Some(file_path.to_owned());
     state.current_dir_path = file_path.parent().map(|p| p.to_owned());
     state.calculator = calculator;
@@ -494,10 +496,13 @@ impl MainWindow {
   fn save<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
     let file_path = file_path.as_ref();
     let writer = OpenOptions::new().write(true).create(true).open(file_path).context(self::SaveFile { file_path })?;
-    let mut state = self.state.deref().borrow_mut();
+
+    let mut state = self.state.borrow_mut();
     state.calculator.to_json(writer).context(self::SaveSerialize { file_path })?;
+
     state.current_file_path = Some(file_path.to_owned());
     state.current_dir_path = file_path.parent().map(|p| p.to_owned());
+
     Ok(())
   }
 
@@ -532,7 +537,7 @@ impl MyEntryExt for Entry {
   fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
-      func(&mut rc_clone.state.deref().borrow_mut().calculator).insert(id.clone(), entry.parse(0));
+      func(&mut rc_clone.state.borrow_mut().calculator).insert(id.clone(), entry.parse(0));
       rc_clone.recalculate();
     });
   }
@@ -540,7 +545,7 @@ impl MyEntryExt for Entry {
   fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut Calculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
-      *func(&mut rc_clone.state.deref().borrow_mut().calculator) = entry.parse(default);
+      *func(&mut rc_clone.state.borrow_mut().calculator) = entry.parse(default);
       rc_clone.recalculate();
     });
   }
