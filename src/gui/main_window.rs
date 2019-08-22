@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
 
+use gdk::ModifierType;
 use gtk::{Align, Application, ApplicationWindow, Button, Entry, Grid, InputPurpose, Label};
 use gtk::prelude::*;
 use snafu::{ResultExt, Snafu};
@@ -385,48 +386,35 @@ impl MainWindow {
   }
 
   fn initialize(self: Rc<Self>) {
-    {
-      let self_cloned = self.clone();
-      self.open.connect_clicked(move |_| {
-        let dialog = FileDialog::new_open(&self_cloned.window, self_cloned.state.borrow().current_dir_path.as_ref());
-        if let Some(file_path) = dialog.run() {
-          self_cloned.open(file_path).show_error_as_dialog(&self_cloned.window);
-        }
-      });
-    }
+    let self_cloned = self.clone();
+    self.open.connect_clicked(move |_| {
+      self_cloned.open();
+    });
 
-    {
-      let self_cloned = self.clone();
-      self.save.connect_clicked(move |_| {
-        let (current_dir_path, current_file_path) = {
-          let state = self_cloned.state.borrow();
-          (state.current_dir_path.clone(), state.current_file_path.clone())
-        };
-        if let Some(current_file_path) = current_file_path {
-          self_cloned.save(current_file_path).show_error_as_dialog(&self_cloned.window);
-        } else {
-          let dialog = FileDialog::new_save(&self_cloned.window, current_dir_path, current_file_path);
-          if let Some(file_path) = dialog.run() {
-            self_cloned.save(file_path).show_error_as_dialog(&self_cloned.window);
-          }
-        }
-      });
-    }
+    let self_cloned = self.clone();
+    self.save.connect_clicked(move |_| {
+      self_cloned.save_or_save_as();
+    });
 
-    {
-      let self_cloned = self.clone();
-      self.save_as.connect_clicked(move |_| {
-        let (current_dir_path, current_file_path) = {
-          let state = self_cloned.state.borrow();
-          (state.current_dir_path.clone(), state.current_file_path.clone())
-        };
-        let dialog = FileDialog::new_save(&self_cloned.window, current_dir_path, current_file_path);
-        if let Some(file_path) = dialog.run() {
-          self_cloned.save(file_path).show_error_as_dialog(&self_cloned.window);
-        }
-      });
-    }
+    let self_cloned = self.clone();
+    self.save_as.connect_clicked(move |_| {
+      self_cloned.save_as();
+    });
 
+    let self_cloned = self.clone();
+    self.window.connect_key_press_event(move |_, event_key| {
+      let ctrl_down = event_key.get_state().contains(ModifierType::CONTROL_MASK);
+      match event_key.get_keyval() {
+        key if key == 's' as u32 && ctrl_down => {
+          self_cloned.save_or_save_as();
+        }
+        key if key == 'o' as u32 && ctrl_down => {
+          self_cloned.open();
+        }
+        _ => {}
+      };
+      Inhibit(false)
+    });
 
     self.gravity_multiplier.set_and_recalc_on_change(&self, 1.0, |c| &mut c.gravity_multiplier);
     self.container_multiplier.set_and_recalc_on_change(&self, 1.0, |c| &mut c.container_multiplier);
@@ -643,7 +631,14 @@ impl MainWindow {
   }
 
 
-  fn open<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+  fn open(&self) {
+    let dialog = FileDialog::new_open(&self.window, self.state.borrow().current_dir_path.as_ref());
+    if let Some(file_path) = dialog.run() {
+      self.process_open(file_path).show_error_as_dialog(&self.window);
+    }
+  }
+
+  fn process_open<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
     let file_path = file_path.as_ref();
     let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
     let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
@@ -687,7 +682,33 @@ impl MainWindow {
     Ok(())
   }
 
-  fn save<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+  fn save_or_save_as(&self) {
+    let (current_dir_path, current_file_path) = {
+      let state = self.state.borrow();
+      (state.current_dir_path.clone(), state.current_file_path.clone())
+    };
+    if let Some(current_file_path) = current_file_path {
+      self.process_save(current_file_path).show_error_as_dialog(&self.window);
+    } else {
+      let dialog = FileDialog::new_save(&self.window, current_dir_path, current_file_path);
+      if let Some(file_path) = dialog.run() {
+        self.process_save(file_path).show_error_as_dialog(&self.window);
+      }
+    }
+  }
+
+  fn save_as(&self) {
+    let (current_dir_path, current_file_path) = {
+      let state = self.state.borrow();
+      (state.current_dir_path.clone(), state.current_file_path.clone())
+    };
+    let dialog = FileDialog::new_save(&self.window, current_dir_path, current_file_path);
+    if let Some(file_path) = dialog.run() {
+      self.process_save(file_path).show_error_as_dialog(&self.window);
+    }
+  }
+
+  fn process_save<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
     let file_path = file_path.as_ref();
     let writer = OpenOptions::new().write(true).create(true).open(file_path).context(self::SaveFile { file_path })?;
 

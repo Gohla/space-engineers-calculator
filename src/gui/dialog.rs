@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::path::{Path, PathBuf};
 
-use gtk::{ButtonsType, DialogFlags, FileChooserAction, FileChooserNative, IsA, MessageDialog, MessageType, Window};
+use gtk::{ButtonsType, DialogFlags, FileChooserAction, FileChooserNative, IsA, MessageDialog, MessageType, Window, FileFilter};
 use gtk::prelude::*;
 
 pub struct FileDialog {
@@ -25,6 +25,10 @@ impl FileDialog {
     if let Some(current_file) = current_file_path {
       chooser.set_current_name(current_file)
     }
+    chooser.set_do_overwrite_confirmation(true);
+    let filter = FileFilter::new();
+    filter.add_pattern("*.secalc");
+    chooser.add_filter(&filter);
     FileDialog { chooser }
   }
 

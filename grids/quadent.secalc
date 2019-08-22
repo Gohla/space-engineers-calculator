@@ -13,28 +13,28 @@
   },
   "cockpits": {},
   "thrusters": {
-    "Up": {
-      "Thrust.SmallBlockSmallAtmosphericThrust": 2,
-      "Thrust.SmallBlockLargeAtmosphericThrust": 6
-    },
-    "Right": {
-      "Thrust.SmallBlockSmallAtmosphericThrust": 6,
-      "Thrust.SmallBlockLargeAtmosphericThrust": 2
-    },
-    "Down": {
-      "Thrust.SmallBlockSmallAtmosphericThrust": 8
-    },
-    "Front": {
-      "Thrust.SmallBlockSmallAtmosphericThrust": 12,
-      "Thrust.SmallBlockLargeAtmosphericThrust": 5
-    },
     "Left": {
       "Thrust.SmallBlockSmallAtmosphericThrust": 6,
       "Thrust.SmallBlockLargeAtmosphericThrust": 2
     },
     "Back": {
-      "Thrust.SmallBlockLargeAtmosphericThrust": 4,
-      "Thrust.SmallBlockSmallAtmosphericThrust": 14
+      "Thrust.SmallBlockSmallAtmosphericThrust": 14,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 4
+    },
+    "Up": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 2,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 6
+    },
+    "Down": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 8
+    },
+    "Right": {
+      "Thrust.SmallBlockLargeAtmosphericThrust": 2,
+      "Thrust.SmallBlockSmallAtmosphericThrust": 6
+    },
+    "Front": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 12,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 5
     }
   },
   "hydrogen_engines": {},

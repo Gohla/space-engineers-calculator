@@ -18,5 +18,8 @@ features = ["v3_22"]
 version = ""
 features = ["v2_44"]
 
+[dependencies.gdk]
+version = ""
+
 [dependencies.gtk-sys]
 version = ""
