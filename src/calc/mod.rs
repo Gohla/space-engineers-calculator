@@ -252,8 +252,12 @@ impl Calculator {
       c.total_mass_empty += block.mass(&data.components) * count;
       power_consumption_idle += details.idle_power_consumption * count;
       power_consumption_misc += details.operational_power_consumption * count;
-      c.hydrogen_capacity_engine += details.capacity * count;
+      c.hydrogen_capacity_tank += details.capacity * count;
     }
+
+    // TODO: add jump drive block
+    // TODO: add gyroscopes
+    // TODO: add drills
 
     // Calculate filled volumes.
     let ice_only_volume = c.total_volume_ice_only * (self.ice_only_fill / 100.0);
@@ -283,35 +287,33 @@ impl Calculator {
     }
 
     {
-      let gen = c.power_generation;
-      c.power_balance_idle = gen - power_consumption_idle;
+      c.power_idle = c.power_resource(power_consumption_idle);
       let mut consumption = power_consumption_misc;
-      c.power_balance_misc = gen - consumption;
+      c.power_misc = c.power_resource(consumption);
       consumption += power_consumption_jump_drive;
-      c.power_balance_upto_jump_drive = gen - consumption;
+      c.power_upto_jump_drive = c.power_resource(consumption);
       consumption += power_consumption_generator;
-      c.power_balance_upto_generator = gen - consumption;
+      c.power_upto_generator = c.power_resource(consumption);
       consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Up, ThrusterSide::Down);
-      c.power_balance_upto_up_down_thruster = gen - consumption;
+      c.power_upto_up_down_thruster = c.power_resource(consumption);
       consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Front, ThrusterSide::Back);
-      c.power_balance_upto_front_back_thruster = gen - consumption;
+      c.power_upto_front_back_thruster = c.power_resource(consumption);
       consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Left, ThrusterSide::Right);
-      c.power_balance_upto_left_right_thruster = gen - consumption;
+      c.power_upto_left_right_thruster = c.power_resource(consumption);
       consumption += power_consumption_battery;
-      c.power_balance_upto_battery = gen - consumption;
+      c.power_upto_battery = c.power_resource(consumption);
     }
 
     {
-      let gen = c.hydrogen_generation;
-      c.hydrogen_balance_idle = gen - hydrogen_consumption_idle;
+      c.hydrogen_idle = c.hydrogen_resource(hydrogen_consumption_idle);
       let mut consumption = hydrogen_consumption_engine;
-      c.hydrogen_balance_engine = gen - consumption;
+      c.hydrogen_engine = c.hydrogen_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Up, ThrusterSide::Down);
-      c.hydrogen_balance_upto_up_down_thruster = gen - consumption;
+      c.hydrogen_upto_up_down_thruster = c.hydrogen_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Front, ThrusterSide::Back);
-      c.hydrogen_balance_upto_front_back_thruster = gen - consumption;
+      c.hydrogen_upto_front_back_thruster = c.hydrogen_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Left, ThrusterSide::Right);
-      c.hydrogen_balance_upto_left_right_thruster = gen - consumption;
+      c.hydrogen_upto_left_right_thruster = c.hydrogen_resource(consumption);
     }
 
     c
@@ -341,28 +343,24 @@ pub struct Calculated {
   pub acceleration: HashMap<ThrusterSide, AccelerationCalculated>,
 
   pub power_generation: f64,
-  pub power_balance_idle: f64,
-  pub power_balance_misc: f64,
-  pub power_balance_upto_generator: f64,
-  // TODO: add jump drive block
-  pub power_balance_upto_jump_drive: f64,
-  // TODO: gyros?
-  // TODO: hover balance
-  pub power_balance_upto_up_down_thruster: f64,
-  pub power_balance_upto_front_back_thruster: f64,
-  pub power_balance_upto_left_right_thruster: f64,
-  pub power_balance_upto_battery: f64,
   pub power_capacity_battery: f64,
+  pub power_idle: ResourceCalculated,
+  pub power_misc: ResourceCalculated,
+  pub power_upto_generator: ResourceCalculated,
+  pub power_upto_jump_drive: ResourceCalculated,
+  pub power_upto_up_down_thruster: ResourceCalculated,
+  pub power_upto_front_back_thruster: ResourceCalculated,
+  pub power_upto_left_right_thruster: ResourceCalculated,
+  pub power_upto_battery: ResourceCalculated,
 
   pub hydrogen_generation: f64,
-  pub hydrogen_balance_idle: f64,
-  pub hydrogen_balance_engine: f64,
-  // TODO: hover balance
-  pub hydrogen_balance_upto_up_down_thruster: f64,
-  pub hydrogen_balance_upto_front_back_thruster: f64,
-  pub hydrogen_balance_upto_left_right_thruster: f64,
   pub hydrogen_capacity_tank: f64,
   pub hydrogen_capacity_engine: f64,
+  pub hydrogen_idle: ResourceCalculated,
+  pub hydrogen_engine: ResourceCalculated,
+  pub hydrogen_upto_up_down_thruster: ResourceCalculated,
+  pub hydrogen_upto_front_back_thruster: ResourceCalculated,
+  pub hydrogen_upto_left_right_thruster: ResourceCalculated,
 }
 
 #[derive(Default)]
@@ -372,4 +370,29 @@ pub struct AccelerationCalculated {
   pub acceleration_empty_gravity: f64,
   pub acceleration_filled_no_gravity: f64,
   pub acceleration_filled_gravity: f64,
+}
+
+#[derive(Default)]
+pub struct ResourceCalculated {
+  pub consumption: f64,
+  pub balance: f64,
+  pub duration: f64,
+}
+
+impl ResourceCalculated {
+  fn new(consumption: f64, generation: f64, capacity: f64, conversion_rate: f64) -> Self {
+    let balance = generation - consumption;
+    let duration = (capacity / consumption) * conversion_rate;
+    ResourceCalculated { consumption, balance, duration }
+  }
+}
+
+impl Calculated {
+  fn power_resource(&self, consumption: f64) -> ResourceCalculated {
+    ResourceCalculated::new(consumption, self.power_generation, self.power_capacity_battery, 60.0 /* MWh to mins */)
+  }
+
+  fn hydrogen_resource(&self, consumption: f64) -> ResourceCalculated {
+    ResourceCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, 1.0 / 60.0 /* L/s to mins */)
+  }
 }

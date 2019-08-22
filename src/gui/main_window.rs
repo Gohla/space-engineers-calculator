@@ -68,6 +68,15 @@ pub struct MainWindow {
   power_input_small: Grid,
   power_input_large: Grid,
   power_generation: Label,
+  power_capacity_battery: Label,
+  power_consumption_idle: Label,
+  power_consumption_misc: Label,
+  power_consumption_upto_jump_drive: Label,
+  power_consumption_upto_generator: Label,
+  power_consumption_upto_up_down_thruster: Label,
+  power_consumption_upto_front_back_thruster: Label,
+  power_consumption_upto_left_right_thruster: Label,
+  power_consumption_upto_battery: Label,
   power_balance_idle: Label,
   power_balance_misc: Label,
   power_balance_upto_jump_drive: Label,
@@ -76,18 +85,35 @@ pub struct MainWindow {
   power_balance_upto_front_back_thruster: Label,
   power_balance_upto_left_right_thruster: Label,
   power_balance_upto_battery: Label,
-  power_capacity_battery: Label,
+  power_duration_idle: Label,
+  power_duration_misc: Label,
+  power_duration_upto_jump_drive: Label,
+  power_duration_upto_generator: Label,
+  power_duration_upto_up_down_thruster: Label,
+  power_duration_upto_front_back_thruster: Label,
+  power_duration_upto_left_right_thruster: Label,
+  power_duration_upto_battery: Label,
 
   hydrogen_input_small: Grid,
   hydrogen_input_large: Grid,
   hydrogen_generation: Label,
+  hydrogen_capacity_engine: Label,
+  hydrogen_capacity_tank: Label,
+  hydrogen_consumption_idle: Label,
+  hydrogen_consumption_engine: Label,
+  hydrogen_consumption_upto_up_down_thruster: Label,
+  hydrogen_consumption_upto_front_back_thruster: Label,
+  hydrogen_consumption_upto_left_right_thruster: Label,
   hydrogen_balance_idle: Label,
   hydrogen_balance_engine: Label,
   hydrogen_balance_upto_up_down_thruster: Label,
   hydrogen_balance_upto_front_back_thruster: Label,
   hydrogen_balance_upto_left_right_thruster: Label,
-  hydrogen_capacity_tank: Label,
-  hydrogen_capacity_engine: Label,
+  hydrogen_duration_idle: Label,
+  hydrogen_duration_engine: Label,
+  hydrogen_duration_upto_up_down_thruster: Label,
+  hydrogen_duration_upto_front_back_thruster: Label,
+  hydrogen_duration_upto_left_right_thruster: Label,
 
   data: Data,
   state: RefCell<State> /* RefCell to support mutability for Rc<Self> in closures. */,
@@ -169,9 +195,7 @@ impl MainWindow {
     let total_items_steel_plates = builder.get_object("total_items_steel_plates").unwrap();
 
     let acceleration_input_small = builder.get_object("acceleration_input_small").unwrap();
-    Self::cleanup_glade_grid(&acceleration_input_small);
     let acceleration_input_large = builder.get_object("acceleration_input_large").unwrap();
-    Self::cleanup_glade_grid(&acceleration_input_large);
     let mut thrusters = HashMap::default();
     for side in ThrusterSide::iter() {
       let side = *side;
@@ -203,6 +227,15 @@ impl MainWindow {
     let power_input_large = builder.get_object("power_input_large").unwrap();
     Self::cleanup_glade_grid(&power_input_large);
     let power_generation = builder.get_object("power_generation").unwrap();
+    let power_capacity_battery = builder.get_object("power_capacity_battery").unwrap();
+    let power_consumption_idle = builder.get_object("power_consumption_idle").unwrap();
+    let power_consumption_misc = builder.get_object("power_consumption_misc").unwrap();
+    let power_consumption_upto_jump_drive = builder.get_object("power_consumption_upto_jump_drive").unwrap();
+    let power_consumption_upto_generator = builder.get_object("power_consumption_upto_generator").unwrap();
+    let power_consumption_upto_up_down_thruster = builder.get_object("power_consumption_upto_up_down_thruster").unwrap();
+    let power_consumption_upto_front_back_thruster = builder.get_object("power_consumption_upto_front_back_thruster").unwrap();
+    let power_consumption_upto_left_right_thruster = builder.get_object("power_consumption_upto_left_right_thruster").unwrap();
+    let power_consumption_upto_battery = builder.get_object("power_consumption_upto_battery").unwrap();
     let power_balance_idle = builder.get_object("power_balance_idle").unwrap();
     let power_balance_misc = builder.get_object("power_balance_misc").unwrap();
     let power_balance_upto_jump_drive = builder.get_object("power_balance_upto_jump_drive").unwrap();
@@ -211,20 +244,37 @@ impl MainWindow {
     let power_balance_upto_front_back_thruster = builder.get_object("power_balance_upto_front_back_thruster").unwrap();
     let power_balance_upto_left_right_thruster = builder.get_object("power_balance_upto_left_right_thruster").unwrap();
     let power_balance_upto_battery = builder.get_object("power_balance_upto_battery").unwrap();
-    let power_capacity_battery = builder.get_object("power_capacity_battery").unwrap();
+    let power_duration_idle = builder.get_object("power_duration_idle").unwrap();
+    let power_duration_misc = builder.get_object("power_duration_misc").unwrap();
+    let power_duration_upto_jump_drive = builder.get_object("power_duration_upto_jump_drive").unwrap();
+    let power_duration_upto_generator = builder.get_object("power_duration_upto_generator").unwrap();
+    let power_duration_upto_up_down_thruster = builder.get_object("power_duration_upto_up_down_thruster").unwrap();
+    let power_duration_upto_front_back_thruster = builder.get_object("power_duration_upto_front_back_thruster").unwrap();
+    let power_duration_upto_left_right_thruster = builder.get_object("power_duration_upto_left_right_thruster").unwrap();
+    let power_duration_upto_battery = builder.get_object("power_duration_upto_battery").unwrap();
 
     let hydrogen_input_small = builder.get_object("hydrogen_input_small").unwrap();
     Self::cleanup_glade_grid(&hydrogen_input_small);
     let hydrogen_input_large = builder.get_object("hydrogen_input_large").unwrap();
     Self::cleanup_glade_grid(&hydrogen_input_large);
     let hydrogen_generation = builder.get_object("hydrogen_generation").unwrap();
+    let hydrogen_capacity_engine = builder.get_object("hydrogen_capacity_engine").unwrap();
+    let hydrogen_capacity_tank = builder.get_object("hydrogen_capacity_tank").unwrap();
+    let hydrogen_consumption_idle = builder.get_object("hydrogen_consumption_idle").unwrap();
+    let hydrogen_consumption_engine = builder.get_object("hydrogen_consumption_engine").unwrap();
+    let hydrogen_consumption_upto_up_down_thruster = builder.get_object("hydrogen_consumption_upto_up_down_thruster").unwrap();
+    let hydrogen_consumption_upto_front_back_thruster = builder.get_object("hydrogen_consumption_upto_front_back_thruster").unwrap();
+    let hydrogen_consumption_upto_left_right_thruster = builder.get_object("hydrogen_consumption_upto_left_right_thruster").unwrap();
     let hydrogen_balance_idle = builder.get_object("hydrogen_balance_idle").unwrap();
     let hydrogen_balance_engine = builder.get_object("hydrogen_balance_engine").unwrap();
     let hydrogen_balance_upto_up_down_thruster = builder.get_object("hydrogen_balance_upto_up_down_thruster").unwrap();
     let hydrogen_balance_upto_front_back_thruster = builder.get_object("hydrogen_balance_upto_front_back_thruster").unwrap();
     let hydrogen_balance_upto_left_right_thruster = builder.get_object("hydrogen_balance_upto_left_right_thruster").unwrap();
-    let hydrogen_capacity_tank = builder.get_object("hydrogen_capacity_tank").unwrap();
-    let hydrogen_capacity_engine = builder.get_object("hydrogen_capacity_engine").unwrap();
+    let hydrogen_duration_idle = builder.get_object("hydrogen_duration_idle").unwrap();
+    let hydrogen_duration_engine = builder.get_object("hydrogen_duration_engine").unwrap();
+    let hydrogen_duration_upto_up_down_thruster = builder.get_object("hydrogen_duration_upto_up_down_thruster").unwrap();
+    let hydrogen_duration_upto_front_back_thruster = builder.get_object("hydrogen_duration_upto_front_back_thruster").unwrap();
+    let hydrogen_duration_upto_left_right_thruster = builder.get_object("hydrogen_duration_upto_left_right_thruster").unwrap();
 
     let state = RefCell::new(State {
       current_dir_path: env::current_dir().ok(),
@@ -278,6 +328,15 @@ impl MainWindow {
       power_input_small,
       power_input_large,
       power_generation,
+      power_capacity_battery,
+      power_consumption_idle,
+      power_consumption_misc,
+      power_consumption_upto_jump_drive,
+      power_consumption_upto_generator,
+      power_consumption_upto_up_down_thruster,
+      power_consumption_upto_front_back_thruster,
+      power_consumption_upto_left_right_thruster,
+      power_consumption_upto_battery,
       power_balance_idle,
       power_balance_misc,
       power_balance_upto_jump_drive,
@@ -286,18 +345,35 @@ impl MainWindow {
       power_balance_upto_front_back_thruster,
       power_balance_upto_left_right_thruster,
       power_balance_upto_battery,
-      power_capacity_battery,
+      power_duration_idle,
+      power_duration_misc,
+      power_duration_upto_jump_drive,
+      power_duration_upto_generator,
+      power_duration_upto_up_down_thruster,
+      power_duration_upto_front_back_thruster,
+      power_duration_upto_left_right_thruster,
+      power_duration_upto_battery,
 
       hydrogen_input_small,
       hydrogen_input_large,
       hydrogen_generation,
+      hydrogen_capacity_engine,
+      hydrogen_capacity_tank,
+      hydrogen_consumption_idle,
+      hydrogen_consumption_engine,
+      hydrogen_consumption_upto_up_down_thruster,
+      hydrogen_consumption_upto_front_back_thruster,
+      hydrogen_consumption_upto_left_right_thruster,
       hydrogen_balance_idle,
       hydrogen_balance_engine,
       hydrogen_balance_upto_up_down_thruster,
       hydrogen_balance_upto_front_back_thruster,
       hydrogen_balance_upto_left_right_thruster,
-      hydrogen_capacity_tank,
-      hydrogen_capacity_engine,
+      hydrogen_duration_idle,
+      hydrogen_duration_engine,
+      hydrogen_duration_upto_up_down_thruster,
+      hydrogen_duration_upto_front_back_thruster,
+      hydrogen_duration_upto_left_right_thruster,
 
       data,
       state,
@@ -520,24 +596,50 @@ impl MainWindow {
     }
     // Power
     self.power_generation.set(calculated.power_generation);
-    self.power_balance_idle.set(calculated.power_balance_idle);
-    self.power_balance_misc.set(calculated.power_balance_misc);
-    self.power_balance_upto_jump_drive.set(calculated.power_balance_upto_jump_drive);
-    self.power_balance_upto_generator.set(calculated.power_balance_upto_generator);
-    self.power_balance_upto_up_down_thruster.set(calculated.power_balance_upto_up_down_thruster);
-    self.power_balance_upto_front_back_thruster.set(calculated.power_balance_upto_front_back_thruster);
-    self.power_balance_upto_left_right_thruster.set(calculated.power_balance_upto_left_right_thruster);
-    self.power_balance_upto_battery.set(calculated.power_balance_upto_battery);
     self.power_capacity_battery.set(calculated.power_capacity_battery);
+    self.power_consumption_idle.set(calculated.power_idle.consumption);
+    self.power_consumption_misc.set(calculated.power_misc.consumption);
+    self.power_consumption_upto_jump_drive.set(calculated.power_upto_jump_drive.consumption);
+    self.power_consumption_upto_generator.set(calculated.power_upto_generator.consumption);
+    self.power_consumption_upto_up_down_thruster.set(calculated.power_upto_up_down_thruster.consumption);
+    self.power_consumption_upto_front_back_thruster.set(calculated.power_upto_front_back_thruster.consumption);
+    self.power_consumption_upto_left_right_thruster.set(calculated.power_upto_left_right_thruster.consumption);
+    self.power_consumption_upto_battery.set(calculated.power_upto_battery.consumption);
+    self.power_balance_idle.set(calculated.power_idle.balance);
+    self.power_balance_misc.set(calculated.power_misc.balance);
+    self.power_balance_upto_jump_drive.set(calculated.power_upto_jump_drive.balance);
+    self.power_balance_upto_generator.set(calculated.power_upto_generator.balance);
+    self.power_balance_upto_up_down_thruster.set(calculated.power_upto_up_down_thruster.balance);
+    self.power_balance_upto_front_back_thruster.set(calculated.power_upto_front_back_thruster.balance);
+    self.power_balance_upto_left_right_thruster.set(calculated.power_upto_left_right_thruster.balance);
+    self.power_balance_upto_battery.set(calculated.power_upto_battery.balance);
+    self.power_duration_idle.set(calculated.power_idle.duration);
+    self.power_duration_misc.set(calculated.power_misc.duration);
+    self.power_duration_upto_jump_drive.set(calculated.power_upto_jump_drive.duration);
+    self.power_duration_upto_generator.set(calculated.power_upto_generator.duration);
+    self.power_duration_upto_up_down_thruster.set(calculated.power_upto_up_down_thruster.duration);
+    self.power_duration_upto_front_back_thruster.set(calculated.power_upto_front_back_thruster.duration);
+    self.power_duration_upto_left_right_thruster.set(calculated.power_upto_left_right_thruster.duration);
+    self.power_duration_upto_battery.set(calculated.power_upto_battery.duration);
     // Hydrogen
     self.hydrogen_generation.set(calculated.hydrogen_generation);
-    self.hydrogen_balance_idle.set(calculated.hydrogen_balance_idle);
-    self.hydrogen_balance_engine.set(calculated.hydrogen_balance_engine);
-    self.hydrogen_balance_upto_up_down_thruster.set(calculated.hydrogen_balance_upto_up_down_thruster);
-    self.hydrogen_balance_upto_front_back_thruster.set(calculated.hydrogen_balance_upto_front_back_thruster);
-    self.hydrogen_balance_upto_left_right_thruster.set(calculated.hydrogen_balance_upto_left_right_thruster);
-    self.hydrogen_capacity_tank.set(calculated.hydrogen_capacity_tank);
     self.hydrogen_capacity_engine.set(calculated.hydrogen_capacity_engine);
+    self.hydrogen_capacity_tank.set(calculated.hydrogen_capacity_tank);
+    self.hydrogen_consumption_idle.set(calculated.hydrogen_idle.consumption);
+    self.hydrogen_consumption_engine.set(calculated.hydrogen_engine.consumption);
+    self.hydrogen_consumption_upto_up_down_thruster.set(calculated.hydrogen_upto_up_down_thruster.consumption);
+    self.hydrogen_consumption_upto_front_back_thruster.set(calculated.hydrogen_upto_front_back_thruster.consumption);
+    self.hydrogen_consumption_upto_left_right_thruster.set(calculated.hydrogen_upto_left_right_thruster.consumption);
+    self.hydrogen_balance_idle.set(calculated.hydrogen_idle.balance);
+    self.hydrogen_balance_engine.set(calculated.hydrogen_engine.balance);
+    self.hydrogen_balance_upto_up_down_thruster.set(calculated.hydrogen_upto_up_down_thruster.balance);
+    self.hydrogen_balance_upto_front_back_thruster.set(calculated.hydrogen_upto_front_back_thruster.balance);
+    self.hydrogen_balance_upto_left_right_thruster.set(calculated.hydrogen_upto_left_right_thruster.balance);
+    self.hydrogen_duration_idle.set(calculated.hydrogen_idle.duration);
+    self.hydrogen_duration_engine.set(calculated.hydrogen_engine.duration);
+    self.hydrogen_duration_upto_up_down_thruster.set(calculated.hydrogen_upto_up_down_thruster.duration);
+    self.hydrogen_duration_upto_front_back_thruster.set(calculated.hydrogen_upto_front_back_thruster.duration);
+    self.hydrogen_duration_upto_left_right_thruster.set(calculated.hydrogen_upto_left_right_thruster.duration);
   }
 
 
