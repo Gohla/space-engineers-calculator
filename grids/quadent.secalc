@@ -1,0 +1,47 @@
+{
+  "gravity_multiplier": 1.1,
+  "container_multiplier": 1.0,
+  "planetary_influence": 1.0,
+  "additional_mass": 46000.0,
+  "ice_only_fill": 100.0,
+  "ore_only_fill": 100.0,
+  "any_fill_with_ice": 0.0,
+  "any_fill_with_ore": 0.0,
+  "any_fill_with_steel_plates": 75.0,
+  "containers": {
+    "CargoContainer.SmallBlockLargeContainer": 2
+  },
+  "cockpits": {},
+  "thrusters": {
+    "Up": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 2,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 6
+    },
+    "Right": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 6,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 2
+    },
+    "Down": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 8
+    },
+    "Front": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 12,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 5
+    },
+    "Left": {
+      "Thrust.SmallBlockSmallAtmosphericThrust": 6,
+      "Thrust.SmallBlockLargeAtmosphericThrust": 2
+    },
+    "Back": {
+      "Thrust.SmallBlockLargeAtmosphericThrust": 4,
+      "Thrust.SmallBlockSmallAtmosphericThrust": 14
+    }
+  },
+  "hydrogen_engines": {},
+  "reactors": {},
+  "batteries": {
+    "BatteryBlock.SmallBlockBatteryBlock": 11
+  },
+  "generators": {},
+  "hydrogen_tanks": {}
+}

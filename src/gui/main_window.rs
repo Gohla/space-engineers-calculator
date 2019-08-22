@@ -154,7 +154,9 @@ impl MainWindow {
     let any_fill_with_steel_plates = builder.get_object("any_fill_with_steel_plates").unwrap();
 
     let volume_mass_input_small = builder.get_object("volume_mass_input_small").unwrap();
+    Self::cleanup_glade_grid(&volume_mass_input_small);
     let volume_mass_input_large = builder.get_object("volume_mass_input_large").unwrap();
+    Self::cleanup_glade_grid(&volume_mass_input_large);
     let total_volume_any = builder.get_object("total_volume_any").unwrap();
     let total_volume_ore = builder.get_object("total_volume_ore").unwrap();
     let total_volume_ice = builder.get_object("total_volume_ice").unwrap();
@@ -167,7 +169,9 @@ impl MainWindow {
     let total_items_steel_plates = builder.get_object("total_items_steel_plates").unwrap();
 
     let acceleration_input_small = builder.get_object("acceleration_input_small").unwrap();
+    Self::cleanup_glade_grid(&acceleration_input_small);
     let acceleration_input_large = builder.get_object("acceleration_input_large").unwrap();
+    Self::cleanup_glade_grid(&acceleration_input_large);
     let mut thrusters = HashMap::default();
     for side in ThrusterSide::iter() {
       let side = *side;
@@ -195,7 +199,9 @@ impl MainWindow {
     }
 
     let power_input_small = builder.get_object("power_input_small").unwrap();
+    Self::cleanup_glade_grid(&power_input_small);
     let power_input_large = builder.get_object("power_input_large").unwrap();
+    Self::cleanup_glade_grid(&power_input_large);
     let power_generation = builder.get_object("power_generation").unwrap();
     let power_balance_idle = builder.get_object("power_balance_idle").unwrap();
     let power_balance_misc = builder.get_object("power_balance_misc").unwrap();
@@ -208,7 +214,9 @@ impl MainWindow {
     let power_capacity_battery = builder.get_object("power_capacity_battery").unwrap();
 
     let hydrogen_input_small = builder.get_object("hydrogen_input_small").unwrap();
+    Self::cleanup_glade_grid(&hydrogen_input_small);
     let hydrogen_input_large = builder.get_object("hydrogen_input_large").unwrap();
+    Self::cleanup_glade_grid(&hydrogen_input_large);
     let hydrogen_generation = builder.get_object("hydrogen_generation").unwrap();
     let hydrogen_balance_idle = builder.get_object("hydrogen_balance_idle").unwrap();
     let hydrogen_balance_engine = builder.get_object("hydrogen_balance_engine").unwrap();
@@ -368,6 +376,14 @@ impl MainWindow {
     self.clone().create_block_inputs(self.data.blocks.hydrogen_tanks.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.hydrogen_tanks);
   }
 
+
+  fn cleanup_glade_grid(grid: &Grid) {
+    // Remove a column and 3 rows, because Glade always creates 3x3 grids.
+    grid.remove_column(2);
+    grid.remove_row(2);
+    grid.remove_row(1);
+    grid.remove_row(0);
+  }
 
   fn create_block_inputs<'a, T: 'a, I, F>(
     self: Rc<Self>,

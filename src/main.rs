@@ -1,6 +1,8 @@
 #![feature(try_trait)]
 #![feature(clamp)]
 
+#![windows_subsystem = "windows"] // Removes console window on windows.
+
 use std::path::Path;
 
 use crate::data::Data;
