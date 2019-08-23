@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 
 use roxmltree::{Document, Node};
 use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
+use walkdir::WalkDir;
 
 use super::components::Components;
 use super::gas_properties::GasProperties;
@@ -408,7 +409,7 @@ impl FromDef for Cockpit {
 }
 
 
-#[derive(Clone, Debug)]
+#[derive(Default, Clone, Debug)]
 pub struct Blocks {
   pub batteries: HashMap<BlockId, Block<Battery>>,
   pub thrusters: HashMap<BlockId, Block<Thruster>>,
@@ -422,76 +423,81 @@ pub struct Blocks {
 
 impl Blocks {
   pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self> {
-    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/CubeBlocks.sbc"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"))
+    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"))
   }
 
-  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_file_path: P, entity_components_file_path: P) -> Result<Self> {
-    let cube_blocks_file_path = cube_blocks_file_path.as_ref();
-    let cube_blocks_string = read_string_from_file(cube_blocks_file_path).context(self::ReadCubeBlocksFile { cube_blocks_file_path })?;
-    let cube_blocks_doc = Document::parse(&cube_blocks_string).context(self::ParseCubeBlocksFile { cube_blocks_file_path })?;
-
+  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P) -> Result<Self> {
     let entity_components_file_path = entity_components_file_path.as_ref();
     let entity_components_string = read_string_from_file(entity_components_file_path).context(self::ReadEntityComponentsFile { entity_components_file_path })?;
     let entity_components_doc = Document::parse(&entity_components_string).context(self::ParseEntityComponentsFile { entity_components_file_path })?;
     let entity_components_root_node = entity_components_doc.root().first_element_child().context(self::XmlStructure)?;
     let entity_components_node = entity_components_root_node.child_elem("EntityComponents").context(self::XmlStructure)?;
 
-    let mut batteries = HashMap::new();
-    let mut thrusters = HashMap::new();
-    let mut hydrogen_engines = HashMap::new();
-    let mut reactors = HashMap::new();
-    let mut generators = HashMap::new();
-    let mut hydrogen_tanks = HashMap::new();
-    let mut containers = HashMap::new();
-    let mut cockpits = HashMap::new();
-
+    let mut blocks = Blocks::default();
     let mut id = 0;
-    let definitions_node = cube_blocks_doc.root()
-      .first_element_child().context(self::XmlStructure)?
-      .first_element_child().context(self::XmlStructure)?;
-    for def in definitions_node.children_elems("Definition") {
-      if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
-        match ty {
-          "MyObjectBuilder_BatteryBlockDefinition" => {
-            let block = Block::<Battery>::from_def(&def, &entity_components_node, id);
-            batteries.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_ThrustDefinition" => {
-            let block = Block::<Thruster>::from_def(&def, &entity_components_node, id);
-            thrusters.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_HydrogenEngineDefinition" => {
-            let block = Block::<HydrogenEngine>::from_def(&def, &entity_components_node, id);
-            hydrogen_engines.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_ReactorDefinition" => {
-            let block = Block::<Reactor>::from_def(&def, &entity_components_node, id);
-            reactors.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_OxygenGeneratorDefinition" => {
-            let block = Block::<Generator>::from_def(&def, &entity_components_node, id);
-            generators.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_GasTankDefinition" => {
-            if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
-            let block = Block::<HydrogenTank>::from_def(&def, &entity_components_node, id);
-            hydrogen_tanks.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_CargoContainerDefinition" => {
-            let block = Block::<Container>::from_def(&def, &entity_components_node, id);
-            containers.insert(block.id.clone(), block);
-          }
-          "MyObjectBuilder_CockpitDefinition" => {
-            let block = Block::<Cockpit>::from_def(&def, &entity_components_node, id);
-            cockpits.insert(block.id.clone(), block);
-          }
-          _ => {}
+    let cube_blocks_file_paths = WalkDir::new(cube_blocks_search_dir)
+      .into_iter()
+      .filter_map(|de| {
+        if let Ok(de) = de {
+          let path = de.into_path();
+          if !path.extension().map_or(false, |e| e == "sbc") { return None; }
+          if !path.file_name().map_or(false, |n| n.to_string_lossy().contains("CubeBlocks")) { return None; }
+          Some(path)
+        } else {
+          None
         }
+      });
+    for cube_blocks_file_path in cube_blocks_file_paths {
+      let cube_blocks_file_path = &cube_blocks_file_path;
+      let cube_blocks_string = read_string_from_file(cube_blocks_file_path).context(self::ReadCubeBlocksFile { cube_blocks_file_path })?;
+      let cube_blocks_doc = Document::parse(&cube_blocks_string).context(self::ParseCubeBlocksFile { cube_blocks_file_path })?;
+      let definitions_node = cube_blocks_doc.root()
+        .first_element_child().context(self::XmlStructure)?
+        .first_element_child().context(self::XmlStructure)?;
+      for def in definitions_node.children_elems("Definition") {
+        if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
+          match ty {
+            "MyObjectBuilder_BatteryBlockDefinition" => {
+              let block = Block::<Battery>::from_def(&def, &entity_components_node, id);
+              blocks.batteries.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_ThrustDefinition" => {
+              let block = Block::<Thruster>::from_def(&def, &entity_components_node, id);
+              blocks.thrusters.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_HydrogenEngineDefinition" => {
+              let block = Block::<HydrogenEngine>::from_def(&def, &entity_components_node, id);
+              blocks.hydrogen_engines.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_ReactorDefinition" => {
+              let block = Block::<Reactor>::from_def(&def, &entity_components_node, id);
+              blocks.reactors.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_OxygenGeneratorDefinition" => {
+              let block = Block::<Generator>::from_def(&def, &entity_components_node, id);
+              blocks.generators.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_GasTankDefinition" => {
+              if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
+              let block = Block::<HydrogenTank>::from_def(&def, &entity_components_node, id);
+              blocks.hydrogen_tanks.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_CargoContainerDefinition" => {
+              let block = Block::<Container>::from_def(&def, &entity_components_node, id);
+              blocks.containers.insert(block.id.clone(), block);
+            }
+            "MyObjectBuilder_CockpitDefinition" => {
+              let block = Block::<Cockpit>::from_def(&def, &entity_components_node, id);
+              blocks.cockpits.insert(block.id.clone(), block);
+            }
+            _ => {}
+          }
+        }
+        id += 1;
       }
-      id += 1;
     }
 
-    Ok(Self { batteries, thrusters, hydrogen_engines, reactors, generators, hydrogen_tanks, containers, cockpits })
+    Ok(blocks)
   }
 
   pub fn small_and_large_sorted<'a, T, I: Iterator<Item=&'a Block<T>>>(iter: I) -> (Vec<&'a Block<T>>, Vec<&'a Block<T>>) {
