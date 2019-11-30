@@ -1,5 +1,7 @@
+use std::io;
 use std::path::Path;
 
+use serde::{Deserialize, Serialize};
 use snafu::{ResultExt, Snafu};
 
 use blocks::Blocks;
@@ -14,7 +16,7 @@ pub mod localization;
 pub mod xml;
 
 #[derive(Debug, Snafu)]
-pub enum Error {
+pub enum ExtractError {
   #[snafu(display("Could not read blocks: {}", source))]
   ReadBlocks { source: blocks::Error, },
   #[snafu(display("Could not read components: {}", source))]
@@ -25,9 +27,19 @@ pub enum Error {
   ReadLocalization { source: localization::Error, },
 }
 
-pub type Result<T, E = Error> = std::result::Result<T, E>;
+#[derive(Debug, Snafu)]
+pub enum ReadError {
+  #[snafu(display("Could not read data from JSON: {}", source))]
+  FromJSON { source: serde_json::Error, },
+}
 
+#[derive(Debug, Snafu)]
+pub enum WriteError {
+  #[snafu(display("Could not write data to JSON: {}", source))]
+  ToJSON { source: serde_json::Error, },
+}
 
+#[derive(Serialize, Deserialize)]
 pub struct Data {
   pub blocks: Blocks,
   pub components: Components,
@@ -36,13 +48,22 @@ pub struct Data {
 }
 
 impl Data {
-  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self> {
+  pub fn extract_from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self, ExtractError> {
     let se_dir_path = se_dir_path.as_ref();
     let blocks = Blocks::from_se_dir(se_dir_path).context(self::ReadBlocks)?;
     let components = Components::from_se_dir(se_dir_path).context(self::ReadComponents)?;
     let gas_properties = GasProperties::from_se_dir(se_dir_path).context(self::ReadGasProperties)?;
     let localization = Localization::from_se_dir(se_dir_path).context(self::ReadLocalization)?;
     Ok(Self { blocks, components, gas_properties, localization })
+  }
+
+  pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
+    serde_json::from_reader(reader).context(self::FromJSON)
+  }
+
+  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
+    serde_json::to_writer_pretty(writer, self).context(self::ToJSON)?;
+    Ok(())
   }
 
   pub fn debug_print(&self) {

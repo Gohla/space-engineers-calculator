@@ -12,25 +12,27 @@ use gtk::{Align, Application, ApplicationWindow, Button, Entry, Grid, InputPurpo
 use gtk::prelude::*;
 use snafu::{ResultExt, Snafu};
 
-use crate::calc::{Calculator, ThrusterSide};
-use crate::data::blocks::{Block, BlockId, Blocks};
-use crate::data::Data;
+use secalc_core::calc::{Calculator, ThrusterSide};
+use secalc_core::data::blocks::{Block, BlockId, Blocks};
+use secalc_core::data::Data;
+
 use crate::gui::dialog::{ErrorDialogResultExt, FileDialog};
 
 #[derive(Debug, Snafu)]
-pub enum Error {
+pub enum OpenError {
   #[snafu(display("Could not open file '{}' for reading: {}", file_path.display(), source))]
   OpenFile { file_path: PathBuf, source: std::io::Error, },
   #[snafu(display("Could not deserialize data from file '{}': {}", file_path.display(), source))]
-  OpenDeserialize { file_path: PathBuf, source: crate::calc::Error, },
+  OpenDeserialize { file_path: PathBuf, source: secalc_core::calc::ReadError, },
+}
+
+#[derive(Debug, Snafu)]
+pub enum SaveError {
   #[snafu(display("Could not open file '{}' for writing: {}", file_path.display(), source))]
   SaveFile { file_path: PathBuf, source: std::io::Error, },
   #[snafu(display("Could not serialize data to file '{}': {}", file_path.display(), source))]
-  SaveSerialize { file_path: PathBuf, source: crate::calc::Error, },
+  SaveSerialize { file_path: PathBuf, source: secalc_core::calc::WriteError, },
 }
-
-pub type Result<T, E = Error> = std::result::Result<T, E>;
-
 
 pub struct MainWindow {
   window: ApplicationWindow,
@@ -638,7 +640,7 @@ impl MainWindow {
     }
   }
 
-  fn process_open<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+  fn process_open<P: AsRef<Path>>(&self, file_path: P) -> Result<(), OpenError> {
     let file_path = file_path.as_ref();
     let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
     let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
@@ -708,7 +710,7 @@ impl MainWindow {
     }
   }
 
-  fn process_save<P: AsRef<Path>>(&self, file_path: P) -> Result<()> {
+  fn process_save<P: AsRef<Path>>(&self, file_path: P) -> Result<(), SaveError> {
     let file_path = file_path.as_ref();
     let writer = OpenOptions::new().write(true).create(true).open(file_path).context(self::SaveFile { file_path })?;
 

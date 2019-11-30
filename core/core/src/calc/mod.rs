@@ -8,15 +8,16 @@ use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
 
 #[derive(Debug, Snafu)]
-pub enum Error {
+pub enum ReadError {
   #[snafu(display("Could not read calculator from JSON: {}", source))]
   FromJSON { source: serde_json::Error, },
+}
+
+#[derive(Debug, Snafu)]
+pub enum WriteError {
   #[snafu(display("Could not write calculator to JSON: {}", source))]
   ToJSON { source: serde_json::Error, },
 }
-
-pub type Result<T, E = Error> = std::result::Result<T, E>;
-
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
 pub enum ThrusterSide {
@@ -98,11 +99,11 @@ impl Calculator {
     }
   }
 
-  pub fn from_json<R: io::Read>(reader: R) -> Result<Self> {
+  pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
     serde_json::from_reader(reader).context(self::FromJSON)
   }
 
-  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<()> {
+  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
     serde_json::to_writer_pretty(writer, self).context(self::ToJSON)?;
     Ok(())
   }

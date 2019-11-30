@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use roxmltree::Document;
+use serde::{Deserialize, Serialize};
 use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
 
 use super::xml::{NodeExt, read_string_from_file};
@@ -19,7 +20,7 @@ pub enum Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Localization {
   pub localization: HashMap<String, String>,
 }

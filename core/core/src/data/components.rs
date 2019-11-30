@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use roxmltree::Document;
+use serde::{Deserialize, Serialize};
 use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
 
 use crate::error::ErrorExt;
@@ -24,7 +25,7 @@ pub enum Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Component {
   pub name: String,
   pub mass: f64,
@@ -38,7 +39,7 @@ impl Component {
 }
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Components {
   pub components: HashMap<String, Component>,
 }

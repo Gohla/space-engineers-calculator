@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use roxmltree::Document;
+use serde::{Deserialize, Serialize};
 use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
 
 use crate::error::ErrorExt;
@@ -24,7 +25,7 @@ pub enum Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GasProperty {
   pub name: String,
   pub energy_density: f64,
@@ -37,7 +38,7 @@ impl GasProperty {
 }
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GasProperties {
   pub gas_properties: HashMap<String, GasProperty>,
 }

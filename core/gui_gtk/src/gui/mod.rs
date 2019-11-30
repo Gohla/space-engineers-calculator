@@ -1,7 +1,7 @@
 use gio::prelude::*;
 use gtk::Application;
 
-use crate::data::Data;
+use secalc_core::data::Data;
 
 use self::main_window::MainWindow;
 

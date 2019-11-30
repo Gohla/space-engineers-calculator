@@ -5,6 +5,7 @@ use std::ops::Deref;
 use std::path::{Path, PathBuf};
 
 use roxmltree::{Document, Node};
+use serde::{Deserialize, Serialize};
 use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
 use walkdir::WalkDir;
 
@@ -31,7 +32,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
 /// Grid type.
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug, Serialize, Deserialize)]
 pub enum GridType {
   Small,
   Large
@@ -58,7 +59,7 @@ pub trait FromDef: Clone + Debug {
 pub type BlockId = String;
 
 /// Common block data which can be created from a definition in a SBC XML file.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Block<T> {
   pub id: BlockId,
   pub index: u64,
@@ -136,7 +137,7 @@ impl<T: FromDef> Deref for Block<T> {
 
 
 /// Battery.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct Battery {
   /// Power capacity (MWh)
   pub capacity: f64,
@@ -157,7 +158,7 @@ impl FromDef for Battery {
 
 
 /// Type of thruster
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug, Serialize, Deserialize)]
 pub enum ThrusterType {
   Ion,
   Atmospheric,
@@ -176,7 +177,7 @@ impl ThrusterType {
 }
 
 /// Thruster.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Thruster {
   /// Thruster type
   pub ty: ThrusterType,
@@ -239,7 +240,7 @@ impl FromDef for Thruster {
 
 
 /// Hydrogen engine.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct HydrogenEngine {
   /// Fuel capacity (L)
   pub fuel_capacity: f64,
@@ -265,7 +266,7 @@ impl FromDef for HydrogenEngine {
 
 
 /// Reactor
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Reactor {
   /// Maximum power generation (MW)
   pub max_power_generation: f64,
@@ -290,7 +291,7 @@ impl FromDef for Reactor {
 
 
 /// Generator (O2/H2)
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Generator {
   /// Ice consumption (#/s)
   pub ice_consumption: f64,
@@ -336,7 +337,7 @@ impl FromDef for Generator {
 }
 
 /// Hydrogen tank
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct HydrogenTank {
   /// Hydrogen capacity (L)
   pub capacity: f64,
@@ -357,7 +358,7 @@ impl FromDef for HydrogenTank {
 
 
 /// Container
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Container {
   /// Inventory capacity (L)
   pub capacity: f64,
@@ -391,7 +392,7 @@ impl FromDef for Container {
 }
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Cockpit {
   /// Whether 'cockpit' has an inventory.
   pub has_inventory: bool,
@@ -408,8 +409,7 @@ impl FromDef for Cockpit {
   }
 }
 
-
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub struct Blocks {
   pub batteries: HashMap<BlockId, Block<Battery>>,
   pub thrusters: HashMap<BlockId, Block<Thruster>>,
