@@ -1,7 +1,8 @@
 [workspace]
 
 members = [
-    "core/core",
-    "core/gui_gtk",
-    "core/cli"
+  "code/core",
+  "code/cli",
+  "code/gui_gtk",
+  "code/gui_iced",
 ]
