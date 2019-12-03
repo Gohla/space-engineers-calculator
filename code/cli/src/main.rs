@@ -52,4 +52,4 @@ fn get_se_path() -> Option<PathBuf> {
 }
 
 #[cfg(not(windows))]
-fn get_se_path() -> Option<Path> { None }
+fn get_se_path() -> Option<PathBuf> { None }
