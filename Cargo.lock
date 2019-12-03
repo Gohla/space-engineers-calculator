@@ -1133,8 +1133,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.1.0-beta"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fad2a75ba15d91ffcb05952fdf0b9be81a26b4c079e0865837832e0d10418f8"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "iced_web",
  "iced_wgpu",
@@ -1144,8 +1143,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecc3eb57bedfe888d13f35f7778f21b8a601f42c4a2caeff2edf6779bdde47fd"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "futures 0.3.1",
 ]
@@ -1153,8 +1151,7 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97fa19270da5751d1baf8cee64579a78b4d15957d5276188a378b52007e0b37c"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "iced_core",
  "raw-window-handle",
@@ -1164,8 +1161,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7161af9226b8108874ed11dfa71be0c9785bb495b9255023c3c3e342c45caf42"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "dodrio",
  "futures 0.3.1",
@@ -1178,8 +1174,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6aeb6227ed0553c679916e2a87a0228c7357aea0c7144b6b6208ef330f99d68f"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "font-kit",
  "glam",
@@ -1195,12 +1190,12 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.1.0-alpha"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e6e7f80c37537d5f1e6a11d7be442ef84fce9277099eb1f672029d64a1cd81b"
+source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
 dependencies = [
  "futures 0.3.1",
  "iced_native",
  "log",
+ "winapi 0.3.8",
  "winit",
 ]
 
@@ -2621,9 +2616,8 @@ dependencies = [
 
 [[package]]
 name = "wgpu_glyph"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f58b24b8d1f51ce0e7e0e2e45ebb72e4ba2db1926e51d47e287c78861298acd9"
+version = "0.7.0"
+source = "git+https://github.com/hecrj/wgpu_glyph?branch=fix/font-load-panic#fdd8c3647dcab1c1aa05cb47faca561f0f8b45cc"
 dependencies = [
  "glyph_brush",
  "log",
@@ -2676,8 +2670,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 [[package]]
 name = "winit"
 version = "0.20.0-alpha4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56c565622ccb05351d92445415952ca09dade6a53e75dd9e75d9bd35d4e99333"
+source = "git+https://github.com/rust-windowing/winit?rev=709808eb4e69044705fcb214bcc30556db761405#709808eb4e69044705fcb214bcc30556db761405"
 dependencies = [
  "android_glue",
  "bitflags",
