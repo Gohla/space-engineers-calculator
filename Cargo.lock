@@ -1133,7 +1133,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.1.0-beta"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "iced_web",
  "iced_wgpu",
@@ -1143,7 +1143,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.1.0"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "futures 0.3.1",
 ]
@@ -1151,7 +1151,7 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.1.0"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "iced_core",
  "raw-window-handle",
@@ -1161,7 +1161,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.1.0"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "dodrio",
  "futures 0.3.1",
@@ -1174,7 +1174,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.1.0"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "font-kit",
  "glam",
@@ -1190,7 +1190,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.1.0-alpha"
-source = "git+https://github.com/Gohla/iced.git?branch=no_cfg_attr#12a79ea740fb1798d90c01a6f2ea07b06e697fd0"
+source = "git+https://github.com/hecrj/iced.git#e92ea48e8814b42fc566017db085ca9bdaf3c272"
 dependencies = [
  "futures 0.3.1",
  "iced_native",

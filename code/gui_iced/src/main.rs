@@ -1,16 +1,18 @@
-use iced::{Column, Element, Sandbox, Settings};
+#![allow(dead_code, unused_imports, unused_variables)]
+
+use iced::{Column, Element, Row, Sandbox, Settings, Text, text_input, TextInput};
 
 pub fn main() {
-  Application::run(Settings::default())
+  State::run(Settings::default())
 }
 
 #[derive(Default)]
-struct Application {}
+struct State {}
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 enum Message {}
 
-impl Sandbox for Application {
+impl Sandbox for State {
   type Message = Message;
 
   fn new() -> Self {
@@ -21,7 +23,7 @@ impl Sandbox for Application {
     String::from("Space Engineers Calculator")
   }
 
-  fn update(&mut self, _message: Message) {}
+  fn update(&mut self, message: Message) {}
 
   fn view(&mut self) -> Element<Message> {
     Column::new().into()
