@@ -2,21 +2,21 @@ use std::collections::HashMap;
 use std::io;
 
 use serde::{Deserialize, Serialize};
-use snafu::{ResultExt, Snafu};
+use thiserror::Error;
 
 use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum ReadError {
-  #[snafu(display("Could not read calculator from JSON: {}", source))]
-  FromJSON { source: serde_json::Error, },
+  #[error("Could not read grid from JSON")]
+  FromJSON(#[from] serde_json::Error),
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum WriteError {
-  #[snafu(display("Could not write calculator to JSON: {}", source))]
-  ToJSON { source: serde_json::Error, },
+  #[error("Could not write grid to JSON")]
+  ToJSON(#[from] serde_json::Error),
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
@@ -37,8 +37,8 @@ impl ThrusterSide {
   }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct Calculator {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct GridCalculator {
   pub gravity_multiplier: f64,
   pub container_multiplier: f64,
   pub planetary_influence: f64,
@@ -63,8 +63,8 @@ pub struct Calculator {
   pub hydrogen_tanks: HashMap<BlockId, u64>,
 }
 
-impl Calculator {
-  pub fn new() -> Self {
+impl Default for GridCalculator {
+  fn default() -> Self {
     Self {
       gravity_multiplier: 1.0,
       container_multiplier: 1.0,
@@ -98,13 +98,20 @@ impl Calculator {
       hydrogen_tanks: Default::default(),
     }
   }
+}
+
+impl GridCalculator {
+  pub fn new() -> Self {
+    Self::default()
+  }
 
   pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
-    serde_json::from_reader(reader).context(self::FromJSON)
+    let grid = serde_json::from_reader::<_, Self>(reader)?;
+    Ok(grid)
   }
 
   pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
-    serde_json::to_writer_pretty(writer, self).context(self::ToJSON)?;
+    serde_json::to_writer_pretty(writer, self)?;
     Ok(())
   }
 
@@ -120,7 +127,7 @@ impl Calculator {
     ].into_iter().flat_map(|it| it)
   }
 
-  pub fn calculate(&self, data: &Data) -> Calculated {
+  pub fn calculate(&self, data: &Data) -> GridCalculated {
     let ice_weight_per_volume = 1.0 / 0.37; // TODO: derive from data
     let ice_items_per_volume = 1.0 / 0.37; // TODO: derive from data
     let ore_weight_per_volume = 1.0 / 0.37; // TODO: derive from data
@@ -128,7 +135,7 @@ impl Calculator {
     let steel_plate_weight_per_volume = 20.0 / 3.0; // TODO: derive from data
     let steel_plate_items_per_volume = 1.0 / 3.0; // TODO: derive from data
 
-    let mut c = Calculated::default();
+    let mut c = GridCalculated::default();
 
     let mut power_consumption_idle = 0.0;
     let mut power_consumption_misc = 0.0;
@@ -329,7 +336,7 @@ impl Calculator {
 
 
 #[derive(Default)]
-pub struct Calculated {
+pub struct GridCalculated {
   pub total_volume_any: f64,
   pub total_volume_ore: f64,
   pub total_volume_ice: f64,
@@ -388,7 +395,7 @@ impl ResourceCalculated {
   }
 }
 
-impl Calculated {
+impl GridCalculated {
   fn power_resource(&self, consumption: f64) -> ResourceCalculated {
     ResourceCalculated::new(consumption, self.power_generation, self.power_capacity_battery, 60.0 /* MWh to mins */)
   }

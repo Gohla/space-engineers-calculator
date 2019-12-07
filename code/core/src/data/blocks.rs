@@ -1,3 +1,4 @@
+use std::backtrace::Backtrace;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Debug;
@@ -6,7 +7,7 @@ use std::path::{Path, PathBuf};
 
 use roxmltree::{Document, Node};
 use serde::{Deserialize, Serialize};
-use snafu::{Backtrace, OptionExt, ResultExt, Snafu};
+use thiserror::Error;
 use walkdir::WalkDir;
 
 use super::components::Components;
@@ -14,18 +15,18 @@ use super::gas_properties::GasProperties;
 use super::localization::Localization;
 use super::xml::{NodeExt, read_string_from_file};
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum Error {
-  #[snafu(display("Could not read CubeBlocks file '{}': {}", cube_blocks_file_path.display(), source))]
-  ReadCubeBlocksFile { cube_blocks_file_path: PathBuf, source: std::io::Error, },
-  #[snafu(display("Could not XML parse CubeBlocks file '{}': {}", cube_blocks_file_path.display(), source))]
-  ParseCubeBlocksFile { cube_blocks_file_path: PathBuf, source: roxmltree::Error, },
-  #[snafu(display("Could not read EntityComponents file '{}': {}", entity_components_file_path.display(), source))]
-  ReadEntityComponentsFile { entity_components_file_path: PathBuf, source: std::io::Error, },
-  #[snafu(display("Could not XML parse EntityComponents file '{}': {}", entity_components_file_path.display(), source))]
-  ParseEntityComponentsFile { entity_components_file_path: PathBuf, source: roxmltree::Error, },
-  #[snafu(display("Unexpected XML structure"))]
-  XmlStructure { backtrace: Backtrace },
+  #[error("Could not read CubeBlocks file '{file}'")]
+  ReadCubeBlocksFile { file: PathBuf, source: std::io::Error },
+  #[error("Could not XML parse CubeBlocks file '{file}'")]
+  ParseCubeBlocksFile { file: PathBuf, source: roxmltree::Error },
+  #[error("Could not read EntityComponents file '{file}'")]
+  ReadEntityComponentsFile { file: PathBuf, source: std::io::Error },
+  #[error("Could not XML parse EntityComponents file '{file}'")]
+  ParseEntityComponentsFile { file: PathBuf, source: roxmltree::Error },
+  #[error("Unexpected XML structure")]
+  XmlStructure(Backtrace),
 }
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
@@ -428,10 +429,14 @@ impl Blocks {
 
   pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P) -> Result<Self> {
     let entity_components_file_path = entity_components_file_path.as_ref();
-    let entity_components_string = read_string_from_file(entity_components_file_path).context(self::ReadEntityComponentsFile { entity_components_file_path })?;
-    let entity_components_doc = Document::parse(&entity_components_string).context(self::ParseEntityComponentsFile { entity_components_file_path })?;
-    let entity_components_root_node = entity_components_doc.root().first_element_child().context(self::XmlStructure)?;
-    let entity_components_node = entity_components_root_node.child_elem("EntityComponents").context(self::XmlStructure)?;
+    let entity_components_string = read_string_from_file(entity_components_file_path)
+      .map_err(|source| Error::ReadEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
+    let entity_components_doc = Document::parse(&entity_components_string)
+      .map_err(|source| Error::ParseEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
+    let entity_components_root_node = entity_components_doc.root().first_element_child()
+      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
+    let entity_components_node = entity_components_root_node.child_elem("EntityComponents")
+      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
 
     let mut blocks = Blocks::default();
     let mut id = 0;
@@ -449,11 +454,13 @@ impl Blocks {
       });
     for cube_blocks_file_path in cube_blocks_file_paths {
       let cube_blocks_file_path = &cube_blocks_file_path;
-      let cube_blocks_string = read_string_from_file(cube_blocks_file_path).context(self::ReadCubeBlocksFile { cube_blocks_file_path })?;
-      let cube_blocks_doc = Document::parse(&cube_blocks_string).context(self::ParseCubeBlocksFile { cube_blocks_file_path })?;
+      let cube_blocks_string = read_string_from_file(cube_blocks_file_path)
+        .map_err(|source| Error::ReadCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
+      let cube_blocks_doc = Document::parse(&cube_blocks_string)
+        .map_err(|source| Error::ParseCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
       let definitions_node = cube_blocks_doc.root()
-        .first_element_child().context(self::XmlStructure)?
-        .first_element_child().context(self::XmlStructure)?;
+        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?
+        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?;
       for def in definitions_node.children_elems("Definition") {
         if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
           match ty {

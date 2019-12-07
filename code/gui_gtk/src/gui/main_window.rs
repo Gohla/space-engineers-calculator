@@ -12,7 +12,7 @@ use gtk::{Align, Application, ApplicationWindow, Button, Entry, Grid, InputPurpo
 use gtk::prelude::*;
 use snafu::{ResultExt, Snafu};
 
-use secalc_core::calc::{Calculator, ThrusterSide};
+use secalc_core::grid::{GridCalculator, ThrusterSide};
 use secalc_core::data::blocks::{Block, BlockId, Blocks};
 use secalc_core::data::Data;
 
@@ -23,7 +23,7 @@ pub enum OpenError {
   #[snafu(display("Could not open file '{}' for reading: {}", file_path.display(), source))]
   OpenFile { file_path: PathBuf, source: std::io::Error, },
   #[snafu(display("Could not deserialize data from file '{}': {}", file_path.display(), source))]
-  OpenDeserialize { file_path: PathBuf, source: secalc_core::calc::ReadError, },
+  OpenDeserialize { file_path: PathBuf, source: secalc_core::grid::ReadError, },
 }
 
 #[derive(Debug, Snafu)]
@@ -31,7 +31,7 @@ pub enum SaveError {
   #[snafu(display("Could not open file '{}' for writing: {}", file_path.display(), source))]
   SaveFile { file_path: PathBuf, source: std::io::Error, },
   #[snafu(display("Could not serialize data to file '{}': {}", file_path.display(), source))]
-  SaveSerialize { file_path: PathBuf, source: secalc_core::calc::WriteError, },
+  SaveSerialize { file_path: PathBuf, source: secalc_core::grid::WriteError, },
 }
 
 pub struct MainWindow {
@@ -134,7 +134,7 @@ struct ThrusterWidgets {
 struct State {
   current_dir_path: Option<PathBuf>,
   current_file_path: Option<PathBuf>,
-  calculator: Calculator,
+  calculator: GridCalculator,
 }
 
 struct BlockEntries {
@@ -282,7 +282,7 @@ impl MainWindow {
     let state = RefCell::new(State {
       current_dir_path: env::current_dir().ok(),
       current_file_path: None,
-      calculator: Calculator::new()
+      calculator: GridCalculator::default()
     });
     let block_entries = RefCell::new(BlockEntries {
       entries: Default::default(),
@@ -458,7 +458,7 @@ impl MainWindow {
     large_grid: &Grid,
     calculator_func: F
   ) where
-    F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy,
+    F: (Fn(&mut GridCalculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy,
     I: Iterator<Item=&'a Block<T>>
   {
     let (small, large) = Blocks::small_and_large_sorted(iter);
@@ -472,7 +472,7 @@ impl MainWindow {
     grid: &Grid,
     calculator_func: F
   ) where
-    F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy
+    F: (Fn(&mut GridCalculator) -> &mut HashMap<BlockId, u64>) + 'static + Copy
   {
     let index_offset = grid.get_children().len() as i32;
     for (index, block) in blocks.into_iter().enumerate() {
@@ -643,7 +643,7 @@ impl MainWindow {
   fn process_open<P: AsRef<Path>>(&self, file_path: P) -> Result<(), OpenError> {
     let file_path = file_path.as_ref();
     let reader = OpenOptions::new().read(true).open(file_path).context(self::OpenFile { file_path })?;
-    let calculator = Calculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
+    let calculator = GridCalculator::from_json(reader).context(self::OpenDeserialize { file_path })?;
 
     // PERF: setting Entries will trigger their signals, each which mutably borrow `state` and recalculates.
 
@@ -738,8 +738,8 @@ trait MyEntryExt: EntryExt {
   fn parse<T: FromStr + Copy>(&self, default: T) -> T;
   fn set<T: Display>(&self, value: T);
 
-  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F);
-  fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut Calculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F);
+  fn insert_and_recalc_on_change<F: (Fn(&mut GridCalculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F);
+  fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut GridCalculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F);
 }
 
 impl MyEntryExt for Entry {
@@ -751,7 +751,7 @@ impl MyEntryExt for Entry {
     self.set_text(&format!("{:.2}", value));
   }
 
-  fn insert_and_recalc_on_change<F: (Fn(&mut Calculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F) {
+  fn insert_and_recalc_on_change<F: (Fn(&mut GridCalculator) -> &mut HashMap<BlockId, u64>) + 'static>(&self, main_window: &Rc<MainWindow>, id: BlockId, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
       func(&mut rc_clone.state.borrow_mut().calculator).insert(id.clone(), entry.parse(0));
@@ -759,7 +759,7 @@ impl MyEntryExt for Entry {
     });
   }
 
-  fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut Calculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F) {
+  fn set_and_recalc_on_change<T: FromStr + Copy + 'static, F: (Fn(&mut GridCalculator) -> &mut T) + 'static>(&self, main_window: &Rc<MainWindow>, default: T, func: F) {
     let rc_clone = main_window.clone();
     self.connect_changed(move |entry| {
       *func(&mut rc_clone.state.borrow_mut().calculator) = entry.parse(default);

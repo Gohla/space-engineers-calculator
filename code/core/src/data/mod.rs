@@ -2,7 +2,7 @@ use std::io;
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
-use snafu::{ResultExt, Snafu};
+use thiserror::Error;
 
 use blocks::Blocks;
 use components::Components;
@@ -15,28 +15,28 @@ pub mod gas_properties;
 pub mod localization;
 pub mod xml;
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum ExtractError {
-  #[snafu(display("Could not read blocks: {}", source))]
-  ReadBlocks { source: blocks::Error, },
-  #[snafu(display("Could not read components: {}", source))]
-  ReadComponents { source: components::Error, },
-  #[snafu(display("Could not read gas properties: {}", source))]
-  ReadGasProperties { source: gas_properties::Error, },
-  #[snafu(display("Could not read localization: {}", source))]
-  ReadLocalization { source: localization::Error, },
+  #[error("Could not read blocks")]
+  ReadBlocks(#[from] blocks::Error),
+  #[error("Could not read components")]
+  ReadComponents(#[from] components::Error),
+  #[error("Could not read gas properties")]
+  ReadGasProperties(#[from] gas_properties::Error),
+  #[error("Could not read localization")]
+  ReadLocalization(#[from] localization::Error),
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum ReadError {
-  #[snafu(display("Could not read data from JSON: {}", source))]
-  FromJSON { source: serde_json::Error, },
+  #[error("Could not read data from JSON")]
+  FromJSON(#[from] serde_json::Error),
 }
 
-#[derive(Debug, Snafu)]
+#[derive(Error, Debug)]
 pub enum WriteError {
-  #[snafu(display("Could not write data to JSON: {}", source))]
-  ToJSON { source: serde_json::Error, },
+  #[error("Could not write data to JSON")]
+  ToJSON(#[from] serde_json::Error),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -50,19 +50,20 @@ pub struct Data {
 impl Data {
   pub fn extract_from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self, ExtractError> {
     let se_dir_path = se_dir_path.as_ref();
-    let blocks = Blocks::from_se_dir(se_dir_path).context(self::ReadBlocks)?;
-    let components = Components::from_se_dir(se_dir_path).context(self::ReadComponents)?;
-    let gas_properties = GasProperties::from_se_dir(se_dir_path).context(self::ReadGasProperties)?;
-    let localization = Localization::from_se_dir(se_dir_path).context(self::ReadLocalization)?;
+    let blocks = Blocks::from_se_dir(se_dir_path)?;
+    let components = Components::from_se_dir(se_dir_path)?;
+    let gas_properties = GasProperties::from_se_dir(se_dir_path)?;
+    let localization = Localization::from_se_dir(se_dir_path)?;
     Ok(Self { blocks, components, gas_properties, localization })
   }
 
   pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
-    serde_json::from_reader(reader).context(self::FromJSON)
+    let data = serde_json::from_reader(reader)?;
+    Ok(data)
   }
 
   pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
-    serde_json::to_writer_pretty(writer, self).context(self::ToJSON)?;
+    serde_json::to_writer_pretty(writer, self)?;
     Ok(())
   }
 
