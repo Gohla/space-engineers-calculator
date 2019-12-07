@@ -26,9 +26,12 @@ impl FileDialog {
       chooser.set_current_name(current_file)
     }
     chooser.set_do_overwrite_confirmation(true);
-    let filter = FileFilter::new();
-    filter.add_pattern("*.grid.json");
-    chooser.add_filter(&filter);
+    let grid_filter = FileFilter::new();
+    grid_filter.add_pattern("*.grid.json");
+    chooser.add_filter(&grid_filter);
+    let any_filter = FileFilter::new();
+    any_filter.add_pattern("*");
+    chooser.add_filter(&any_filter);
     FileDialog { chooser }
   }
 

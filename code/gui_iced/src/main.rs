@@ -30,10 +30,10 @@ enum Message {
   InputMessage(InputMessage)
 }
 
-impl<'a> Application for SECalc {
+impl Application for SECalc {
   type Message = Message;
 
-  fn new() -> (Self, Command<Message>) {
+  fn new() -> (Self, Command<Self::Message>) {
     (Self::default(), Command::none())
   }
 
