@@ -2055,6 +2055,7 @@ name = "secalc_gui_iced"
 version = "0.1.0"
 dependencies = [
  "iced",
+ "lazy_static",
  "secalc_core",
  "serde",
  "serde_json",
