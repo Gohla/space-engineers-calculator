@@ -11,7 +11,7 @@ struct SECalc {
   calc: GridCalculator,
   input_scrollable: scrollable::State,
   result_scrollable: scrollable::State,
-  gravity_multiplier: Input,
+  gravity_multiplier: DataBind<f64>,
 }
 
 impl Default for SECalc {
@@ -20,14 +20,14 @@ impl Default for SECalc {
       calc: GridCalculator::default(),
       input_scrollable: scrollable::State::default(),
       result_scrollable: scrollable::State::default(),
-      gravity_multiplier: Input::new("Gravity Multiplier", "1.0"),
+      gravity_multiplier: DataBind::new("Gravity Multiplier", 1.0, "1.0"),
     }
   }
 }
 
 #[derive(Clone, Debug)]
 enum Message {
-  InputMessage(InputMessage)
+  InputMessage(DataBindMessage)
 }
 
 impl Application for SECalc {
@@ -44,7 +44,7 @@ impl Application for SECalc {
   fn update(&mut self, message: Message) -> Command<Message> {
     match message {
       Message::InputMessage(m) => {
-        self.gravity_multiplier.update(&mut self.calc.gravity_multiplier, 1.0, m)
+        self.gravity_multiplier.update(&mut self.calc.gravity_multiplier, m)
       },
     }
     Command::none()
@@ -79,36 +79,40 @@ impl Application for SECalc {
 }
 
 #[derive(Debug)]
-struct Input {
+struct DataBind<T> {
   label: String,
+  default: T,
   placeholder: String,
+  value: String,
   state: text_input::State,
 }
 
 #[derive(Clone, Debug)]
-struct InputMessage(String);
+struct DataBindMessage(String);
 
-impl Input {
-  fn new<S1: Into<String>, S2: Into<String>>(label: S1, placeholder: S2) -> Self {
+impl<T: Copy + FromStr> DataBind<T> {
+  fn new<L: Into<String>, P: Into<String>>(label: L, default: T, placeholder: P) -> Self {
     let label = label.into();
     let placeholder = placeholder.into();
+    let value = String::new();
     let state = text_input::State::default();
-    Self { label, placeholder, state }
+    Self { label, default, placeholder, value, state }
   }
 
-  fn update<T: FromStr>(&mut self, data: &mut T, default: T, message: InputMessage) {
+  fn update(&mut self, data: &mut T, message: DataBindMessage) {
     if let Ok(d) = T::from_str(&message.0) {
       *data = d
     } else {
-      *data = default;
+      *data = self.default;
     }
+    self.value = message.0;
   }
 
-  fn view<T: ToString>(&mut self, data: &T) -> Element<Message> {
+  fn view(&mut self, data: &T) -> Element<Message> {
     Row::new()
       .push(Text::new(&self.label))
       .push(
-        TextInput::new(&mut self.state, &self.placeholder, &T::to_string(data), |s| Message::InputMessage(InputMessage(s)))
+        TextInput::new(&mut self.state, &self.placeholder, &self.value, |s| Message::InputMessage(DataBindMessage(s)))
           .width(Length::Units(100))
       )
       .into()
