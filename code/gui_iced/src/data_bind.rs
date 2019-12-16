@@ -3,16 +3,13 @@ use std::str::FromStr;
 
 use iced::{Color, Element, Length, Row, Text, text_input, TextInput, VerticalAlignment};
 
-use crate::util::Msg;
-
 pub struct DataBind<T> {
   label: String,
-  label_length: Length,
-
+  label_width: Length,
   input_default: T,
   input_placeholder: String,
-  input_length: Length,
-
+  input_width: Length,
+  unit: String,
   value: String,
   error: bool,
   state: text_input::State,
@@ -22,13 +19,14 @@ pub struct DataBind<T> {
 pub struct DataBindMessage(String);
 
 impl<T: Copy + FromStr> DataBind<T> {
-  pub fn new<L: Into<String>, P: Into<String>>(label: L, label_length: Length, input_default: T, input_placeholder: P, input_length: Length) -> Self {
+  pub fn new<L: Into<String>, P: Into<String>, U: Into<String>>(label: L, label_width: Length, input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
     let label = label.into();
     let input_placeholder = input_placeholder.into();
+    let unit = unit.into();
     let value = String::new();
     let error = false;
     let state = text_input::State::default();
-    Self { label, label_length, input_default, input_placeholder, input_length, value, error, state }
+    Self { label, label_width, input_default, input_placeholder, input_width, unit, value, error, state }
   }
 
   pub fn update(&mut self, message: DataBindMessage, val: &mut T) {
@@ -43,24 +41,31 @@ impl<T: Copy + FromStr> DataBind<T> {
     self.value = text;
   }
 
-  pub fn view<M: Msg>(&mut self, on_change: impl 'static + Fn(DataBindMessage) -> M) -> Element<M> {
-    let text = Text::new(&self.label)
-      .width(self.label_length)
-      .vertical_alignment(VerticalAlignment::Center);
-    let text = if self.error {
-      text.color(Color::from_rgb(0.8, 0.0, 0.0))
-    } else {
-      text
+  pub fn view(&mut self) -> Element<DataBindMessage> {
+    let label = {
+      let label = Text::new(&self.label)
+        .width(self.label_width)
+        .vertical_alignment(VerticalAlignment::Center);
+      if self.error {
+        label.color(Color::from_rgb(0.8, 0.0, 0.0))
+      } else {
+        label
+      }
     };
+    let input = TextInput::new(&mut self.state, &self.input_placeholder, &self.value, DataBindMessage)
+      .padding(1)
+      .width(self.input_width)
+      ;
+    let unit = Text::new(&self.unit)
+      .width(Length::Shrink)
+      ;
+
     Row::new()
       .spacing(2)
       .padding(1)
-      .push(text)
-      .push(
-        TextInput::new(&mut self.state, &self.input_placeholder, &self.value, move |s| on_change(DataBindMessage(s)))
-          .width(self.input_length)
-          .padding(1)
-      )
+      .push(label)
+      .push(input)
+      .push(unit)
       .into()
   }
 }

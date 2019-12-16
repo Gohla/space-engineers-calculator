@@ -1,7 +1,6 @@
 cargo-features = ["profile-overrides"]
 
 [workspace]
-
 members = [
   "code/core",
   "code/cli",

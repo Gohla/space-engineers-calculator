@@ -32,18 +32,18 @@ pub enum Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
-/// Grid type.
+/// Grid size.
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug, Serialize, Deserialize)]
-pub enum GridType {
+pub enum GridSize {
   Small,
   Large
 }
 
-impl GridType {
+impl GridSize {
   pub fn from_def(def: &Node) -> Self {
     match def.child_elem("CubeSize").unwrap().text().unwrap() {
-      "Small" => GridType::Small,
-      "Large" => GridType::Large,
+      "Small" => GridSize::Small,
+      "Large" => GridSize::Large,
       t => panic!("Unrecognized grid size {}", t),
     }
   }
@@ -65,7 +65,7 @@ pub struct Block<T> {
   pub id: BlockId,
   pub index: u64,
   pub name: String,
-  pub grid_type: GridType,
+  pub size: GridSize,
   pub components: HashMap<String, f64>,
   pub has_physics: bool,
   pub details: T,
@@ -96,7 +96,7 @@ impl<T: FromDef> Block<T> {
     let id = type_id + "." + &subtype_id;
     let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
     let mut components = HashMap::new();
-    let grid_type = GridType::from_def(def);
+    let grid_type = GridSize::from_def(def);
     for component in def.child_elem("Components").unwrap().children_elems("Component") {
       if let (Some(component_id), Some(count)) = (component.parse_attribute("Subtype").unwrap(), component.parse_attribute("Count").unwrap()) {
         components.entry(component_id).and_modify(|c| *c += count).or_insert(count);
@@ -104,7 +104,7 @@ impl<T: FromDef> Block<T> {
     }
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
     let details = T::from_def(def, entity_components);
-    Block { id, index, name, grid_type, components, has_physics, details }
+    Block { id, index, name, size: grid_type, components, has_physics, details }
   }
 }
 
@@ -511,9 +511,9 @@ impl Blocks {
     let mut small_vec = Vec::new();
     let mut large_vec = Vec::new();
     for block in iter {
-      match block.grid_type {
-        GridType::Small => small_vec.push(block),
-        GridType::Large => large_vec.push(block),
+      match block.size {
+        GridSize::Small => small_vec.push(block),
+        GridSize::Large => large_vec.push(block),
       }
     }
     small_vec.sort();

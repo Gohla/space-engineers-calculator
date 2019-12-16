@@ -9,5 +9,6 @@ secalc_core = { path = "../core" }
 snafu = "0.6"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-iced = { git = 'https://github.com/hecrj/iced.git', branch = 'master' }
+iced = { git = 'https://github.com/Gohla/iced.git', branch = 'web_styling' }
 lazy_static = "1.4"
+linked-hash-map = "0.5"
