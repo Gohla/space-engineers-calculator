@@ -1,9 +1,10 @@
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 use iced::{Application, Color, Column, Command, Element, HorizontalAlignment, Length, Row, scrollable, Scrollable, Text};
 use linked_hash_map::LinkedHashMap;
 
-use secalc_core::data::blocks::{BlockId, Blocks, GridSize};
+use secalc_core::data::blocks::{Block, BlockId, Blocks, GridSize};
 use secalc_core::data::Data;
 use secalc_core::grid::{GridCalculated, GridCalculator};
 
@@ -58,14 +59,65 @@ create_input_options!(Length::Units(250); Length::Units(100);
   any_fill_with_steel_plates, f64, AnyFillWithSteelPlates, "Any-fill with Steel Plates", "{:.1}", "%"
 );
 
-#[derive(Default)]
-struct SmallAndLarge<T> {
-  pub small: T,
-  pub large: T,
+
+// Input blocks
+
+pub struct InputBlocks {
+  small: LinkedHashMap<BlockId, DataBind<u64>>,
+  large: LinkedHashMap<BlockId, DataBind<u64>>,
 }
 
-impl<T> SmallAndLarge<T> {
-  pub fn for_size(&mut self, size: GridSize) -> &mut T {
+#[derive(Clone, Debug)]
+pub struct InputBlocksMessage(BlockId, GridSize, DataBindMessage);
+
+impl InputBlocks {
+  pub fn new<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(data: &Data, label_width: Length, value_width: Length, blocks_iter: I) -> Self {
+    fn into_map<T>(data: &Data, label_width: Length, value_width: Length, vec: Vec<&Block<T>>) -> LinkedHashMap<BlockId, DataBind<u64>> {
+      vec.into_iter()
+        .map(|b| (b.id.clone(), DataBind::new(b.name(&data.localization), label_width, 0, "0", value_width, "#")))
+        .collect()
+    }
+    let (small, large) = Blocks::small_and_large_sorted(blocks_iter);
+    let small = into_map(data, label_width, value_width, small);
+    let large = into_map(data, label_width, value_width, large);
+    Self { small, large }
+  }
+
+  pub fn update(&mut self, message: InputBlocksMessage, calc_map: &mut HashMap<BlockId, u64>) {
+    let InputBlocksMessage(id, size, m) = message;
+    if let Some(data_bind) = self.map_for_size(size).get_mut(&id) {
+      data_bind.update(m, calc_map.entry(id.clone()).or_default())
+    }
+  }
+
+  pub fn view(&mut self) -> Element<InputBlocksMessage> {
+    fn create_column(grid_size: GridSize, map: &mut LinkedHashMap<BlockId, DataBind<u64>>) -> Element<InputBlocksMessage> {
+      let mut column = {
+        let label = match grid_size { GridSize::Small => "Small grid", GridSize::Large => "Large grid" };
+        Column::new().push(h2(label))
+      };
+      for (id, data_bind) in map {
+        let id = id.clone(); // Clone to simplify lifetimes: we have an owned String now.
+        column = column.push(data_bind.view().map(move |m| InputBlocksMessage(
+          // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone.
+          id.clone(),
+          grid_size,
+          m
+        )))
+      }
+      column.into()
+    }
+    let input_small = create_column(GridSize::Small, &mut self.small);
+    let input_large = create_column(GridSize::Large, &mut self.large);
+    Row::new()
+      .spacing(2)
+      .padding(0)
+      .push(input_small)
+      .push(input_large)
+      .into()
+  }
+
+  fn map_for_size(&mut self, size: GridSize) -> &mut LinkedHashMap<BlockId, DataBind<u64>> {
     match size { GridSize::Small => &mut self.small, GridSize::Large => &mut self.large }
   }
 }
@@ -75,7 +127,7 @@ impl<T> SmallAndLarge<T> {
 
 pub struct App {
   input_options: InputOptions,
-  input_storage: SmallAndLarge<LinkedHashMap<BlockId, DataBind<u64>>>,
+  input_storage: InputBlocks,
 
   data: Data,
   calculator: GridCalculator,
@@ -93,15 +145,7 @@ impl Default for App {
     let result = calculator.calculate(&data);
 
     let input_options = InputOptions::new(&calculator);
-
-    let (small_containers, large_containers) = Blocks::small_and_large_sorted(data.blocks.containers.values().filter(|c| c.details.store_any));
-    let mut input_storage = SmallAndLarge::<LinkedHashMap<BlockId, DataBind<u64>>>::default();
-    for block in small_containers {
-      input_storage.small.insert(block.id.clone(), DataBind::new(block.name(&data.localization), Length::Units(250), 0, "0", Length::Units(35), "#"));
-    }
-    for block in large_containers {
-      input_storage.large.insert(block.id.clone(), DataBind::new(block.name(&data.localization), Length::Units(250), 0, "0", Length::Units(35), "#"));
-    }
+    let input_storage = InputBlocks::new(&data, Length::Units(250), Length::Units(35), data.blocks.containers.values().filter(|c| c.details.store_any));
 
     Self {
       input_options,
@@ -118,7 +162,7 @@ impl Default for App {
 #[derive(Clone, Debug)]
 pub enum Message {
   InputOptionChange(InputOptionMessage),
-  InputStorageChange(BlockId, GridSize, DataBindMessage),
+  InputStorageChange(InputBlocksMessage),
 }
 
 impl Application for App {
@@ -136,69 +180,35 @@ impl Application for App {
   fn update(&mut self, message: Message) -> Command<Message> {
     match message {
       Message::InputOptionChange(m) => self.input_options.update(m, &mut self.calculator),
-      Message::InputStorageChange(id, size, m) => {
-        if let Some(data_bind) = self.input_storage.for_size(size).get_mut(&id) {
-          data_bind.update(m, self.calculator.containers.entry(id.clone()).or_default())
-        }
-      }
+      Message::InputStorageChange(m) => self.input_storage.update(m, &mut self.calculator.containers),
     }
     self.result = self.calculator.calculate(&self.data);
     Command::none()
   }
 
   fn view(&mut self) -> Element<Message> {
+    // Input
     let input = Scrollable::new(&mut self.input_scrollable)
       .spacing(1)
       .padding(0);
-
-    // Options
-    let mut input = input
-      .push(h1("Options"));
+    // - Options
+    let mut input = input.push(h1("Options"));
     for elem in self.input_options.view() {
       input = input.push(elem.map(Message::InputOptionChange));
     }
-
-    // Storage
+    // - Storage
     let input = input
-      .push(h1("Storage"));
-    let SmallAndLarge { small: ref mut storage_small, large: ref mut storage_large } = self.input_storage;
-    // Small
-    let mut input_storage_small = Column::new()
-      .push(h2("Small grid"));
-    for (id, data_bind) in storage_small {
-      let id = id.clone(); // Clone to simplify lifetimes: we have an owned String now.
-      input_storage_small = input_storage_small.push(data_bind.view().map(move |m| Message::InputStorageChange(
-        // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone.
-        id.clone(),
-        GridSize::Small,
-        m
-      )))
-    }
-    // Large
-    let mut input_storage_large = Column::new()
-      .push(h2("Large grid"));
-    for (id, data_bind) in storage_large {
-      let id = id.clone(); // Clone to simplify lifetimes: we have an owned String now.
-      input_storage_large = input_storage_large.push(data_bind.view().map(move |m| Message::InputStorageChange(
-        // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone.
-        id.clone(),
-        GridSize::Large,
-        m
-      )))
-    }
-    let input = input.push(Row::new()
-      .spacing(2)
-      .padding(0)
-      .push(input_storage_small)
-      .push(input_storage_large)
-    );
-
+      .push(h1("Storage"))
+      .push(self.input_storage.view().map(Message::InputStorageChange))
+      ;
+    // - TODO
     let input = input
       .push(h1("Thrusters"))
       .push(h1("Power"))
       .push(h1("Hydrogen"))
       ;
 
+    // Result
     let label_width = Length::Units(110);
     let value_width = Length::Units(100);
     let result = Scrollable::new(&mut self.result_scrollable)
@@ -222,13 +232,13 @@ impl Application for App {
       .push(h1("Hydrogen"))
       ;
 
+    // Root
     let root: Element<_> = Row::new()
       .spacing(10)
       .padding(5)
       .push(input)
       .push(result)
       .into();
-
     root.explain(Color::BLACK)
   }
 }
