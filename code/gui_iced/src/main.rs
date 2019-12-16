@@ -6,11 +6,12 @@ pub mod data_bind;
 pub mod widget;
 pub mod option_input;
 pub mod block_input;
+pub mod directional_block_input;
 
 fn main() {
   app::App::run(Settings {
     window: Window {
-      size: (1300, 1000),
+      size: (2200, 1000),
       ..Window::default()
     },
     ..Settings::default()

@@ -50,19 +50,6 @@ pub struct GridCalculator {
   pub any_fill_with_steel_plates: f64,
   pub blocks: HashMap<BlockId, u64>,
   pub directional_blocks: HashMap<Direction, HashMap<BlockId, u64>>,
-//
-//  pub containers: HashMap<BlockId, u64>,
-//  pub cockpits: HashMap<BlockId, u64>,
-//  // TODO: drills
-//
-//  pub thrusters: HashMap<ThrusterSide, HashMap<BlockId, u64>>,
-//
-//  pub hydrogen_engines: HashMap<BlockId, u64>,
-//  pub reactors: HashMap<BlockId, u64>,
-//  pub batteries: HashMap<BlockId, u64>,
-//
-//  pub generators: HashMap<BlockId, u64>,
-//  pub hydrogen_tanks: HashMap<BlockId, u64>,
 }
 
 impl Default for GridCalculator {

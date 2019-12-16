@@ -6,12 +6,14 @@ use secalc_core::data::Data;
 use secalc_core::grid::{GridCalculated, GridCalculator};
 
 use crate::block_input::{BlockInput, BlockInputMessage};
+use crate::directional_block_input::{DirectionalBlockInput, DirectionalBlockInputMessage};
 use crate::option_input::{OptionInput, OptionInputMessage};
 use crate::widget::{h1, ScrollableExt};
 
 pub struct App {
   input_options: OptionInput,
   input_storage: BlockInput,
+  input_thrust: DirectionalBlockInput,
   input_power: BlockInput,
   input_hydrogen: BlockInput,
 
@@ -39,6 +41,11 @@ impl Default for App {
       blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
       blocks
     };
+    let input_thrust = {
+      let mut blocks = DirectionalBlockInput::new(blocks_label_width, blocks_value_width);
+      blocks.add_blocks(&data, data.blocks.thrusters.values());
+      blocks
+    };
     let input_power = {
       let mut blocks = BlockInput::default();
       blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.hydrogen_engines.values());
@@ -56,6 +63,7 @@ impl Default for App {
     Self {
       input_options,
       input_storage,
+      input_thrust,
       input_power,
       input_hydrogen,
       data,
@@ -71,6 +79,7 @@ impl Default for App {
 pub enum Message {
   InputOptionChange(OptionInputMessage),
   InputStorageChange(BlockInputMessage),
+  InputThrustChange(DirectionalBlockInputMessage),
   InputPowerChange(BlockInputMessage),
   InputHydrogenChange(BlockInputMessage),
 }
@@ -91,6 +100,7 @@ impl Application for App {
     match message {
       Message::InputOptionChange(m) => self.input_options.update(m, &mut self.calculator),
       Message::InputStorageChange(m) => self.input_storage.update(m, &mut self.calculator),
+      Message::InputThrustChange(m) => self.input_thrust.update(m, &mut self.calculator),
       Message::InputPowerChange(m) => self.input_power.update(m, &mut self.calculator),
       Message::InputHydrogenChange(m) => self.input_hydrogen.update(m, &mut self.calculator),
     }
@@ -102,7 +112,9 @@ impl Application for App {
     // Input
     let input = Scrollable::new(&mut self.input_scrollable)
       .spacing(1)
-      .padding(0);
+      .padding(1)
+      .width(Length::Shrink)
+      ;
     // - Options
     let mut input = input.push(h1("Options"));
     for elem in self.input_options.view() {
@@ -114,8 +126,9 @@ impl Application for App {
       .push(self.input_storage.view().map(Message::InputStorageChange))
       ;
     // - TODO: Thrusters
-    let input =
-      input.push(h1("Thrusters"))
+    let input = input
+      .push(h1("Thrusters"))
+      .push(self.input_thrust.view().map(Message::InputThrustChange))
       ;
     // - Power
     let input = input
@@ -133,7 +146,8 @@ impl Application for App {
     let value_width = Length::Units(100);
     let result = Scrollable::new(&mut self.result_scrollable)
       .spacing(1)
-      .padding(0)
+      .padding(1)
+      .width(Length::Shrink)
       .push(h1("Mass"))
       .push_labelled("Empty", label_width, format!("{:.0}", self.result.total_mass_empty), value_width, "kg")
       .push_labelled("Filled", label_width, format!("{:.0}", self.result.total_mass_filled), value_width, "kg")
