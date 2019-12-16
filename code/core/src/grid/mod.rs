@@ -20,7 +20,7 @@ pub enum WriteError {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
-pub enum ThrusterSide {
+pub enum Direction {
   Up,
   Down,
   Front,
@@ -29,10 +29,10 @@ pub enum ThrusterSide {
   Right
 }
 
-impl ThrusterSide {
-  pub fn iter() -> impl Iterator<Item=&'static ThrusterSide> {
-    use self::ThrusterSide::*;
-    static SIDES: [ThrusterSide; 6] = [Up, Down, Front, Back, Left, Right];
+impl Direction {
+  pub fn iter() -> impl Iterator<Item=&'static Direction> {
+    use self::Direction::*;
+    static SIDES: [Direction; 6] = [Up, Down, Front, Back, Left, Right];
     SIDES.iter()
   }
 }
@@ -48,19 +48,21 @@ pub struct GridCalculator {
   pub any_fill_with_ice: f64,
   pub any_fill_with_ore: f64,
   pub any_fill_with_steel_plates: f64,
-
-  pub containers: HashMap<BlockId, u64>,
-  pub cockpits: HashMap<BlockId, u64>,
-  // TODO: drills
-
-  pub thrusters: HashMap<ThrusterSide, HashMap<BlockId, u64>>,
-
-  pub hydrogen_engines: HashMap<BlockId, u64>,
-  pub reactors: HashMap<BlockId, u64>,
-  pub batteries: HashMap<BlockId, u64>,
-
-  pub generators: HashMap<BlockId, u64>,
-  pub hydrogen_tanks: HashMap<BlockId, u64>,
+  pub blocks: HashMap<BlockId, u64>,
+  pub directional_blocks: HashMap<Direction, HashMap<BlockId, u64>>,
+//
+//  pub containers: HashMap<BlockId, u64>,
+//  pub cockpits: HashMap<BlockId, u64>,
+//  // TODO: drills
+//
+//  pub thrusters: HashMap<ThrusterSide, HashMap<BlockId, u64>>,
+//
+//  pub hydrogen_engines: HashMap<BlockId, u64>,
+//  pub reactors: HashMap<BlockId, u64>,
+//  pub batteries: HashMap<BlockId, u64>,
+//
+//  pub generators: HashMap<BlockId, u64>,
+//  pub hydrogen_tanks: HashMap<BlockId, u64>,
 }
 
 impl Default for GridCalculator {
@@ -75,27 +77,17 @@ impl Default for GridCalculator {
       any_fill_with_ore: 0.0,
       any_fill_with_steel_plates: 0.0,
       additional_mass: 0.0,
-
-      containers: Default::default(),
-      cockpits: Default::default(),
-
-      thrusters: {
+      blocks: Default::default(),
+      directional_blocks: {
         let mut map = HashMap::default();
-        map.insert(ThrusterSide::Up, HashMap::default());
-        map.insert(ThrusterSide::Down, HashMap::default());
-        map.insert(ThrusterSide::Front, HashMap::default());
-        map.insert(ThrusterSide::Back, HashMap::default());
-        map.insert(ThrusterSide::Left, HashMap::default());
-        map.insert(ThrusterSide::Right, HashMap::default());
+        map.insert(Direction::Up, HashMap::default());
+        map.insert(Direction::Down, HashMap::default());
+        map.insert(Direction::Front, HashMap::default());
+        map.insert(Direction::Back, HashMap::default());
+        map.insert(Direction::Left, HashMap::default());
+        map.insert(Direction::Right, HashMap::default());
         map
       },
-
-      hydrogen_engines: Default::default(),
-      reactors: Default::default(),
-      batteries: Default::default(),
-
-      generators: Default::default(),
-      hydrogen_tanks: Default::default(),
     }
   }
 }
@@ -116,15 +108,7 @@ impl GridCalculator {
   }
 
   pub fn iter_block_counts(&self) -> impl Iterator<Item=(&BlockId, &u64)> {
-    vec![
-      self.containers.iter(),
-      self.cockpits.iter(),
-      self.hydrogen_engines.iter(),
-      self.reactors.iter(),
-      self.batteries.iter(),
-      self.generators.iter(),
-      self.hydrogen_tanks.iter(),
-    ].into_iter().flat_map(|it| it)
+    self.blocks.iter()
   }
 
   pub fn calculate(&self, data: &Data) -> GridCalculated {
@@ -141,126 +125,134 @@ impl GridCalculator {
     let mut power_consumption_misc = 0.0;
     let mut power_consumption_generator = 0.0;
     let power_consumption_jump_drive = 0.0;
-    let mut power_consumption_thruster: HashMap<ThrusterSide, f64> = HashMap::default();
+    let mut power_consumption_thruster: HashMap<Direction, f64> = HashMap::default();
     let mut power_consumption_battery = 0.0;
 
     let mut hydrogen_consumption_idle = 0.0;
     let mut hydrogen_consumption_engine = 0.0;
-    let mut hydrogen_consumption_thruster: HashMap<ThrusterSide, f64> = HashMap::default();
+    let mut hydrogen_consumption_thruster: HashMap<Direction, f64> = HashMap::default();
 
     c.total_mass_empty += self.additional_mass;
 
     // Containers.
-    for (id, count) in self.containers.iter() {
-      let block = data.blocks.containers.get(id).unwrap();
-      let count = *count as f64;
-      c.total_mass_empty += block.mass(&data.components) * count;
-      if block.store_any {
-        let volume = block.details.capacity * count * self.container_multiplier;
-        c.total_volume_any += volume;
-        c.total_volume_ore += volume;
-        c.total_volume_ice += volume;
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.containers.get(id) {
+        let count = *count as f64;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        if block.store_any {
+          let volume = block.details.capacity * count * self.container_multiplier;
+          c.total_volume_any += volume;
+          c.total_volume_ore += volume;
+          c.total_volume_ice += volume;
+        }
       }
     }
     // Cockpits.
-    for (id, count) in self.cockpits.iter() {
-      let block = data.blocks.cockpits.get(id).unwrap();
-      let count = *count as f64;
-      c.total_mass_empty += block.mass(&data.components) * count;
-      if block.has_inventory {
-        let volume = block.details.capacity * count * self.container_multiplier;
-        c.total_volume_any += volume;
-        c.total_volume_ore += volume;
-        c.total_volume_ice += volume;
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.cockpits.get(id) {
+        let count = *count as f64;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        if block.has_inventory {
+          let volume = block.details.capacity * count * self.container_multiplier;
+          c.total_volume_any += volume;
+          c.total_volume_ore += volume;
+          c.total_volume_ice += volume;
+        }
       }
     }
     // Thrusters.
-    for (side, thrusters) in self.thrusters.iter() {
+    for (side, blocks) in self.directional_blocks.iter() {
       let mut a = AccelerationCalculated::default();
-      for (id, count) in thrusters {
-        let block = data.blocks.thrusters.get(id).unwrap();
-        let count = *count as f64;
-        let details = &block.details;
-        c.total_mass_empty += block.mass(&data.components) * count;
-        // Clamp planetary influence value.
-        let planetary_influence = self.planetary_influence.clamp(details.min_planetary_influence, details.max_planetary_influence);
-        // Slope-intercept form equation: y = mx + b
-        // Calculate m: m = (y2 - y1) / (x2 - x1)
-        let m = (details.effectiveness_at_min_influence - details.effectiveness_at_max_influence) / (details.min_planetary_influence - details.max_planetary_influence);
-        // Calculate b: b = y + -mx (choose x,y on the line)
-        let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
-        // Calculate y: y = mx + b
-        let effectiveness = m * planetary_influence + b;
-        a.force += details.force * effectiveness * count;
-        match details.ty {
-          ThrusterType::Hydrogen => {
-            hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-            let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-            hydrogen_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
-          },
-          _ => {
-            power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-            let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-            power_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
-          },
+      for (id, count) in blocks {
+        if let Some(block) = data.blocks.thrusters.get(id) {
+          let count = *count as f64;
+          let details = &block.details;
+          c.total_mass_empty += block.mass(&data.components) * count;
+          // Clamp planetary influence value.
+          let planetary_influence = self.planetary_influence.clamp(details.min_planetary_influence, details.max_planetary_influence);
+          // Slope-intercept form equation: y = mx + b
+          // Calculate m: m = (y2 - y1) / (x2 - x1)
+          let m = (details.effectiveness_at_min_influence - details.effectiveness_at_max_influence) / (details.min_planetary_influence - details.max_planetary_influence);
+          // Calculate b: b = y + -mx (choose x,y on the line)
+          let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
+          // Calculate y: y = mx + b
+          let effectiveness = m * planetary_influence + b;
+          a.force += details.force * effectiveness * count;
+          match details.ty {
+            ThrusterType::Hydrogen => {
+              hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
+              let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
+              hydrogen_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
+            },
+            _ => {
+              power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
+              let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
+              power_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
+            },
+          }
         }
       }
       c.acceleration.insert(*side, a);
     }
     // Hydrogen Engines.
-    for (id, count) in self.hydrogen_engines.iter() {
-      let block = data.blocks.hydrogen_engines.get(id).unwrap();
-      let count = *count as f64;
-      let details = &block.details;
-      c.total_mass_empty += block.mass(&data.components) * count;
-      c.power_generation += details.max_power_generation * count;
-      hydrogen_consumption_engine += details.max_fuel_consumption * count;
-      c.hydrogen_capacity_engine += details.fuel_capacity * count;
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.hydrogen_engines.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        c.power_generation += details.max_power_generation * count;
+        hydrogen_consumption_engine += details.max_fuel_consumption * count;
+        c.hydrogen_capacity_engine += details.fuel_capacity * count;
+      }
     }
     // Reactors.
-    for (id, count) in self.reactors.iter() {
-      let block = data.blocks.reactors.get(id).unwrap();
-      let count = *count as f64;
-      let details = &block.details;
-      c.total_mass_empty += block.mass(&data.components) * count;
-      c.power_generation += details.max_power_generation * count;
-      // TODO: fuel capacity/use
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.reactors.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        c.power_generation += details.max_power_generation * count;
+        // TODO: fuel capacity/use
+      }
     }
     // Batteries.
-    for (id, count) in self.batteries.iter() {
-      let block = data.blocks.batteries.get(id).unwrap();
-      let count = *count as f64;
-      let details = &block.details;
-      c.total_mass_empty += block.mass(&data.components) * count;
-      c.power_generation += details.output * count;
-      power_consumption_battery += details.input * count;
-      c.power_capacity_battery += details.capacity * count;
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.batteries.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        c.power_generation += details.output * count;
+        power_consumption_battery += details.input * count;
+        c.power_capacity_battery += details.capacity * count;
+      }
     }
     // Hydrogen Generators.
-    for (id, count) in self.generators.iter() {
-      let block = data.blocks.generators.get(id).unwrap();
-      let count = *count as f64;
-      let details = &block.details;
-      // Mass
-      c.total_mass_empty += block.mass(&data.components) * count;
-      // Volume
-      c.total_volume_ice_only += details.inventory_volume_ice * count;
-      // Power consumption
-      power_consumption_idle += details.idle_power_consumption * count;
-      power_consumption_generator += details.operational_power_consumption * count;
-      c.hydrogen_generation += details.hydrogen_generation * count;
-      // TODO: ice consumption
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.generators.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        // Mass
+        c.total_mass_empty += block.mass(&data.components) * count;
+        // Volume
+        c.total_volume_ice_only += details.inventory_volume_ice * count;
+        // Power consumption
+        power_consumption_idle += details.idle_power_consumption * count;
+        power_consumption_generator += details.operational_power_consumption * count;
+        c.hydrogen_generation += details.hydrogen_generation * count;
+        // TODO: ice consumption
+      }
     }
     // Hydrogen Tanks.
-    for (id, count) in self.hydrogen_tanks.iter() {
-      let block = data.blocks.hydrogen_tanks.get(id).unwrap();
-      let count = *count as f64;
-      let details = &block.details;
-      // Mass
-      c.total_mass_empty += block.mass(&data.components) * count;
-      power_consumption_idle += details.idle_power_consumption * count;
-      power_consumption_misc += details.operational_power_consumption * count;
-      c.hydrogen_capacity_tank += details.capacity * count;
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.hydrogen_tanks.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        // Mass
+        c.total_mass_empty += block.mass(&data.components) * count;
+        power_consumption_idle += details.idle_power_consumption * count;
+        power_consumption_misc += details.operational_power_consumption * count;
+        c.hydrogen_capacity_tank += details.capacity * count;
+      }
     }
 
     // TODO: add jump drive block
@@ -302,11 +294,11 @@ impl GridCalculator {
       c.power_upto_jump_drive = c.power_resource(consumption);
       consumption += power_consumption_generator;
       c.power_upto_generator = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Up, ThrusterSide::Down);
+      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Up, Direction::Down);
       c.power_upto_up_down_thruster = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Front, ThrusterSide::Back);
+      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Front, Direction::Back);
       c.power_upto_front_back_thruster = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, ThrusterSide::Left, ThrusterSide::Right);
+      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Left, Direction::Right);
       c.power_upto_left_right_thruster = c.power_resource(consumption);
       consumption += power_consumption_battery;
       c.power_upto_battery = c.power_resource(consumption);
@@ -316,18 +308,18 @@ impl GridCalculator {
       c.hydrogen_idle = c.hydrogen_resource(hydrogen_consumption_idle);
       let mut consumption = hydrogen_consumption_engine;
       c.hydrogen_engine = c.hydrogen_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Up, ThrusterSide::Down);
+      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Up, Direction::Down);
       c.hydrogen_upto_up_down_thruster = c.hydrogen_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Front, ThrusterSide::Back);
+      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Front, Direction::Back);
       c.hydrogen_upto_front_back_thruster = c.hydrogen_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, ThrusterSide::Left, ThrusterSide::Right);
+      consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Left, Direction::Right);
       c.hydrogen_upto_left_right_thruster = c.hydrogen_resource(consumption);
     }
 
     c
   }
 
-  fn thruster_consumption_peak(map: &HashMap<ThrusterSide, f64>, side_1: ThrusterSide, side2: ThrusterSide) -> f64 {
+  fn thruster_consumption_peak(map: &HashMap<Direction, f64>, side_1: Direction, side2: Direction) -> f64 {
     let c1 = map.get(&side_1).map(|c| *c).unwrap_or(0.0);
     let c2 = map.get(&side2).map(|c| *c).unwrap_or(0.0);
     c1.max(c2)
@@ -348,7 +340,7 @@ pub struct GridCalculated {
   pub total_items_ore: f64,
   pub total_items_steel_plate: f64,
 
-  pub acceleration: HashMap<ThrusterSide, AccelerationCalculated>,
+  pub acceleration: HashMap<Direction, AccelerationCalculated>,
 
   pub power_generation: f64,
   pub power_capacity_battery: f64,

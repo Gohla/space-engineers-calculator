@@ -1,7 +1,8 @@
 use std::error::Error;
 use std::path::{Path, PathBuf};
 
-use gtk::{ButtonsType, DialogFlags, FileChooserAction, FileChooserNative, FileFilter, IsA, MessageDialog, MessageType, Window};
+use gtk::{ButtonsType, DialogFlags, FileChooserAction, FileChooserNative, FileFilter, MessageDialog, MessageType, Window};
+use glib::object::IsA;
 use gtk::prelude::*;
 
 pub struct FileDialog {
@@ -52,7 +53,7 @@ impl FileDialog {
 
 
   pub fn run(&self) -> Option<PathBuf> {
-    if self.chooser.run() == gtk_sys::GTK_RESPONSE_ACCEPT {
+    if self.chooser.run() == gtk::ResponseType::Accept {
       if let Some(path) = self.chooser.get_filename() {
         return Some(path)
       }

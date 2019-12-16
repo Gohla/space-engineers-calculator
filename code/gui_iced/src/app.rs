@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fmt::Debug;
 
 use iced::{Application, Color, Column, Command, Element, HorizontalAlignment, Length, Row, scrollable, Scrollable, Text};
@@ -83,10 +82,10 @@ impl InputBlocks {
     Self { small, large }
   }
 
-  pub fn update(&mut self, message: InputBlocksMessage, calc_map: &mut HashMap<BlockId, u64>) {
+  pub fn update(&mut self, message: InputBlocksMessage, calc: &mut GridCalculator) {
     let InputBlocksMessage(id, size, m) = message;
     if let Some(data_bind) = self.map_for_size(size).get_mut(&id) {
-      data_bind.update(m, calc_map.entry(id.clone()).or_default())
+      data_bind.update(m, calc.blocks.entry(id.clone()).or_default())
     }
   }
 
@@ -180,7 +179,7 @@ impl Application for App {
   fn update(&mut self, message: Message) -> Command<Message> {
     match message {
       Message::InputOptionChange(m) => self.input_options.update(m, &mut self.calculator),
-      Message::InputStorageChange(m) => self.input_storage.update(m, &mut self.calculator.containers),
+      Message::InputStorageChange(m) => self.input_storage.update(m, &mut self.calculator),
     }
     self.result = self.calculator.calculate(&self.data);
     Command::none()

@@ -11,12 +11,15 @@ serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"
 
 [dependencies.gtk]
-version = "0.7.0"
+version = "0.8"
 features = ["v3_22"]
 
 [dependencies.gio]
 version = ""
 features = ["v2_44"]
+
+[dependencies.glib]
+version = ""
 
 [dependencies.gdk]
 version = ""

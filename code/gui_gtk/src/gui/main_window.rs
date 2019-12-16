@@ -12,7 +12,7 @@ use gtk::{Align, Application, ApplicationWindow, Button, Entry, Grid, InputPurpo
 use gtk::prelude::*;
 use snafu::{ResultExt, Snafu};
 
-use secalc_core::grid::{GridCalculator, ThrusterSide};
+use secalc_core::grid::{GridCalculator, Direction};
 use secalc_core::data::blocks::{Block, BlockId, Blocks};
 use secalc_core::data::Data;
 
@@ -66,7 +66,7 @@ pub struct MainWindow {
 
   acceleration_input_small: Grid,
   acceleration_input_large: Grid,
-  thrusters: HashMap<ThrusterSide, ThrusterWidgets>,
+  thrusters: HashMap<Direction, ThrusterWidgets>,
 
   power_input_small: Grid,
   power_input_large: Grid,
@@ -200,15 +200,15 @@ impl MainWindow {
     let acceleration_input_small = builder.get_object("acceleration_input_small").unwrap();
     let acceleration_input_large = builder.get_object("acceleration_input_large").unwrap();
     let mut thrusters = HashMap::default();
-    for side in ThrusterSide::iter() {
+    for side in Direction::iter() {
       let side = *side;
       let id_prefix = match side {
-        ThrusterSide::Up => "up",
-        ThrusterSide::Down => "down",
-        ThrusterSide::Front => "front",
-        ThrusterSide::Back => "back",
-        ThrusterSide::Left => "left",
-        ThrusterSide::Right => "right",
+        Direction::Up => "up",
+        Direction::Down => "down",
+        Direction::Front => "front",
+        Direction::Back => "back",
+        Direction::Left => "left",
+        Direction::Right => "right",
       };
       let force = builder.get_object(&(id_prefix.to_string() + "_force")).unwrap();
       let acceleration_empty_no_gravity = builder.get_object(&(id_prefix.to_string() + "_acceleration_empty_no_gravity")).unwrap();
@@ -429,17 +429,17 @@ impl MainWindow {
     self.any_fill_with_steel_plates.set_and_recalc_on_change(&self, 0.0, |c| &mut c.any_fill_with_steel_plates);
 
     // Volume & Mass
-    self.clone().create_block_inputs(self.data.blocks.containers.values().filter(|c| c.details.store_any), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.containers);
-    self.clone().create_block_inputs(self.data.blocks.cockpits.values().filter(|c| c.details.has_inventory), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.cockpits);
+    self.clone().create_block_inputs(self.data.blocks.containers.values().filter(|c| c.details.store_any), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.blocks);
+    self.clone().create_block_inputs(self.data.blocks.cockpits.values().filter(|c| c.details.has_inventory), &self.volume_mass_input_small, &self.volume_mass_input_large, |c| &mut c.blocks);
     // Acceleration
     self.clone().create_acceleration_block_inputs(self.data.blocks.thrusters.values(), &self.acceleration_input_small, &self.acceleration_input_large);
     // Power
-    self.clone().create_block_inputs(self.data.blocks.hydrogen_engines.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.hydrogen_engines);
-    self.clone().create_block_inputs(self.data.blocks.reactors.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.reactors);
-    self.clone().create_block_inputs(self.data.blocks.batteries.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.batteries);
+    self.clone().create_block_inputs(self.data.blocks.hydrogen_engines.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.blocks);
+    self.clone().create_block_inputs(self.data.blocks.reactors.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.blocks);
+    self.clone().create_block_inputs(self.data.blocks.batteries.values(), &self.power_input_small, &self.power_input_large, |c| &mut c.blocks);
     // Hydrogen
-    self.clone().create_block_inputs(self.data.blocks.generators.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.generators);
-    self.clone().create_block_inputs(self.data.blocks.hydrogen_tanks.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.hydrogen_tanks);
+    self.clone().create_block_inputs(self.data.blocks.generators.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.blocks);
+    self.clone().create_block_inputs(self.data.blocks.hydrogen_tanks.values(), &self.hydrogen_input_small, &self.hydrogen_input_large, |c| &mut c.blocks);
   }
 
 
@@ -514,32 +514,32 @@ impl MainWindow {
       grid.attach(&label, 0, index, 1, 1);
 
       let entry_up = Self::create_entry();
-      entry_up.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Up).unwrap());
+      entry_up.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Up).unwrap());
       grid.attach(&entry_up, 1, index, 1, 1);
       block_entries.up_entries.insert(block.id.clone(), entry_up.clone());
 
       let entry_down = Self::create_entry();
-      entry_down.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Down).unwrap());
+      entry_down.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Down).unwrap());
       grid.attach(&entry_down, 2, index, 1, 1);
       block_entries.down_entries.insert(block.id.clone(), entry_down.clone());
 
       let entry_front = Self::create_entry();
-      entry_front.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Front).unwrap());
+      entry_front.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Front).unwrap());
       grid.attach(&entry_front, 3, index, 1, 1);
       block_entries.front_entries.insert(block.id.clone(), entry_front.clone());
 
       let entry_back = Self::create_entry();
-      entry_back.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Back).unwrap());
+      entry_back.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Back).unwrap());
       grid.attach(&entry_back, 4, index, 1, 1);
       block_entries.back_entries.insert(block.id.clone(), entry_back.clone());
 
       let entry_left = Self::create_entry();
-      entry_left.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Left).unwrap());
+      entry_left.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Left).unwrap());
       grid.attach(&entry_left, 5, index, 1, 1);
       block_entries.left_entries.insert(block.id.clone(), entry_left.clone());
 
       let entry_right = Self::create_entry();
-      entry_right.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.thrusters.get_mut(&ThrusterSide::Right).unwrap());
+      entry_right.insert_and_recalc_on_change(&self, block.id.clone(), |c| c.directional_blocks.get_mut(&Direction::Right).unwrap());
       grid.attach(&entry_right, 6, index, 1, 1);
       block_entries.right_entries.insert(block.id.clone(), entry_right.clone());
     }
@@ -669,12 +669,12 @@ impl MainWindow {
         entry.set("");
       }
       set_entries_from(&block_entries.entries, calculator.iter_block_counts());
-      set_entries_from(&block_entries.up_entries, calculator.thrusters.get(&ThrusterSide::Up).unwrap().iter());
-      set_entries_from(&block_entries.down_entries, calculator.thrusters.get(&ThrusterSide::Down).unwrap().iter());
-      set_entries_from(&block_entries.front_entries, calculator.thrusters.get(&ThrusterSide::Front).unwrap().iter());
-      set_entries_from(&block_entries.back_entries, calculator.thrusters.get(&ThrusterSide::Back).unwrap().iter());
-      set_entries_from(&block_entries.left_entries, calculator.thrusters.get(&ThrusterSide::Left).unwrap().iter());
-      set_entries_from(&block_entries.right_entries, calculator.thrusters.get(&ThrusterSide::Right).unwrap().iter());
+      set_entries_from(&block_entries.up_entries, calculator.directional_blocks.get(&Direction::Up).unwrap().iter());
+      set_entries_from(&block_entries.down_entries, calculator.directional_blocks.get(&Direction::Down).unwrap().iter());
+      set_entries_from(&block_entries.front_entries, calculator.directional_blocks.get(&Direction::Front).unwrap().iter());
+      set_entries_from(&block_entries.back_entries, calculator.directional_blocks.get(&Direction::Back).unwrap().iter());
+      set_entries_from(&block_entries.left_entries, calculator.directional_blocks.get(&Direction::Left).unwrap().iter());
+      set_entries_from(&block_entries.right_entries, calculator.directional_blocks.get(&Direction::Right).unwrap().iter());
     }
 
     let mut state = self.state.borrow_mut();
