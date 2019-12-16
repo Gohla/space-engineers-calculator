@@ -61,6 +61,7 @@ create_input_options!(Length::Units(250); Length::Units(100);
 
 // Input blocks
 
+#[derive(Default)]
 pub struct InputBlocks {
   small: LinkedHashMap<BlockId, DataBind<u64>>,
   large: LinkedHashMap<BlockId, DataBind<u64>>,
@@ -70,16 +71,15 @@ pub struct InputBlocks {
 pub struct InputBlocksMessage(BlockId, GridSize, DataBindMessage);
 
 impl InputBlocks {
-  pub fn new<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(data: &Data, label_width: Length, value_width: Length, blocks_iter: I) -> Self {
-    fn into_map<T>(data: &Data, label_width: Length, value_width: Length, vec: Vec<&Block<T>>) -> LinkedHashMap<BlockId, DataBind<u64>> {
-      vec.into_iter()
-        .map(|b| (b.id.clone(), DataBind::new(b.name(&data.localization), label_width, 0, "0", value_width, "#")))
-        .collect()
-    }
+  pub fn add_blocks<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(&mut self, data: &Data, label_width: Length, value_width: Length, blocks_iter: I) {
     let (small, large) = Blocks::small_and_large_sorted(blocks_iter);
-    let small = into_map(data, label_width, value_width, small);
-    let large = into_map(data, label_width, value_width, large);
-    Self { small, large }
+    fn add_to_map<T>(data: &Data, label_width: Length, value_width: Length, vec: Vec<&Block<T>>, map: &mut LinkedHashMap<BlockId, DataBind<u64>>) {
+      map.extend(vec.into_iter()
+        .map(|b| (b.id.clone(), DataBind::new(b.name(&data.localization), label_width, 0, "0", value_width, "#")))
+      );
+    }
+    add_to_map(data, label_width, value_width, small, &mut self.small);
+    add_to_map(data, label_width, value_width, large, &mut self.large);
   }
 
   pub fn update(&mut self, message: InputBlocksMessage, calc: &mut GridCalculator) {
@@ -127,6 +127,8 @@ impl InputBlocks {
 pub struct App {
   input_options: InputOptions,
   input_storage: InputBlocks,
+  input_power: InputBlocks,
+  input_hydrogen: InputBlocks,
 
   data: Data,
   calculator: GridCalculator,
@@ -144,11 +146,33 @@ impl Default for App {
     let result = calculator.calculate(&data);
 
     let input_options = InputOptions::new(&calculator);
-    let input_storage = InputBlocks::new(&data, Length::Units(250), Length::Units(35), data.blocks.containers.values().filter(|c| c.details.store_any));
+    let blocks_label_width = Length::Units(250);
+    let blocks_value_width = Length::Units(35);
+    let input_storage = {
+      let mut blocks = InputBlocks::default();
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.containers.values().filter(|c| c.details.store_any));
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
+      blocks
+    };
+    let input_power = {
+      let mut blocks = InputBlocks::default();
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.hydrogen_engines.values());
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.reactors.values());
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.batteries.values());
+      blocks
+    };
+    let input_hydrogen = {
+      let mut blocks = InputBlocks::default();
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.generators.values());
+      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.hydrogen_tanks.values());
+      blocks
+    };
 
     Self {
       input_options,
       input_storage,
+      input_power,
+      input_hydrogen,
       data,
       calculator,
       result,
@@ -162,6 +186,8 @@ impl Default for App {
 pub enum Message {
   InputOptionChange(InputOptionMessage),
   InputStorageChange(InputBlocksMessage),
+  InputPowerChange(InputBlocksMessage),
+  InputHydrogenChange(InputBlocksMessage),
 }
 
 impl Application for App {
@@ -180,6 +206,8 @@ impl Application for App {
     match message {
       Message::InputOptionChange(m) => self.input_options.update(m, &mut self.calculator),
       Message::InputStorageChange(m) => self.input_storage.update(m, &mut self.calculator),
+      Message::InputPowerChange(m) => self.input_power.update(m, &mut self.calculator),
+      Message::InputHydrogenChange(m) => self.input_hydrogen.update(m, &mut self.calculator),
     }
     self.result = self.calculator.calculate(&self.data);
     Command::none()
@@ -200,11 +228,19 @@ impl Application for App {
       .push(h1("Storage"))
       .push(self.input_storage.view().map(Message::InputStorageChange))
       ;
-    // - TODO
+    // - TODO: Thrusters
+    let input =
+      input.push(h1("Thrusters"))
+      ;
+    // - Power
     let input = input
-      .push(h1("Thrusters"))
       .push(h1("Power"))
+      .push(self.input_power.view().map(Message::InputPowerChange))
+      ;
+    // - Hydrogen
+    let input = input
       .push(h1("Hydrogen"))
+      .push(self.input_hydrogen.view().map(Message::InputHydrogenChange))
       ;
 
     // Result
