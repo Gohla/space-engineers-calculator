@@ -12,7 +12,6 @@ pub fn h2<L: Into<String>>(label: L) -> Text {
   Text::new(label).size(H2_SIZE)
 }
 
-
 pub trait ScrollableExt {
   fn push_labelled<L: Into<String>, V: Into<String>, U: Into<String>>(self, label: L, label_width: Length, value: V, value_width: Length, unit: U) -> Self;
 }
