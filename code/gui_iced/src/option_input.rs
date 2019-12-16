@@ -6,13 +6,13 @@ use secalc_core::grid::GridCalculator;
 
 use crate::data_bind::{DataBind, DataBindMessage};
 
-macro_rules! create_input_options {
+macro_rules! create_option_input {
   ($label_length:expr; $input_length:expr; $($field:ident, $type:ty, $message:ident, $label:expr, $format:expr, $unit:expr);*) => {
-    pub struct InputOptions {
+    pub struct OptionInput {
       $($field: DataBind<$type>,)*
     }
 
-    impl InputOptions {
+    impl OptionInput {
       pub fn new(calc: &GridCalculator) -> Self {
         Self {
           $($field: DataBind::new($label, $label_length, calc.$field, format!($format, calc.$field), $input_length, $unit),)*
@@ -21,27 +21,27 @@ macro_rules! create_input_options {
     }
 
     #[derive(Clone, Debug)]
-    pub enum InputOptionMessage {
+    pub enum OptionInputMessage {
       $($message(DataBindMessage),)*
     }
 
-    impl InputOptions {
-      pub fn update(&mut self, message: InputOptionMessage, calc: &mut GridCalculator) {
+    impl OptionInput {
+      pub fn update(&mut self, message: OptionInputMessage, calc: &mut GridCalculator) {
         match message {
-          $(InputOptionMessage::$message(m) => self.$field.update(m, &mut calc.$field),)*
+          $(OptionInputMessage::$message(m) => self.$field.update(m, &mut calc.$field),)*
         }
       }
 
-      pub fn view(&mut self) -> impl IntoIterator<Item=Element<InputOptionMessage>> {
+      pub fn view(&mut self) -> impl IntoIterator<Item=Element<OptionInputMessage>> {
         vec![
-          $(self.$field.view().map(move |s| InputOptionMessage::$message(s)),)*
+          $(self.$field.view().map(move |s| OptionInputMessage::$message(s)),)*
         ]
       }
     }
   }
 }
 
-create_input_options!(Length::Units(250); Length::Units(100);
+create_option_input!(Length::Units(250); Length::Units(100);
   gravity_multiplier, f64, GravityMultiplier, "Gravity Multiplier", "{:.1}", "*";
   container_multiplier, f64, ContainerMultiplier, "Container Multiplier", "{:.1}", "*";
   planetary_influence, f64, PlanetaryInfluence, "Planetary Influence", "{:.1}", "*";

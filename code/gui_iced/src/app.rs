@@ -1,16 +1,16 @@
 use std::fmt::Debug;
 
-use iced::{Application, Color, Command, Element,  Length, Row, scrollable, Scrollable};
+use iced::{Application, Color, Command, Element, Length, Row, scrollable, Scrollable};
 
 use secalc_core::data::Data;
 use secalc_core::grid::{GridCalculated, GridCalculator};
 
 use crate::block_input::{BlockInput, BlockInputMessage};
-use crate::option_input::{InputOptionMessage, InputOptions};
+use crate::option_input::{OptionInput, OptionInputMessage};
 use crate::widget::{h1, ScrollableExt};
 
 pub struct App {
-  input_options: InputOptions,
+  input_options: OptionInput,
   input_storage: BlockInput,
   input_power: BlockInput,
   input_hydrogen: BlockInput,
@@ -30,7 +30,7 @@ impl Default for App {
     let calculator = GridCalculator::default();
     let result = calculator.calculate(&data);
 
-    let input_options = InputOptions::new(&calculator);
+    let input_options = OptionInput::new(&calculator);
     let blocks_label_width = Length::Units(250);
     let blocks_value_width = Length::Units(35);
     let input_storage = {
@@ -69,7 +69,7 @@ impl Default for App {
 
 #[derive(Clone, Debug)]
 pub enum Message {
-  InputOptionChange(InputOptionMessage),
+  InputOptionChange(OptionInputMessage),
   InputStorageChange(BlockInputMessage),
   InputPowerChange(BlockInputMessage),
   InputHydrogenChange(BlockInputMessage),
@@ -162,10 +162,3 @@ impl Application for App {
     root.explain(Color::BLACK)
   }
 }
-
-
-// Helper functions
-
-
-// Helper extension traits
-

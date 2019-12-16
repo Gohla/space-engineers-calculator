@@ -12,6 +12,7 @@ fn main() {
     window: Window {
       size: (1300, 1000),
       ..Window::default()
-    }
+    },
+    ..Settings::default()
   })
 }
