@@ -1,4 +1,4 @@
-cargo-features = ["profile-overrides"]
+cargo-features = ["named-profiles", "profile-overrides"]
 
 [workspace]
 members = [
@@ -28,6 +28,10 @@ opt-level = 2
 opt-level = 2
 [profile.dev.overrides."secalc_gui_iced"]
 opt-level = 2
+
+[profile.debuginfo]
+inherits = 'dev'
+debug = true
 
 [profile.release]
 opt-level = 3

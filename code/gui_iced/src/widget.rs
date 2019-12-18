@@ -1,15 +1,25 @@
-use iced::{HorizontalAlignment, Length, Row, Scrollable, Text};
+use iced::{Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text};
 
-pub const H2_SIZE: u16 = 24;
-pub const H1_SIZE: u16 = 28;
+#[inline]
+pub fn row<'a, M>() -> Row<'a, M> { Row::new().width(Length::Shrink) }
 
+#[inline]
+pub fn col<'a, M>() -> Column<'a, M> { Column::new().width(Length::Shrink) }
 
+#[inline]
+pub fn scl<M>(state: &mut scrollable::State) -> Scrollable<M> { Scrollable::new(state).width(Length::Shrink) }
+
+#[inline]
+pub fn txt<L: Into<String>>(label: L) -> Text { Text::new(label).width(Length::Shrink).size(16) }
+
+#[inline]
 pub fn h1<L: Into<String>>(label: L) -> Text {
-  Text::new(label).size(H1_SIZE)
+  Text::new(label).size(24)
 }
 
+#[inline]
 pub fn h2<L: Into<String>>(label: L) -> Text {
-  Text::new(label).size(H2_SIZE)
+  Text::new(label).size(20)
 }
 
 pub trait ScrollableExt {
