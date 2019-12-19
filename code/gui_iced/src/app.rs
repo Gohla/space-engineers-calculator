@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use iced::{Application, Command, Element, Length, scrollable, Align};
+use iced::{Align, Application, Command, Element, HorizontalAlignment, Length, scrollable};
 
 use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
@@ -8,7 +8,7 @@ use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
 use crate::block_input::{BlockInput, BlockInputMessage};
 use crate::directional_block_input::{DirectionalBlockInput, DirectionalBlockInputMessage};
 use crate::option_input::{OptionInput, OptionInputMessage};
-use crate::view::{col, ColumnExt, h1, h2, lbl, row, scl, h3};
+use crate::view::{col, empty, h1, h2, h3, lbl, row, scl, val};
 
 pub struct App {
   input_options: OptionInput,
@@ -33,7 +33,7 @@ impl Default for App {
     let result = calculator.calculate(&data);
 
     let input_options = OptionInput::new(&calculator);
-    let blocks_label_width = Length::Units(210);
+    let blocks_label_width = Length::Units(230);
     let blocks_input_width = Length::Units(35);
     let input_storage = {
       let mut blocks = BlockInput::new(blocks_label_width, blocks_input_width);
@@ -42,7 +42,7 @@ impl Default for App {
       blocks
     };
     let input_thrust = {
-      let mut blocks = DirectionalBlockInput::new(blocks_label_width, blocks_input_width, Length::Units(50));
+      let mut blocks = DirectionalBlockInput::new(blocks_label_width, blocks_input_width, Length::Units(49));
       blocks.add_blocks(&data, data.blocks.thrusters.values());
       blocks
     };
@@ -109,221 +109,22 @@ impl Application for App {
   }
 
   fn view(&mut self) -> Element<Message> {
-    // Input
-    let input = scl(&mut self.input_scrollable)
-      .spacing(10)
-      .padding(1)
-      .push(col()
-        .push(h2("Options"))
-        .push(self.input_options.view().map(Message::InputOptionChange))
-      )
-      .push(col()
-        .push(h2("Storage"))
-        .push(self.input_storage.view().map(Message::InputStorageChange))
-      )
-      .push(col()
-        .push(h2("Thrusters"))
-        .push(self.input_thrust.view().map(Message::InputThrustChange))
-      )
-      .push(col()
-        .push(h2("Power"))
-        .push(self.input_power.view().map(Message::InputPowerChange))
-      )
-      .push(col()
-        .push(h2("Hydrogen"))
-        .push(self.input_hydrogen.view().map(Message::InputHydrogenChange))
-      )
-      ;
-
-    // Result
-    let result_acceleration: Element<_> = {
-      let col_width = Length::Units(70);
-      let mut row = row()
-        .spacing(1)
-        .width(Length::Shrink)
-        .push(lbl("Acceleration (m/s^2)").width(Length::Shrink))
-        .push(
-          col().width(Length::Units(100))
-            .push(lbl("-"))
-            .push(lbl("-"))
-            .push(lbl("No gravity"))
-            .push(lbl("Gravity"))
-        );
-      for direction in Direction::iter() {
-        if let Some(accel) = self.result.acceleration.get(direction) {
-          row = row
-            .push(
-              col().width(col_width)
-                .push(lbl(format!("{:?}", direction)))
-                .push(lbl("Empty"))
-                .push(lbl(format!("{:.2}", accel.acceleration_empty_no_gravity)))
-                .push(lbl(format!("{:.2}", accel.acceleration_empty_gravity)))
-            )
-            .push(
-              col().width(col_width)
-                .push(lbl("-"))
-                .push(lbl("Filled"))
-                .push(lbl(format!("{:.2}", accel.acceleration_filled_no_gravity)))
-                .push(lbl(format!("{:.2}", accel.acceleration_filled_gravity)))
-            )
-        }
-      }
-      row.into()
-    };
-
-    let result_power: Element<_> = {
-      let row = row().spacing(10)
-        .push(col()
-          .push(lbl("Generation (MW)"))
-          .push(lbl("Capacity: Batteries (MWh)"))
-          .push(lbl("-"))
-          .push(lbl("Ide (MW)"))
-          .push(lbl("Misc (MW)"))
-          .push(lbl("+Charge Jump Drives (MW)"))
-          .push(lbl("+Generators (MW)"))
-          .push(lbl("+Up/Down Thrusters (MW)"))
-          .push(lbl("+Front/Back Thrusters (MW)"))
-          .push(lbl("+Left/Right Thrusters (MW)"))
-          .push(lbl("+Charge Batteries (MW)"))
-        )
-        .push(col()
-          .push(lbl(format!("{:.2}", self.result.power_generation)))
-          .push(lbl(format!("{:.2}", self.result.power_capacity_battery)))
-          .push(lbl("Consumption"))
-          .push(lbl(format!("{:.2}", self.result.power_idle.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_misc.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_generator.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.consumption)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_battery.consumption)))
-        )
-        .push(col()
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("Balance"))
-          .push(lbl(format!("{:.2}", self.result.power_idle.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_misc.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_generator.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.balance)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_battery.balance)))
-        )
-        .push(col()
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("Duration: Batteries (min)"))
-          .push(lbl(format!("{:.2}", self.result.power_idle.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_misc.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_generator.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.duration)))
-          .push(lbl(format!("{:.2}", self.result.power_upto_battery.duration)))
-        )
-        ;
-      row.into()
-    };
-
-    let result_hydrogen: Element<_> = {
-      let row = row().spacing(10)
-        .push(col()
-          .push(lbl("Generation (L/s)"))
-          .push(lbl("Capacity: Engines (L)"))
-          .push(lbl("Capacity: Tanks (L)"))
-          .push(lbl("-"))
-          .push(lbl("Ide (L/s)"))
-          .push(lbl("Engines (L/s)"))
-          .push(lbl("+Up/Down Thrusters (L/s)"))
-          .push(lbl("+Front/Back Thrusters (L/s)"))
-          .push(lbl("+Left/Right Thrusters (L/s)"))
-        )
-        .push(col()
-          .push(lbl(format!("{:.2}", self.result.hydrogen_generation)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_capacity_engine)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_capacity_tank)))
-          .push(lbl("Consumption"))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.consumption)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.consumption)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.consumption)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.consumption)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.consumption)))
-        )
-        .push(col()
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("Balance"))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.balance)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.balance)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.balance)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.balance)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.balance)))
-        )
-        .push(col()
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("-"))
-          .push(lbl("Duration: Tanks (min)"))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.duration)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.duration)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.duration)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.duration)))
-          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.duration)))
-        )
-        ;
-      row.into()
-    };
-
-    let label_width = Length::Units(100);
-    let value_width = Length::Units(100);
-    let result = scl(&mut self.result_scrollable)
-      .spacing(10)
-      .padding(1)
-      .push(col()
-        .push(h2("Mass"))
-        .push_labelled("Empty", label_width, format!("{:.0}", self.result.total_mass_empty), value_width, "kg")
-        .push_labelled("Filled", label_width, format!("{:.0}", self.result.total_mass_filled), value_width, "kg")
-      )
-      .push(col()
-        .push(h2("Volume"))
-        .push_labelled("Any", label_width, format!("{:.0}", self.result.total_volume_any), value_width, "L")
-        .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_volume_ore), value_width, "L")
-        .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_volume_ice), value_width, "L")
-        .push_labelled("Ore-only", label_width, format!("{:.0}", self.result.total_volume_ore_only), value_width, "L")
-        .push_labelled("Ice-only", label_width, format!("{:.0}", self.result.total_volume_ice_only), value_width, "L")
-      )
-      .push(col()
-        .push(h2("Items"))
-        .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_items_ore), value_width, "#")
-        .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_items_ice), value_width, "#")
-        .push_labelled("Steel Plates", label_width, format!("{:.0}", self.result.total_items_steel_plate), value_width, "#")
-      )
-      .push(col()
-        .push(h2("Force & Acceleration"))
-        .push(result_acceleration)
-      )
-      .push(col()
-        .push(h2("Power"))
-        .push(result_power)
-      )
-      .push(col()
-        .push(h2("Hydrogen"))
-        .push(result_hydrogen)
-      )
-      ;
-
-    // Root
+    let input = Self::view_input(
+      &mut self.input_options,
+      &mut self.input_storage,
+      &mut self.input_thrust,
+      &mut self.input_power,
+      &mut self.input_hydrogen,
+      &mut self.input_scrollable
+    );
+    let result = Self::view_result(&self.result, &mut self.result_scrollable);
     let root: Element<_> = col()
       .padding(10)
       .push(row()
+        .spacing(10)
         .align_items(Align::End)
         .push(h1("Space Engineers Calculator"))
-        .push(h3(" https://github.com/Gohla/space_engineers_calc").width(Length::Fill))
+        .push(h3(" https://github.com/Gohla/space_engineers_calc"))
       )
       .push(row()
         .spacing(20)
@@ -334,3 +135,306 @@ impl Application for App {
   }
 }
 
+impl App {
+  fn view_input<'a>(
+    input_options: &'a mut OptionInput,
+    input_storage: &'a mut BlockInput,
+    input_thrust: &'a mut DirectionalBlockInput,
+    input_power: &'a mut BlockInput,
+    input_hydrogen: &'a mut BlockInput,
+    scrollable_state: &'a mut scrollable::State
+  ) -> Element<'a, Message> {
+    scl(scrollable_state)
+      .spacing(10)
+      .padding(1)
+      .push(col()
+        .push(h2("Options"))
+        .push(input_options.view().map(Message::InputOptionChange))
+      )
+      .push(col()
+        .push(h2("Storage"))
+        .push(input_storage.view().map(Message::InputStorageChange))
+      )
+      .push(col()
+        .push(h2("Thrusters"))
+        .push(input_thrust.view().map(Message::InputThrustChange))
+      )
+      .push(col()
+        .push(h2("Power"))
+        .push(input_power.view().map(Message::InputPowerChange))
+      )
+      .push(col()
+        .push(h2("Hydrogen"))
+        .push(input_hydrogen.view().map(Message::InputHydrogenChange))
+      )
+      .into()
+  }
+
+
+  fn view_result<'a>(result: &'a GridCalculated, scrollable_state: &'a mut scrollable::State) -> Element<'a, Message> {
+    scl(scrollable_state)
+      .spacing(10)
+      .padding(1)
+      .push(col()
+        .push(h2("Mass"))
+        .push(Self::view_result_mass(result))
+      )
+      .push(col()
+        .push(h2("Volume"))
+        .push(Self::view_result_volume(result))
+      )
+      .push(col()
+        .push(h2("Items"))
+        .push(Self::view_result_items(result))
+      )
+      .push(col()
+        .push(h2("Acceleration (m/s^2)"))
+        .push(Self::view_result_acceleration(result))
+      )
+      .push(col()
+        .push(h2("Power"))
+        .push(Self::view_result_power(result))
+      )
+      .push(col()
+        .push(h2("Hydrogen"))
+        .push(Self::view_result_hydrogen(result))
+      )
+      .into()
+  }
+
+  fn view_result_mass(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push(col()
+        .spacing(1)
+        .push(lbl("Empty"))
+        .push(lbl("Filled"))
+      )
+      .push(col()
+        .spacing(1)
+        .push(val(format!("{:.0} kg", result.total_mass_empty)))
+        .push(val(format!("{:.0} kg", result.total_mass_filled)))
+      )
+      .into()
+  }
+
+  fn view_result_volume(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push(col()
+        .spacing(1)
+        .push(lbl("Any"))
+        .push(lbl("Ore"))
+        .push(lbl("Ice"))
+        .push(lbl("Ore-only"))
+        .push(lbl("Ice-only"))
+      )
+      .push(col()
+        .spacing(1)
+        .push(val(format!("{:.0} L", result.total_volume_any)))
+        .push(val(format!("{:.0} L", result.total_volume_ore)))
+        .push(val(format!("{:.0} L", result.total_volume_ice)))
+        .push(val(format!("{:.0} L", result.total_volume_ore_only)))
+        .push(val(format!("{:.0} L", result.total_volume_ice_only)))
+      )
+      .into()
+  }
+
+  fn view_result_items(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push(col()
+        .spacing(1)
+        .push(lbl("Any"))
+        .push(lbl("Ice"))
+        .push(lbl("Steel Plates"))
+      )
+      .push(col()
+        .spacing(1)
+        .push(val(format!("{:.0} #", result.total_items_ore)))
+        .push(val(format!("{:.0} #", result.total_items_ice)))
+        .push(val(format!("{:.0} #", result.total_items_steel_plate)))
+      )
+      .into()
+  }
+
+  fn view_result_acceleration(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push({
+        let mut column = col()
+          .push(empty())
+          .push(empty())
+          ;
+        for direction in Direction::iter() {
+          column = column.push(val(format!("{:?}", direction)));
+        }
+        column
+      })
+      .push({
+        let mut column = col()
+          .push(lbl("Filled").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("Gravity").horizontal_alignment(HorizontalAlignment::Center))
+          ;
+        for direction in Direction::iter() {
+          if let Some(acceleration) = result.acceleration.get(direction) {
+            column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_gravity)))
+          }
+        }
+        column
+      })
+      .push({
+        let mut column = col()
+          .push(empty())
+          .push(lbl("No grav.").horizontal_alignment(HorizontalAlignment::Center))
+          ;
+        for direction in Direction::iter() {
+          if let Some(acceleration) = result.acceleration.get(direction) {
+            column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_no_gravity)))
+          }
+        }
+        column
+      })
+      .push({
+        let mut column = col()
+          .push(lbl("Empty").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("Gravity").horizontal_alignment(HorizontalAlignment::Center))
+          ;
+        for direction in Direction::iter() {
+          if let Some(acceleration) = result.acceleration.get(direction) {
+            column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_gravity)))
+          }
+        }
+        column
+      })
+      .push({
+        let mut column = col()
+          .push(empty())
+          .push(lbl("No grav.").horizontal_alignment(HorizontalAlignment::Center))
+          ;
+        for direction in Direction::iter() {
+          if let Some(acceleration) = result.acceleration.get(direction) {
+            column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_no_gravity)))
+          }
+        }
+        column
+      })
+      .into()
+  }
+
+  fn view_result_power(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push(col()
+        .spacing(1)
+        .push(lbl("Generation"))
+        .push(lbl("Capacity: Batteries"))
+        .push(empty())
+        .push(lbl("Ide"))
+        .push(lbl("Misc"))
+        .push(lbl("+ Charge Jump Drives"))
+        .push(lbl("+ Generators"))
+        .push(lbl("+ Up/Down Thrusters"))
+        .push(lbl("+ Front/Back Thrusters"))
+        .push(lbl("+ Left/Right Thrusters"))
+        .push(lbl("+ Charge Batteries"))
+      )
+      .push(col()
+        .spacing(1)
+        .push(val(format!("{:.2} MW", result.power_generation)))
+        .push(val(format!("{:.2} MWh", result.power_capacity_battery)))
+        .push(lbl("Consumption"))
+        .push(val(format!("{:.2} MW", result.power_idle.consumption)))
+        .push(val(format!("{:.2} MW", result.power_misc.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_jump_drive.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_generator.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_up_down_thruster.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_front_back_thruster.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_left_right_thruster.consumption)))
+        .push(val(format!("{:.2} MW", result.power_upto_battery.consumption)))
+      )
+      .push(col()
+        .spacing(1)
+        .push(empty())
+        .push(empty())
+        .push(lbl("Balance"))
+        .push(val(format!("{:.2} MW", result.power_idle.balance)))
+        .push(val(format!("{:.2} MW", result.power_misc.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_jump_drive.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_generator.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_up_down_thruster.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_front_back_thruster.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_left_right_thruster.balance)))
+        .push(val(format!("{:.2} MW", result.power_upto_battery.balance)))
+      )
+      .push(col()
+        .spacing(1)
+        .push(empty())
+        .push(empty())
+        .push(lbl("Duration: Batteries"))
+        .push(val(format!("{:.2} min", result.power_idle.duration)))
+        .push(val(format!("{:.2} min", result.power_misc.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_jump_drive.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_generator.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_up_down_thruster.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_front_back_thruster.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_left_right_thruster.duration)))
+        .push(val(format!("{:.2} min", result.power_upto_battery.duration)))
+      )
+      .into()
+  }
+
+  fn view_result_hydrogen(result: &GridCalculated) -> Element<Message> {
+    row()
+      .spacing(10)
+      .push(col()
+        .spacing(1)
+        .push(lbl("Generation"))
+        .push(lbl("Capacity: Engines"))
+        .push(lbl("Capacity: Tanks"))
+        .push(empty())
+        .push(lbl("Idle"))
+        .push(lbl("Engines"))
+        .push(lbl("+ Up/Down Thrusters"))
+        .push(lbl("+ Front/Back Thrusters"))
+        .push(lbl("+ Left/Right Thrusters"))
+      )
+      .push(col()
+        .spacing(1)
+        .push(val(format!("{:.0} L/s", result.hydrogen_generation)))
+        .push(val(format!("{:.0} L", result.hydrogen_capacity_engine)))
+        .push(val(format!("{:.0} L", result.hydrogen_capacity_tank)))
+        .push(lbl("Consumption"))
+        .push(val(format!("{:.1} L/s", result.hydrogen_idle.consumption)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_engine.consumption)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_up_down_thruster.consumption)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_front_back_thruster.consumption)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_left_right_thruster.consumption)))
+      )
+      .push(col()
+        .spacing(1)
+        .push(empty())
+        .push(empty())
+        .push(empty())
+        .push(lbl("Balance"))
+        .push(val(format!("{:.1} L/s", result.hydrogen_idle.balance)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_engine.balance)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_up_down_thruster.balance)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_front_back_thruster.balance)))
+        .push(val(format!("{:.1} L/s", result.hydrogen_upto_left_right_thruster.balance)))
+      )
+      .push(col()
+        .spacing(1)
+        .push(empty())
+        .push(empty())
+        .push(empty())
+        .push(lbl("Duration: Tanks"))
+        .push(val(format!("{:.2} min", result.hydrogen_idle.duration)))
+        .push(val(format!("{:.2} min", result.hydrogen_engine.duration)))
+        .push(val(format!("{:.2} min", result.hydrogen_upto_up_down_thruster.duration)))
+        .push(val(format!("{:.2} min", result.hydrogen_upto_front_back_thruster.duration)))
+        .push(val(format!("{:.2} min", result.hydrogen_upto_left_right_thruster.duration)))
+      )
+      .into()
+  }
+}

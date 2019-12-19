@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use iced::{Align, Color, Element, Length, text_input, TextInput, VerticalAlignment};
+use iced::{Align, Color, Element, Length, text_input, TextInput};
 
 use crate::view::{lbl, row, TXT_SIZE};
 
@@ -48,12 +48,10 @@ impl<T: Copy + FromStr> DataBind<T> {
       ;
     let unit = lbl(&self.unit)
       .color(if self.error { Color::from_rgb(0.8, 0.0, 0.0) } else { Color::BLACK })
-      .vertical_alignment(VerticalAlignment::Center) // TODO: does not work in iced_web.
       ;
     row()
       .spacing(2)
       .padding(1)
-      .width(Length::Shrink)
       .align_items(Align::Center)
       .push(input)
       .push(unit)

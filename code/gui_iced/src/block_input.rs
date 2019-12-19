@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use iced::{Element, Length};
+use iced::{Align, Element, Length};
 use linked_hash_map::LinkedHashMap;
 
 use secalc_core::data::blocks::{Block, BlockId, Blocks, GridSize};
@@ -55,7 +55,7 @@ impl BlockInput {
       let mut column = col();
       for (id, (label, data_bind)) in map {
         let id = id.clone(); // Clone to simplify lifetimes: we have an owned String now.
-        column = column.push(row()
+        column = column.push(row().align_items(Align::Center)
           .push(lbl(label.deref()).width(label_width))
           .push(data_bind.view().map(move |m| BlockInputMessage(
             // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone.

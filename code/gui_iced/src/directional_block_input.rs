@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use iced::{Element, Length};
+use iced::{Align, Element, Length};
 use linked_hash_map::LinkedHashMap;
 
 use secalc_core::data::blocks::{Block, BlockId, Blocks, GridSize};
@@ -8,7 +8,7 @@ use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculator};
 
 use crate::data_bind::{DataBind, DataBindMessage};
-use crate::view::{col, h3, lbl, row};
+use crate::view::{col, empty, h3, lbl, row};
 
 type InnerMap = LinkedHashMap<Direction, DataBind<u64>>;
 type Map = LinkedHashMap<BlockId, (String, InnerMap)>;
@@ -73,8 +73,10 @@ impl DirectionalBlockInput {
   fn create_column(map: &mut Map, label_width: Length, direction_label_width: Length, grid_size: GridSize) -> Element<DirectionalBlockInputMessage> {
     let mut column = {
       let mut first_row = row()
+        .spacing(2)
         .width(Length::Shrink)
-        .push(lbl("-").width(label_width))
+        .align_items(Align::Center)
+        .push(empty().width(label_width))
         ;
       for direction in Direction::iter() {
         first_row = first_row.push(lbl(format!("{:?}", direction)).width(direction_label_width))
@@ -83,7 +85,7 @@ impl DirectionalBlockInput {
     };
 
     for (id, (label, inner_map)) in map.iter_mut() {
-      let mut row = row();
+      let mut row = row().spacing(2).align_items(Align::Center);
       row = row.push(lbl(label.deref()).width(label_width));
       for (direction, data_bind) in inner_map {
         // Clone and copy before closure such that no reference is passed into the ('static) closure.

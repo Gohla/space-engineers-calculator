@@ -11,10 +11,9 @@ pub mod directional_block_input;
 fn main() {
   app::App::run(Settings {
     window: Window {
-      size: (2200, 1000),
+      size: (2300, 1000),
       ..Window::default()
     },
     ..Settings::default()
   })
 }
-
