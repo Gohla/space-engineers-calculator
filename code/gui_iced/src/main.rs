@@ -3,7 +3,7 @@ use iced::settings::Window;
 
 pub mod app;
 pub mod data_bind;
-pub mod widget;
+pub mod view;
 pub mod option_input;
 pub mod block_input;
 pub mod directional_block_input;
@@ -17,3 +17,4 @@ fn main() {
     ..Settings::default()
   })
 }
+

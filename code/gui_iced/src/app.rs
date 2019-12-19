@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use iced::{Application, Color, Column, Command, Element, Length, Row, scrollable, Scrollable, Text};
+use iced::{Application, Command, Element, Length, scrollable, Align};
 
 use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
@@ -8,7 +8,7 @@ use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
 use crate::block_input::{BlockInput, BlockInputMessage};
 use crate::directional_block_input::{DirectionalBlockInput, DirectionalBlockInputMessage};
 use crate::option_input::{OptionInput, OptionInputMessage};
-use crate::widget::{h1, ScrollableExt, txt, col, row, scl};
+use crate::view::{col, ColumnExt, h1, h2, lbl, row, scl, h3};
 
 pub struct App {
   input_options: OptionInput,
@@ -33,30 +33,30 @@ impl Default for App {
     let result = calculator.calculate(&data);
 
     let input_options = OptionInput::new(&calculator);
-    let blocks_label_width = Length::Units(250);
-    let blocks_value_width = Length::Units(35);
+    let blocks_label_width = Length::Units(210);
+    let blocks_input_width = Length::Units(35);
     let input_storage = {
-      let mut blocks = BlockInput::default();
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.containers.values().filter(|c| c.details.store_any));
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
+      let mut blocks = BlockInput::new(blocks_label_width, blocks_input_width);
+      blocks.add_blocks(&data, data.blocks.containers.values().filter(|c| c.details.store_any));
+      blocks.add_blocks(&data, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
       blocks
     };
     let input_thrust = {
-      let mut blocks = DirectionalBlockInput::new(blocks_label_width, blocks_value_width);
+      let mut blocks = DirectionalBlockInput::new(blocks_label_width, blocks_input_width, Length::Units(50));
       blocks.add_blocks(&data, data.blocks.thrusters.values());
       blocks
     };
     let input_power = {
-      let mut blocks = BlockInput::default();
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.hydrogen_engines.values());
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.reactors.values());
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.batteries.values());
+      let mut blocks = BlockInput::new(blocks_label_width, blocks_input_width);
+      blocks.add_blocks(&data, data.blocks.hydrogen_engines.values());
+      blocks.add_blocks(&data, data.blocks.reactors.values());
+      blocks.add_blocks(&data, data.blocks.batteries.values());
       blocks
     };
     let input_hydrogen = {
-      let mut blocks = BlockInput::default();
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.generators.values());
-      blocks.add_blocks(&data, blocks_label_width, blocks_value_width, data.blocks.hydrogen_tanks.values());
+      let mut blocks = BlockInput::new(blocks_label_width, blocks_input_width);
+      blocks.add_blocks(&data, data.blocks.generators.values());
+      blocks.add_blocks(&data, data.blocks.hydrogen_tanks.values());
       blocks
     };
 
@@ -110,67 +110,61 @@ impl Application for App {
 
   fn view(&mut self) -> Element<Message> {
     // Input
-    let input = Scrollable::new(&mut self.input_scrollable)
-      .spacing(1)
+    let input = scl(&mut self.input_scrollable)
+      .spacing(10)
       .padding(1)
-      .width(Length::Shrink)
-      ;
-    // - Options
-    let mut input = input.push(h1("Options"));
-    for elem in self.input_options.view() {
-      input = input.push(elem.map(Message::InputOptionChange));
-    }
-    // - Storage
-    let input = input
-      .push(h1("Storage"))
-      .push(self.input_storage.view().map(Message::InputStorageChange))
-      ;
-    // - TODO: Thrusters
-    let input = input
-      .push(h1("Thrusters"))
-      .push(self.input_thrust.view().map(Message::InputThrustChange))
-      ;
-    // - Power
-    let input = input
-      .push(h1("Power"))
-      .push(self.input_power.view().map(Message::InputPowerChange))
-      ;
-    // - Hydrogen
-    let input = input
-      .push(h1("Hydrogen"))
-      .push(self.input_hydrogen.view().map(Message::InputHydrogenChange))
+      .push(col()
+        .push(h2("Options"))
+        .push(self.input_options.view().map(Message::InputOptionChange))
+      )
+      .push(col()
+        .push(h2("Storage"))
+        .push(self.input_storage.view().map(Message::InputStorageChange))
+      )
+      .push(col()
+        .push(h2("Thrusters"))
+        .push(self.input_thrust.view().map(Message::InputThrustChange))
+      )
+      .push(col()
+        .push(h2("Power"))
+        .push(self.input_power.view().map(Message::InputPowerChange))
+      )
+      .push(col()
+        .push(h2("Hydrogen"))
+        .push(self.input_hydrogen.view().map(Message::InputHydrogenChange))
+      )
       ;
 
     // Result
     let result_acceleration: Element<_> = {
       let col_width = Length::Units(70);
-      let mut row = Row::new()
+      let mut row = row()
         .spacing(1)
         .width(Length::Shrink)
-        .push(Text::new("Acceleration (m/s^2)").width(Length::Shrink))
+        .push(lbl("Acceleration (m/s^2)").width(Length::Shrink))
         .push(
-          Column::new().width(Length::Units(100))
-            .push(Text::new("-"))
-            .push(Text::new("-"))
-            .push(Text::new("No gravity"))
-            .push(Text::new("Gravity"))
+          col().width(Length::Units(100))
+            .push(lbl("-"))
+            .push(lbl("-"))
+            .push(lbl("No gravity"))
+            .push(lbl("Gravity"))
         );
       for direction in Direction::iter() {
         if let Some(accel) = self.result.acceleration.get(direction) {
           row = row
             .push(
-              Column::new().width(col_width)
-                .push(Text::new(format!("{:?}", direction)))
-                .push(Text::new("Empty"))
-                .push(Text::new(format!("{:.2}", accel.acceleration_empty_no_gravity)))
-                .push(Text::new(format!("{:.2}", accel.acceleration_empty_gravity)))
+              col().width(col_width)
+                .push(lbl(format!("{:?}", direction)))
+                .push(lbl("Empty"))
+                .push(lbl(format!("{:.2}", accel.acceleration_empty_no_gravity)))
+                .push(lbl(format!("{:.2}", accel.acceleration_empty_gravity)))
             )
             .push(
-              Column::new().width(col_width)
-                .push(Text::new("-"))
-                .push(Text::new("Filled"))
-                .push(Text::new(format!("{:.2}", accel.acceleration_filled_no_gravity)))
-                .push(Text::new(format!("{:.2}", accel.acceleration_filled_gravity)))
+              col().width(col_width)
+                .push(lbl("-"))
+                .push(lbl("Filled"))
+                .push(lbl(format!("{:.2}", accel.acceleration_filled_no_gravity)))
+                .push(lbl(format!("{:.2}", accel.acceleration_filled_gravity)))
             )
         }
       }
@@ -180,56 +174,56 @@ impl Application for App {
     let result_power: Element<_> = {
       let row = row().spacing(10)
         .push(col()
-          .push(txt("Generation (MW)"))
-          .push(txt("Capacity: Batteries (MWh)"))
-          .push(txt("-"))
-          .push(txt("Ide (MW)"))
-          .push(txt("Misc (MW)"))
-          .push(txt("+Charge Jump Drives (MW)"))
-          .push(txt("+Generators (MW)"))
-          .push(txt("+Up/Down Thrusters (MW)"))
-          .push(txt("+Front/Back Thrusters (MW)"))
-          .push(txt("+Left/Right Thrusters (MW)"))
-          .push(txt("+Charge Batteries (MW)"))
+          .push(lbl("Generation (MW)"))
+          .push(lbl("Capacity: Batteries (MWh)"))
+          .push(lbl("-"))
+          .push(lbl("Ide (MW)"))
+          .push(lbl("Misc (MW)"))
+          .push(lbl("+Charge Jump Drives (MW)"))
+          .push(lbl("+Generators (MW)"))
+          .push(lbl("+Up/Down Thrusters (MW)"))
+          .push(lbl("+Front/Back Thrusters (MW)"))
+          .push(lbl("+Left/Right Thrusters (MW)"))
+          .push(lbl("+Charge Batteries (MW)"))
         )
-        .push(Column::new().width(Length::Shrink)
-          .push(txt(format!("{:.2}", self.result.power_generation)))
-          .push(txt(format!("{:.2}", self.result.power_capacity_battery)))
-          .push(txt("Consumption"))
-          .push(txt(format!("{:.2}", self.result.power_idle.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_misc.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_jump_drive.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_generator.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_up_down_thruster.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_front_back_thruster.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_left_right_thruster.consumption)))
-          .push(txt(format!("{:.2}", self.result.power_upto_battery.consumption)))
+        .push(col()
+          .push(lbl(format!("{:.2}", self.result.power_generation)))
+          .push(lbl(format!("{:.2}", self.result.power_capacity_battery)))
+          .push(lbl("Consumption"))
+          .push(lbl(format!("{:.2}", self.result.power_idle.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_misc.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_generator.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_battery.consumption)))
         )
-        .push(Column::new().width(Length::Shrink)
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("Balance"))
-          .push(txt(format!("{:.2}", self.result.power_idle.balance)))
-          .push(txt(format!("{:.2}", self.result.power_misc.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_jump_drive.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_generator.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_up_down_thruster.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_front_back_thruster.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_left_right_thruster.balance)))
-          .push(txt(format!("{:.2}", self.result.power_upto_battery.balance)))
+        .push(col()
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("Balance"))
+          .push(lbl(format!("{:.2}", self.result.power_idle.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_misc.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_generator.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.balance)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_battery.balance)))
         )
-        .push(Column::new().width(Length::Shrink)
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("Duration: Batteries (min)"))
-          .push(txt(format!("{:.2}", self.result.power_idle.duration)))
-          .push(txt(format!("{:.2}", self.result.power_misc.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_jump_drive.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_generator.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_up_down_thruster.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_front_back_thruster.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_left_right_thruster.duration)))
-          .push(txt(format!("{:.2}", self.result.power_upto_battery.duration)))
+        .push(col()
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("Duration: Batteries (min)"))
+          .push(lbl(format!("{:.2}", self.result.power_idle.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_misc.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_jump_drive.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_generator.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_up_down_thruster.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_front_back_thruster.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_left_right_thruster.duration)))
+          .push(lbl(format!("{:.2}", self.result.power_upto_battery.duration)))
         )
         ;
       row.into()
@@ -238,87 +232,105 @@ impl Application for App {
     let result_hydrogen: Element<_> = {
       let row = row().spacing(10)
         .push(col()
-          .push(txt("Generation (L/s)"))
-          .push(txt("Capacity: Engines (L)"))
-          .push(txt("Capacity: Tanks (L)"))
-          .push(txt("-"))
-          .push(txt("Ide (L/s)"))
-          .push(txt("Engines (L/s)"))
-          .push(txt("+Up/Down Thrusters (L/s)"))
-          .push(txt("+Front/Back Thrusters (L/s)"))
-          .push(txt("+Left/Right Thrusters (L/s)"))
+          .push(lbl("Generation (L/s)"))
+          .push(lbl("Capacity: Engines (L)"))
+          .push(lbl("Capacity: Tanks (L)"))
+          .push(lbl("-"))
+          .push(lbl("Ide (L/s)"))
+          .push(lbl("Engines (L/s)"))
+          .push(lbl("+Up/Down Thrusters (L/s)"))
+          .push(lbl("+Front/Back Thrusters (L/s)"))
+          .push(lbl("+Left/Right Thrusters (L/s)"))
         )
         .push(col()
-          .push(txt(format!("{:.2}", self.result.hydrogen_generation)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_capacity_engine)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_capacity_tank)))
-          .push(txt("Consumption"))
-          .push(txt(format!("{:.2}", self.result.hydrogen_idle.consumption)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_engine.consumption)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.consumption)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.consumption)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_generation)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_capacity_engine)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_capacity_tank)))
+          .push(lbl("Consumption"))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.consumption)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.consumption)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.consumption)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.consumption)))
         )
         .push(col()
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("Balance"))
-          .push(txt(format!("{:.2}", self.result.hydrogen_idle.balance)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_engine.balance)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.balance)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.balance)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.balance)))
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("Balance"))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.balance)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.balance)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.balance)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.balance)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.balance)))
         )
         .push(col()
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("-"))
-          .push(txt("Duration: Tanks (min)"))
-          .push(txt(format!("{:.2}", self.result.hydrogen_idle.duration)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_engine.duration)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.duration)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.duration)))
-          .push(txt(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.duration)))
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("-"))
+          .push(lbl("Duration: Tanks (min)"))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_idle.duration)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_engine.duration)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_up_down_thruster.duration)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_front_back_thruster.duration)))
+          .push(lbl(format!("{:.2}", self.result.hydrogen_upto_left_right_thruster.duration)))
         )
         ;
       row.into()
     };
 
-    let label_width = Length::Units(110);
+    let label_width = Length::Units(100);
     let value_width = Length::Units(100);
     let result = scl(&mut self.result_scrollable)
-      .spacing(1)
+      .spacing(10)
       .padding(1)
-      .width(Length::Shrink)
-      .push(h1("Mass"))
-      .push_labelled("Empty", label_width, format!("{:.0}", self.result.total_mass_empty), value_width, "kg")
-      .push_labelled("Filled", label_width, format!("{:.0}", self.result.total_mass_filled), value_width, "kg")
-      .push(h1("Volume"))
-      .push_labelled("Any", label_width, format!("{:.0}", self.result.total_volume_any), value_width, "L")
-      .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_volume_ore), value_width, "L")
-      .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_volume_ice), value_width, "L")
-      .push_labelled("Ore-only", label_width, format!("{:.0}", self.result.total_volume_ore_only), value_width, "L")
-      .push_labelled("Ice-only", label_width, format!("{:.0}", self.result.total_volume_ice_only), value_width, "L")
-      .push(h1("Items"))
-      .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_items_ore), value_width, "#")
-      .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_items_ice), value_width, "#")
-      .push_labelled("Steel Plates", label_width, format!("{:.0}", self.result.total_items_steel_plate), value_width, "#")
-      .push(h1("Force & Acceleration"))
-      .push(result_acceleration)
-      .push(h1("Power"))
-      .push(result_power)
-      .push(h1("Hydrogen"))
-      .push(result_hydrogen)
+      .push(col()
+        .push(h2("Mass"))
+        .push_labelled("Empty", label_width, format!("{:.0}", self.result.total_mass_empty), value_width, "kg")
+        .push_labelled("Filled", label_width, format!("{:.0}", self.result.total_mass_filled), value_width, "kg")
+      )
+      .push(col()
+        .push(h2("Volume"))
+        .push_labelled("Any", label_width, format!("{:.0}", self.result.total_volume_any), value_width, "L")
+        .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_volume_ore), value_width, "L")
+        .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_volume_ice), value_width, "L")
+        .push_labelled("Ore-only", label_width, format!("{:.0}", self.result.total_volume_ore_only), value_width, "L")
+        .push_labelled("Ice-only", label_width, format!("{:.0}", self.result.total_volume_ice_only), value_width, "L")
+      )
+      .push(col()
+        .push(h2("Items"))
+        .push_labelled("Ore", label_width, format!("{:.0}", self.result.total_items_ore), value_width, "#")
+        .push_labelled("Ice", label_width, format!("{:.0}", self.result.total_items_ice), value_width, "#")
+        .push_labelled("Steel Plates", label_width, format!("{:.0}", self.result.total_items_steel_plate), value_width, "#")
+      )
+      .push(col()
+        .push(h2("Force & Acceleration"))
+        .push(result_acceleration)
+      )
+      .push(col()
+        .push(h2("Power"))
+        .push(result_power)
+      )
+      .push(col()
+        .push(h2("Hydrogen"))
+        .push(result_hydrogen)
+      )
       ;
 
     // Root
-    let root: Element<_> = Row::new()
-      .spacing(25)
+    let root: Element<_> = col()
       .padding(10)
-      .push(input)
-      .push(result)
-      .into();
-    root.explain(Color::BLACK)
+      .push(row()
+        .align_items(Align::End)
+        .push(h1("Space Engineers Calculator"))
+        .push(h3(" https://github.com/Gohla/space_engineers_calc").width(Length::Fill))
+      )
+      .push(row()
+        .spacing(20)
+        .push(input)
+        .push(result)
+      ).into();
+    root
   }
 }
+

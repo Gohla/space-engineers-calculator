@@ -1,11 +1,11 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use iced::{Color, Element, Length, Row, Text, text_input, TextInput, VerticalAlignment};
+use iced::{Align, Color, Element, Length, text_input, TextInput, VerticalAlignment};
+
+use crate::view::{lbl, row, TXT_SIZE};
 
 pub struct DataBind<T> {
-  label: Option<String>,
-  label_width: Option<Length>,
   input_default: T,
   input_placeholder: String,
   input_width: Length,
@@ -19,24 +19,13 @@ pub struct DataBind<T> {
 pub struct DataBindMessage(String);
 
 impl<T: Copy + FromStr> DataBind<T> {
-  pub fn new<L: Into<String>, P: Into<String>, U: Into<String>>(label: L, label_width: Length, input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
-    let label = Some(label.into());
-    let label_width = Some(label_width);
+  pub fn new<P: Into<String>, U: Into<String>>(input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
     let input_placeholder = input_placeholder.into();
     let unit = unit.into();
     let value = String::new();
     let error = false;
     let state = text_input::State::default();
-    Self { label, label_width, input_default, input_placeholder, input_width, unit, value, error, state }
-  }
-
-  pub fn new_without_label<P: Into<String>, U: Into<String>>(input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
-    let input_placeholder = input_placeholder.into();
-    let unit = unit.into();
-    let value = String::new();
-    let error = false;
-    let state = text_input::State::default();
-    Self { label: None, label_width: None, input_default, input_placeholder, input_width, unit, value, error, state }
+    Self { input_default, input_placeholder, input_width, unit, value, error, state }
   }
 
   pub fn update(&mut self, message: DataBindMessage, val: &mut T) {
@@ -52,33 +41,20 @@ impl<T: Copy + FromStr> DataBind<T> {
   }
 
   pub fn view(&mut self) -> Element<DataBindMessage> {
-    let label = self.label.as_ref().map(|l| {
-      let label = Text::new(l)
-        .width(self.label_width.unwrap_or(Length::Fill))
-        .vertical_alignment(VerticalAlignment::Center);
-      if self.error {
-        label.color(Color::from_rgb(0.8, 0.0, 0.0))
-      } else {
-        label
-      }
-    });
     let input = TextInput::new(&mut self.state, &self.input_placeholder, &self.value, DataBindMessage)
-      .padding(1)
       .width(self.input_width)
+      .padding(1)
+      .size(TXT_SIZE)
       ;
-    let unit = Text::new(&self.unit)
-      .width(Length::Shrink)
+    let unit = lbl(&self.unit)
+      .color(if self.error { Color::from_rgb(0.8, 0.0, 0.0) } else { Color::BLACK })
+      .vertical_alignment(VerticalAlignment::Center) // TODO: does not work in iced_web.
       ;
-
-    let mut row = Row::new()
+    row()
       .spacing(2)
       .padding(1)
       .width(Length::Shrink)
-      ;
-    if let Some(label) = label {
-      row = row.push(label)
-    }
-    row
+      .align_items(Align::Center)
       .push(input)
       .push(unit)
       .into()
