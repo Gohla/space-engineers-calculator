@@ -8,6 +8,9 @@ members = [
   "code/gui_iced",
 ]
 
+[patch."https://github.com/Gohla/iced.git"]
+iced = { path = "../iced" }
+
 [profile.dev]
 opt-level = 2
 overflow-checks = true

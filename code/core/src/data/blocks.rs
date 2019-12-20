@@ -1,10 +1,10 @@
 use std::backtrace::Backtrace;
 use std::cmp::Ordering;
-use std::collections::HashMap;
 use std::fmt::Debug;
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 
+use linked_hash_map::LinkedHashMap;
 use roxmltree::{Document, Node};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -14,6 +14,13 @@ use super::components::Components;
 use super::gas_properties::GasProperties;
 use super::localization::Localization;
 use super::xml::{NodeExt, read_string_from_file};
+
+/// Some calculated volumes are multiplied by this number.
+pub const VOLUME_MULTIPLIER: f64 = 1000.0;
+
+/// Default FuelProductionToCapacityMultiplier in SE's code.
+pub const DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER: f64 = 3600.0;
+
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -66,7 +73,7 @@ pub struct Block<T> {
   pub index: u64,
   pub name: String,
   pub size: GridSize,
-  pub components: HashMap<String, f64>,
+  pub components: LinkedHashMap<String, f64>,
   pub has_physics: bool,
   pub details: T,
 }
@@ -95,11 +102,11 @@ impl<T: FromDef> Block<T> {
     let subtype_id = id_node.parse_child_elem("SubtypeId").unwrap().unwrap_or(String::new());
     let id = type_id + "." + &subtype_id;
     let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
-    let mut components = HashMap::new();
+    let mut components = LinkedHashMap::new();
     let grid_type = GridSize::from_def(def);
     for component in def.child_elem("Components").unwrap().children_elems("Component") {
-      if let (Some(component_id), Some(count)) = (component.parse_attribute("Subtype").unwrap(), component.parse_attribute("Count").unwrap()) {
-        components.entry(component_id).and_modify(|c| *c += count).or_insert(count);
+      if let (Some(component_id), Some(count)) = (component.parse_attribute("Subtype").unwrap(), component.parse_attribute::<f64, _>("Count").unwrap()) {
+        *components.entry(component_id).or_insert(0.0) += count;
       }
     }
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
@@ -255,12 +262,8 @@ impl FromDef for HydrogenEngine {
   fn from_def(def: &Node, _entity_components: &Node) -> Self {
     let fuel_capacity: f64 = def.parse_child_elem("FuelCapacity").unwrap().unwrap();
     let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
-    // HACK: hardcoded fuel consumption.
-    let max_fuel_consumption: f64 = match fuel_capacity as u64 {
-      16000 => 100.0, // Small grid
-      500000 => 1000.0, // Large grid
-      _ => panic!("Unrecognized hydrogen engine {:?}", def),
-    };
+    let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem("FuelProductionToCapacityMultiplier").unwrap().unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
+    let max_fuel_consumption = max_power_generation / fuel_production_to_capacity_multiplier;
     HydrogenEngine { fuel_capacity, max_power_generation, max_fuel_consumption }
   }
 }
@@ -278,14 +281,8 @@ pub struct Reactor {
 impl FromDef for Reactor {
   fn from_def(def: &Node, _entity_components: &Node) -> Self {
     let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
-    // HACK: hardcoded fuel consumption.
-    let max_fuel_consumption: f64 = match max_power_generation as u64 {
-      0 => 0.00014, // Small grid, small reactor
-      14 => 0.0041, // Small grid, large reactor
-      15 => 0.00417, // Large grid, small reactor
-      300 => 0.08333, // Large grid, large reactor,
-      _ => panic!("Unrecognized reactor {:?}", def),
-    };
+    let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem("FuelProductionToCapacityMultiplier").unwrap().unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
+    let max_fuel_consumption = max_power_generation / fuel_production_to_capacity_multiplier;
     Reactor { max_power_generation, max_fuel_consumption }
   }
 }
@@ -314,8 +311,8 @@ impl FromDef for Generator {
     let inventory_volume_ice: f64 = def.parse_child_elem::<f64>("InventoryMaxVolume").unwrap().unwrap() * 1000.0;
     let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption").unwrap().unwrap();
     let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption").unwrap().unwrap();
-    let mut oxygen_generation = 100.0;
-    let mut hydrogen_generation = 100.0;
+    let mut oxygen_generation = 0.0;
+    let mut hydrogen_generation = 0.0;
     for gas_info in def.child_elem("ProducedGases").unwrap().children_elems("GasInfo") {
       let gas_id: String = gas_info.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
       let ice_to_gas_ratio: f64 = gas_info.parse_child_elem("IceToGasRatio").unwrap().unwrap();
@@ -378,9 +375,9 @@ impl FromDef for Container {
         if subtype_id != entity_component_subtype_id { continue }
         let size = entity_component.child_elem("Size").unwrap();
         let x: f64 = size.parse_attribute("x").unwrap().unwrap();
-        let y: f64 = size.parse_attribute("x").unwrap().unwrap();
-        let z: f64 = size.parse_attribute("x").unwrap().unwrap();
-        capacity = x * y * z * 1000.0;
+        let y: f64 = size.parse_attribute("y").unwrap().unwrap();
+        let z: f64 = size.parse_attribute("z").unwrap().unwrap();
+        capacity = x * y * z * VOLUME_MULTIPLIER;
         store_any = entity_component.child_elem("InputConstraint").map_or(true, |_| false);
         break;
       }
@@ -404,22 +401,22 @@ pub struct Cockpit {
 impl FromDef for Cockpit {
   fn from_def(def: &Node, _entity_components: &Node) -> Self {
     let has_inventory = def.parse_child_elem("HasInventory").unwrap().unwrap_or(true);
-    // HACK: hardcoded inventory capacity.
-    let capacity = if has_inventory { 1000.0 } else { 0.0 };
+    // All cockpits have a volume of 1.0 (times VOLUME_MULTIPLIER) according to SE's code.
+    let capacity = if has_inventory { VOLUME_MULTIPLIER } else { 0.0 };
     Cockpit { has_inventory, capacity }
   }
 }
 
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub struct Blocks {
-  pub batteries: HashMap<BlockId, Block<Battery>>,
-  pub thrusters: HashMap<BlockId, Block<Thruster>>,
-  pub hydrogen_engines: HashMap<BlockId, Block<HydrogenEngine>>,
-  pub reactors: HashMap<BlockId, Block<Reactor>>,
-  pub generators: HashMap<BlockId, Block<Generator>>,
-  pub hydrogen_tanks: HashMap<BlockId, Block<HydrogenTank>>,
-  pub containers: HashMap<BlockId, Block<Container>>,
-  pub cockpits: HashMap<BlockId, Block<Cockpit>>,
+  pub batteries: LinkedHashMap<BlockId, Block<Battery>>,
+  pub thrusters: LinkedHashMap<BlockId, Block<Thruster>>,
+  pub hydrogen_engines: LinkedHashMap<BlockId, Block<HydrogenEngine>>,
+  pub reactors: LinkedHashMap<BlockId, Block<Reactor>>,
+  pub generators: LinkedHashMap<BlockId, Block<Generator>>,
+  pub hydrogen_tanks: LinkedHashMap<BlockId, Block<HydrogenTank>>,
+  pub containers: LinkedHashMap<BlockId, Block<Container>>,
+  pub cockpits: LinkedHashMap<BlockId, Block<Cockpit>>,
 }
 
 impl Blocks {

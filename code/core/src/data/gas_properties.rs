@@ -1,7 +1,7 @@
 use std::backtrace::Backtrace;
-use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use linked_hash_map::LinkedHashMap;
 use roxmltree::Document;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -41,7 +41,7 @@ impl GasProperty {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GasProperties {
-  pub gas_properties: HashMap<String, GasProperty>,
+  pub gas_properties: LinkedHashMap<String, GasProperty>,
 }
 
 impl GasProperties {
@@ -56,7 +56,7 @@ impl GasProperties {
     let doc = Document::parse(&string)
       .map_err(|source| Error::ParseFile { file: file_path.to_path_buf(), source })?;
 
-    let mut gas_properties = HashMap::new();
+    let mut gas_properties = LinkedHashMap::new();
 
     let root_element = doc.root()
       .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?

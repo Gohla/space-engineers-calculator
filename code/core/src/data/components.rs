@@ -1,5 +1,4 @@
 use std::backtrace::Backtrace;
-use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
 use roxmltree::Document;
@@ -10,6 +9,7 @@ use crate::error::ErrorExt;
 
 use super::localization::Localization;
 use super::xml::{NodeExt, read_string_from_file};
+use linked_hash_map::LinkedHashMap;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -42,7 +42,7 @@ impl Component {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Components {
-  pub components: HashMap<String, Component>,
+  pub components: LinkedHashMap<String, Component>,
 }
 
 impl Components {
@@ -57,7 +57,7 @@ impl Components {
     let doc = Document::parse(&string)
       .map_err(|source| Error::ParseFile { file: file_path.to_path_buf(), source })?;
 
-    let mut components = HashMap::new();
+    let mut components = LinkedHashMap::new();
 
     let root_element = doc.root()
       .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?

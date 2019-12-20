@@ -10,5 +10,4 @@ snafu = "0.6"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 iced = { git = 'https://github.com/Gohla/iced.git', branch = 'develop' }
-lazy_static = "1.4"
 linked-hash-map = "0.5"
