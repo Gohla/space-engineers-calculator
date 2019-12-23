@@ -18,7 +18,7 @@ pub struct DataBind<T> {
 #[derive(Clone, Debug)]
 pub struct DataBindMessage(String);
 
-impl<T: Copy + FromStr> DataBind<T> {
+impl<T: Copy + FromStr + PartialEq> DataBind<T> {
   pub fn new<P: Into<String>, U: Into<String>>(input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
     let input_placeholder = input_placeholder.into();
     let unit = unit.into();
@@ -29,15 +29,29 @@ impl<T: Copy + FromStr> DataBind<T> {
   }
 
   pub fn update(&mut self, message: DataBindMessage, val: &mut T) {
-    let text = message.0;
+    let DataBindMessage(text) = message;
     let (v, error) = match (text.is_empty(), T::from_str(&text)) {
       (true, _) => (self.input_default, false),
       (_, Err(_)) => (self.input_default, true),
       (false, Ok(v)) => (v, false)
     };
     *val = v;
-    self.error = error;
     self.value = text;
+    self.error = error;
+  }
+
+  pub fn reload(&mut self, val: String) {
+    if let Ok(parsed) = T::from_str(&val) {
+      if parsed == self.input_default {
+        self.value = "".to_owned();
+      } else {
+        self.value = val;
+      }
+      self.error = false;
+    } else {
+      self.value = val;
+      self.error = true;
+    }
   }
 
   pub fn view(&mut self) -> Element<DataBindMessage> {

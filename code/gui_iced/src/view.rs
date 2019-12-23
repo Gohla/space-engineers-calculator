@@ -1,4 +1,4 @@
-use iced::{Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text};
+use iced::{Button, button, Color, Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text, VerticalAlignment};
 
 #[inline]
 pub fn row<'a, M>() -> Row<'a, M> { Row::new().width(Length::Shrink) }
@@ -31,3 +31,12 @@ pub fn h1<L: Into<String>>(label: L) -> Text { Text::new(label).size(H1_SIZE).wi
 
 #[inline]
 pub fn empty() -> Text { Text::new(" ").size(TXT_SIZE).width(Length::Shrink) }
+
+#[inline]
+pub fn button<M, L: Into<String>>(state: &mut button::State, label: L) -> Button<M> {
+  Button::new(state, h2(label).vertical_alignment(VerticalAlignment::Center))
+    .padding(2)
+    .min_width(50)
+    .background(Color::from_rgb(0.75, 0.75, 0.75))
+    .border_radius(2)
+}

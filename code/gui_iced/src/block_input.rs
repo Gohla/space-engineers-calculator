@@ -50,15 +50,23 @@ impl BlockInput {
     }
   }
 
+  pub fn reload(&mut self, calc: &GridCalculator) {
+    for (id, (_, data_bind)) in self.small.iter_mut().chain(self.large.iter_mut()) {
+      if let Some(count) = calc.blocks.get(id) {
+        data_bind.reload(format!("{}", count))
+      }
+    }
+  }
+
   pub fn view(&mut self) -> Element<BlockInputMessage> {
     fn create_column(map: &mut Map, label_width: Length, grid_size: GridSize) -> Element<BlockInputMessage> {
       let mut column = col();
       for (id, (label, data_bind)) in map {
-        let id = id.clone(); // Clone to simplify lifetimes: we have an owned String now.
+        let id = id.clone(); // Clone before closure so that we are not passing references into 'static closure.
         column = column.push(row().align_items(Align::Center)
           .push(lbl(label.deref()).width(label_width))
           .push(data_bind.view().map(move |m| BlockInputMessage(
-            // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone.
+            // Clone again because this is a Fn closure that is callable multiple times: each call needs a separate clone and String does not implement Copy.
             id.clone(),
             grid_size,
             m

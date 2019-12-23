@@ -59,6 +59,18 @@ impl DirectionalBlockInput {
     }
   }
 
+  pub fn reload(&mut self, calc: &GridCalculator) {
+    for (id, (_, inner_map)) in self.small.iter_mut().chain(self.large.iter_mut()) {
+      for (direction, data_bind) in inner_map {
+        if let Some(inner_calc_map) = calc.directional_blocks.get(direction) {
+          if let Some(count) = inner_calc_map.get(id) {
+            data_bind.reload(format!("{}", count))
+          }
+        }
+      }
+    }
+  }
+
   pub fn view(&mut self) -> Element<DirectionalBlockInputMessage> {
     let input_small = Self::create_column(&mut self.small, self.label_width, self.direction_label_width, GridSize::Small);
     let input_large = Self::create_column(&mut self.large, self.label_width, self.direction_label_width, GridSize::Large);
@@ -88,7 +100,7 @@ impl DirectionalBlockInput {
       let mut row = row().spacing(2).align_items(Align::Center);
       row = row.push(lbl(label.deref()).width(label_width));
       for (direction, data_bind) in inner_map {
-        // Clone and copy before closure such that no reference is passed into the ('static) closure.
+        // Clone and copy before closure so that we are not passing references into 'static closure.
         let id = id.clone();
         let direction = *direction;
         row = row.push(data_bind.view().map(move |m| DirectionalBlockInputMessage(

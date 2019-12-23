@@ -37,7 +37,7 @@ impl Direction {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GridCalculator {
   pub gravity_multiplier: f64,
   pub container_multiplier: f64,

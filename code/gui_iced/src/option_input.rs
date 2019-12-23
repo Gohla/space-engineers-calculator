@@ -33,6 +33,10 @@ macro_rules! create_option_input {
         }
       }
 
+      pub fn reload(&mut self, calc: &GridCalculator) {
+        $(self.$field.reload(format!("{}", calc.$field));)*
+      }
+
       pub fn view(&mut self) -> Element<OptionInputMessage> {
         col()
           $(.push(row().push(lbl($label).width($label_width)).align_items(Align::Center).push(self.$field.view().map(move |s| OptionInputMessage::$message(s)))))*

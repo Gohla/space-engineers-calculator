@@ -7,6 +7,8 @@ pub mod view;
 pub mod option_input;
 pub mod block_input;
 pub mod directional_block_input;
+pub mod storage;
+pub mod page;
 
 fn main() {
   app::App::run(Settings {
