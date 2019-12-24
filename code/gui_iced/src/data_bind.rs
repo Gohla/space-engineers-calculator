@@ -1,9 +1,9 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use iced::{Align, Color, Element, Length, text_input, TextInput};
+use iced::{Align, Element, Length, text_input};
 
-use crate::view::{lbl, row, TXT_SIZE};
+use crate::view::{danger_color, foreground_color, lbl, row, text_input};
 
 pub struct DataBind<T> {
   input_default: T,
@@ -55,13 +55,11 @@ impl<T: Copy + FromStr + PartialEq> DataBind<T> {
   }
 
   pub fn view(&mut self) -> Element<DataBindMessage> {
-    let input = TextInput::new(&mut self.state, &self.input_placeholder, &self.value, DataBindMessage)
-      .width(self.input_width)
+    let input = text_input(self.input_width, &mut self.state, &self.input_placeholder, &self.value, DataBindMessage)
       .padding(1)
-      .size(TXT_SIZE)
       ;
     let unit = lbl(&self.unit)
-      .color(if self.error { Color::from_rgb(0.8, 0.0, 0.0) } else { Color::BLACK })
+      .color(if self.error { danger_color() } else { foreground_color() })
       ;
     row()
       .spacing(2)

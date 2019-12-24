@@ -16,6 +16,10 @@ impl CalculatorStorage {
     self.storage.get(key)
   }
 
+  pub fn iter(&self) -> impl Iterator<Item=(&String, &GridCalculator)> {
+    self.storage.iter()
+  }
+
   pub fn set<K: Into<String>>(&mut self, key: K, calculator: GridCalculator) {
     self.storage.insert(key.into(), calculator);
   }

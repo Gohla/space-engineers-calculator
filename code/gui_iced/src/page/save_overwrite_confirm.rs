@@ -1,6 +1,6 @@
-use iced::{Align, button, Color, Element};
+use iced::{Align, button, Element};
 
-use crate::view::{button, col, h1, row};
+use crate::view::{button, col, danger_color, h1, row};
 
 #[derive(Debug)]
 pub struct Page {
@@ -40,15 +40,16 @@ impl Page {
   pub fn view(&mut self) -> Element<Message> {
     col()
       .padding(10)
+      .spacing(10)
       .push(row()
         .spacing(10)
         .align_items(Align::End)
         .push(h1("Overwrite?"))
       )
       .push(row()
-        .spacing(20)
+        .spacing(10)
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
-        .push(button(&mut self.overwrite_button_state, "Overwrite").background(Color::from_rgb(1.0, 0.5, 0.5)).on_press(Message::Overwrite))
+        .push(button(&mut self.overwrite_button_state, "Overwrite").background(danger_color()).on_press(Message::Overwrite))
       )
       .into()
   }

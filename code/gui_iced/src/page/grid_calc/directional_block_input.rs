@@ -63,9 +63,8 @@ impl DirectionalBlockInput {
     for (id, (_, inner_map)) in self.small.iter_mut().chain(self.large.iter_mut()) {
       for (direction, data_bind) in inner_map {
         if let Some(inner_calc_map) = calc.directional_blocks.get(direction) {
-          if let Some(count) = inner_calc_map.get(id) {
-            data_bind.reload(format!("{}", count))
-          }
+          let count = inner_calc_map.get(id).map_or(0, |c| *c);
+          data_bind.reload(format!("{}", count));
         }
       }
     }

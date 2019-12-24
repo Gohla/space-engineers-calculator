@@ -1,4 +1,4 @@
-use iced::{Button, button, Color, Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text, VerticalAlignment};
+use iced::{Button, button, Color, Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text, text_input, TextInput, VerticalAlignment};
 
 #[inline]
 pub fn row<'a, M>() -> Row<'a, M> { Row::new().width(Length::Shrink) }
@@ -30,7 +30,12 @@ pub fn h2<L: Into<String>>(label: L) -> Text { Text::new(label).size(H2_SIZE).wi
 pub fn h1<L: Into<String>>(label: L) -> Text { Text::new(label).size(H1_SIZE).width(Length::Shrink) }
 
 #[inline]
-pub fn empty() -> Text { Text::new(" ").size(TXT_SIZE).width(Length::Shrink) }
+pub fn text_input<'a, M, F: 'static + Fn(String) -> M>(width: Length, state: &'a mut text_input::State, placeholder: &str, value: &str, on_change: F) -> TextInput<'a, M> {
+  TextInput::new(state, placeholder, value, on_change)
+    .width(width)
+    .padding(2)
+    .size(TXT_SIZE)
+}
 
 #[inline]
 pub fn button<M, L: Into<String>>(state: &mut button::State, label: L) -> Button<M> {
@@ -40,3 +45,16 @@ pub fn button<M, L: Into<String>>(state: &mut button::State, label: L) -> Button
     .background(Color::from_rgb(0.75, 0.75, 0.75))
     .border_radius(2)
 }
+
+#[inline]
+pub fn empty() -> Text { Text::new(" ").size(TXT_SIZE).width(Length::Shrink) }
+
+
+#[inline]
+pub fn background_color() -> Color { Color::WHITE }
+
+#[inline]
+pub fn foreground_color() -> Color { Color::BLACK }
+
+#[inline]
+pub fn danger_color() -> Color { Color::from_rgb(0.8, 0.2, 0.2) }

@@ -1,10 +1,12 @@
 use iced::{Align, button, Element};
 
-use crate::view::{button, col, h1, row};
+use crate::storage::CalculatorStorage;
+use crate::view::{button, col, h1, h3, row};
+use std::ops::Deref;
 
-#[derive(Default, Debug)]
+#[derive(Debug)]
 pub struct Page {
-  load_button_state: button::State,
+  load_states: Vec<(String, button::State)>,
   cancel_button_state: button::State,
 }
 
@@ -21,7 +23,10 @@ pub enum Action {
 }
 
 impl Page {
-  pub fn new() -> Self { Self::default() }
+  pub fn new(calculator_storage: &CalculatorStorage) -> Self {
+    let load_states = calculator_storage.iter().map(|(name, _)| (name.clone(), button::State::default())).collect();
+    Self { load_states, cancel_button_state: button::State::default() }
+  }
 
   pub fn update(&mut self, message: Message) -> Option<Action> {
     match message {
@@ -31,18 +36,23 @@ impl Page {
   }
 
   pub fn view(&mut self) -> Element<Message> {
-    col()
+    let mut column = col()
+      .spacing(10)
       .padding(10)
       .push(row()
         .spacing(10)
         .align_items(Align::Center)
         .push(h1("Load"))
-      )
-      .push(row()
-        .spacing(20)
-        .push(button(&mut self.load_button_state, "Load").on_press(Message::Load("".to_string())))
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
       )
-      .into()
+      ;
+    for (name, button_state) in &mut self.load_states {
+      column = column.push(row()
+        .spacing(10)
+        .push(h3(name.deref()))
+        .push(button(button_state, "Load").on_press(Message::Load(name.clone())))
+      )
+    }
+    column.into()
   }
 }

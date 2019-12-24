@@ -3,10 +3,15 @@ use iced::{Align, button, Element, HorizontalAlignment, Length, scrollable};
 use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
 
-use crate::block_input::{BlockInput, BlockInputMessage};
-use crate::directional_block_input::{DirectionalBlockInput, DirectionalBlockInputMessage};
-use crate::option_input::{OptionInput, OptionInputMessage};
 use crate::view::{button, col, empty, h1, h2, h3, lbl, row, scl, val};
+
+use self::block_input::{BlockInput, BlockInputMessage};
+use self::directional_block_input::{DirectionalBlockInput, DirectionalBlockInputMessage};
+use self::option_input::{OptionInput, OptionInputMessage};
+
+pub mod option_input;
+pub mod block_input;
+pub mod directional_block_input;
 
 pub struct Page {
   input: Input,
@@ -151,6 +156,7 @@ impl Page {
     let input = Self::view_input(&mut self.input);
     let result = Self::view_result(&self.result, &mut self.result_mut);
     let root: Element<_> = col()
+      .spacing(10)
       .padding(10)
       .push(row()
         .align_items(Align::Center)
@@ -169,7 +175,7 @@ impl Page {
         )
       )
       .push(row()
-        .spacing(20)
+        .spacing(10)
         .push(input)
         .push(result)
       ).into();

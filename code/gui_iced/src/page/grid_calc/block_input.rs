@@ -52,9 +52,8 @@ impl BlockInput {
 
   pub fn reload(&mut self, calc: &GridCalculator) {
     for (id, (_, data_bind)) in self.small.iter_mut().chain(self.large.iter_mut()) {
-      if let Some(count) = calc.blocks.get(id) {
-        data_bind.reload(format!("{}", count))
-      }
+      let count = calc.blocks.get(id).map_or(0, |c| *c);
+      data_bind.reload(format!("{}", count));
     }
   }
 

@@ -1,6 +1,6 @@
-use iced::{Align, button, Element, text_input, TextInput};
+use iced::{Align, button, Element, Length, text_input};
 
-use crate::view::{button, col, h1, row};
+use crate::view::{button, col, danger_color, foreground_color, h1, lbl, row, text_input};
 
 #[derive(Debug)]
 pub struct Page {
@@ -47,16 +47,21 @@ impl Page {
   pub fn view(&mut self) -> Element<Message> {
     col()
       .padding(10)
+      .spacing(10)
       .push(row()
         .spacing(10)
         .align_items(Align::Center)
         .push(h1("Save as"))
+        .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
       )
       .push(row()
-        .spacing(20)
-        .push(TextInput::new(&mut self.name_input_state, "", &self.name, Message::SetName))
+        .spacing(10)
+        .push(lbl("Name: ").color(if self.name.is_empty() { danger_color() } else { foreground_color() }))
+        .push(text_input(Length::Units(250), &mut self.name_input_state, "", &self.name, Message::SetName))
+      )
+      .push(row()
+        .spacing(10)
         .push(button(&mut self.save_button_state, "Save").on_press(Message::Save))
-        .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
       )
       .into()
   }
