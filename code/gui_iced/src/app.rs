@@ -1,21 +1,19 @@
 use std::fmt::Debug;
 
 use iced::{Application, Command, Element};
+use log::error;
 
 use secalc_core::data::Data;
 use secalc_core::grid::GridCalculator;
 
 use crate::page::{grid_calc, load, load_confirm_discard, save_as, save_overwrite_confirm};
-use crate::storage::CalculatorStorage;
+use crate::storage::Storage;
 
 pub struct App {
+  data: Data,
+  storage: Storage,
   current_page: Page,
   grid_calc_page: grid_calc::Page,
-  calculator: GridCalculator,
-  calculator_name: Option<String>,
-  calculator_modified: bool,
-  calculator_storage: CalculatorStorage,
-  data: Data,
 }
 
 #[derive(Debug)]
@@ -40,8 +38,8 @@ impl Page {
     Page::LoadConfirmDiscard(load_confirm_discard::Page::default())
   }
 
-  fn load(calculator_storage: &CalculatorStorage) -> Page {
-    Page::Load(load::Page::new(calculator_storage))
+  fn load(storage: &Storage) -> Page {
+    Page::Load(load::Page::new(storage))
   }
 }
 
@@ -60,20 +58,16 @@ impl Default for App {
       let bytes: &[u8] = include_bytes!("../../../data/data.json");
       Data::from_json(bytes).expect("Cannot read data")
     };
-    let calculator = GridCalculator::default();
+    let storage = Storage::load()
+      .unwrap_or_else(|e| panic!("[BUG] Could not load storage: {}", e))
+      .unwrap_or_default();
     let current_page = Page::GridCalc;
-    let grid_calc_page = grid_calc::Page::new(&data, &calculator);
-    let calculator_name = None;
-    let calculator_modified = false;
-    let calculator_storage = CalculatorStorage::default();
+    let grid_calc_page = grid_calc::Page::new(&data, &GridCalculator::default(), &storage.calculator);
     Self {
+      data,
+      storage,
       current_page,
       grid_calc_page,
-      calculator,
-      calculator_name,
-      calculator_modified,
-      calculator_storage,
-      data,
     }
   }
 }
@@ -91,27 +85,29 @@ impl Application for App {
 
   fn update(&mut self, message: Message) -> Command<Message> {
     match (&mut self.current_page, message) {
-      (Page::GridCalc, Message::GridCalcPage(m)) => match self.grid_calc_page.update(m, &mut self.calculator, &self.data) {
-        Some(grid_calc::Action::CalculatorModified) => self.calculator_modified = true,
-        Some(grid_calc::Action::Save) => if let Some(name) = self.calculator_name.clone() {
-          self.save(name);
+      (Page::GridCalc, Message::GridCalcPage(m)) => match self.grid_calc_page.update(m, &mut self.storage.calculator, &self.data) {
+        Some(grid_calc::Action::CalculatorModified) => self.storage.calculator_modified = true,
+        Some(grid_calc::Action::Save) => if let Some(name) = self.storage.calculator_name.clone() {
+          self.storage.save_calculator(name)
+            .unwrap_or_else(|e| error!("[BUG] Could not save storage: {}", e));
           self.current_page = Page::GridCalc;
         } else {
-          self.current_page = Page::save_as(self.calculator_name.clone());
+          self.current_page = Page::save_as(self.storage.calculator_name.clone());
         },
-        Some(grid_calc::Action::SaveAs) => self.current_page = Page::save_as(self.calculator_name.clone()),
-        Some(grid_calc::Action::Load) => if self.calculator_modified {
+        Some(grid_calc::Action::SaveAs) => self.current_page = Page::save_as(self.storage.calculator_name.clone()),
+        Some(grid_calc::Action::Load) => if self.storage.calculator_modified {
           self.current_page = Page::load_confirm_discard();
         } else {
-          self.current_page = Page::load(&self.calculator_storage);
+          self.current_page = Page::load(&self.storage);
         },
         None => {},
       },
       (Page::SaveAs(page), Message::SaveAsPage(ref m)) => match page.update(m.clone()) {
-        Some(save_as::Action::Save(name)) => if self.calculator_storage.contains(&name) {
+        Some(save_as::Action::Save(name)) => if self.storage.contains_saved_calculator(&name) {
           self.current_page = Page::save_as_overwrite_confirm(name.clone());
         } else {
-          self.save(name.clone());
+          self.storage.save_calculator(name.clone())
+            .unwrap_or_else(|e| error!("[BUG] Could not save storage: {}", e));
           self.current_page = Page::GridCalc;
         },
         Some(save_as::Action::Cancel) => self.current_page = Page::GridCalc,
@@ -120,30 +116,26 @@ impl Application for App {
       (Page::SaveAsOverwriteConfirm(page), Message::SaveAsOverwriteConfirmPage(ref m)) => match page.update(m.clone()) {
         save_overwrite_confirm::Action::Cancel => self.current_page = Page::GridCalc,
         save_overwrite_confirm::Action::Overwrite(name) => {
-          self.save(name.clone());
+          self.storage.save_calculator(name.clone())
+            .unwrap_or_else(|e| error!("[BUG] Could not save storage: {}", e));
           self.current_page = Page::GridCalc;
         },
       },
       (Page::LoadConfirmDiscard(page), Message::LoadConfirmDiscardPage(ref m)) => match page.update(m.clone()) {
         load_confirm_discard::Action::Cancel => self.current_page = Page::GridCalc,
-        load_confirm_discard::Action::Discard => self.current_page = Page::load(&self.calculator_storage),
+        load_confirm_discard::Action::Discard => self.current_page = Page::load(&self.storage),
       },
       (Page::Load(page), Message::LoadPage(ref m)) => match page.update(m.clone()) {
         Some(load::Action::Load(name)) => {
-          if let Some(calculator) = self.calculator_storage.get(&name) {
-            self.calculator = calculator.clone();
-            self.calculator_name = Some(name);
-            self.calculator_modified = false;
-            self.grid_calc_page.reload_input(calculator, &self.data);
-          } else {
-            panic!("[BUG] Load page requested load of stored calculator with name '{}', but no stored calculator with that name exists", name);
-          }
+          self.storage.load_calculator(name)
+            .unwrap_or_else(|e| error!("[BUG] Could not load calculator: {}", e));
+          self.grid_calc_page.reload_input(&self.storage.calculator, &self.data);
           self.current_page = Page::GridCalc;
         },
         Some(load::Action::Cancel) => self.current_page = Page::GridCalc,
         None => {},
       },
-      (page, m) => panic!("[BUG] Requested update with message '{:?}', but that message cannot be handled by the current page '{:?}' or the application itself", m, page),
+      (page, m) => error!("[BUG] Requested update with message '{:?}', but that message cannot be handled by the current page '{:?}' or the application itself", m, page),
     }
     Command::none()
   }
@@ -156,13 +148,5 @@ impl Application for App {
       Page::LoadConfirmDiscard(page) => page.view().map(Message::LoadConfirmDiscardPage),
       Page::Load(page) => page.view().map(Message::LoadPage),
     }
-  }
-}
-
-impl App {
-  fn save(&mut self, name: String) {
-    self.calculator_name = Some(name.clone());
-    self.calculator_modified = false;
-    self.calculator_storage.set(name, self.calculator.clone());
   }
 }

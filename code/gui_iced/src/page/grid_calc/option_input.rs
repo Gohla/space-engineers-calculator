@@ -14,9 +14,9 @@ macro_rules! create_option_input {
     }
 
     impl OptionInput {
-      pub fn new(calc: &GridCalculator) -> Self {
+      pub fn new(default_calculator: &GridCalculator, loaded_calculator: &GridCalculator) -> Self {
         Self {
-          $($field: DataBind::new(calc.$field, format!($format, calc.$field), $input_width, $unit),)*
+          $($field: DataBind::new(default_calculator.$field, format!($format, default_calculator.$field), $input_width, $unit, format!("{}", loaded_calculator.$field)),)*
         }
       }
     }

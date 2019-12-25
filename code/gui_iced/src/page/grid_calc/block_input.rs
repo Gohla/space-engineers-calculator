@@ -32,15 +32,22 @@ impl BlockInput {
     }
   }
 
-  pub fn add_blocks<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(&mut self, data: &Data, blocks_iter: I) {
-    fn add_to_map<T>(data: &Data, input_width: Length, vec: Vec<&Block<T>>, map: &mut Map) {
+  pub fn add_blocks<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(&mut self, data: &Data, default_calculator: &GridCalculator, loaded_calculator: &GridCalculator, blocks_iter: I) {
+    fn add_to_map<T>(data: &Data, default_calculator: &GridCalculator, loaded_calculator: &GridCalculator, input_width: Length, vec: Vec<&Block<T>>, map: &mut Map) {
       map.extend(vec.into_iter()
-        .map(|b| (b.id.clone(), (b.name(&data.localization).to_owned(), DataBind::new(0, "0", input_width, "#"))))
+        .map(|block| {
+          let id = block.id.clone();
+          let default_count = default_calculator.blocks.get(&block.id).map_or(0, |c| *c);
+          let loaded_count = loaded_calculator.blocks.get(&block.id).map_or(0, |c| *c);
+          let label = block.name(&data.localization).to_owned();
+          let data_bind = DataBind::new(default_count, format!("{}", default_count), input_width, "#", format!("{}", loaded_count));
+          (id, (label, data_bind))
+        })
       );
     }
     let (small, large) = Blocks::small_and_large_sorted(blocks_iter);
-    add_to_map(data, self.input_width, small, &mut self.small);
-    add_to_map(data, self.input_width, large, &mut self.large);
+    add_to_map(data, default_calculator, loaded_calculator, self.input_width, small, &mut self.small);
+    add_to_map(data, default_calculator, loaded_calculator, self.input_width, large, &mut self.large);
   }
 
   pub fn update(&mut self, message: BlockInputMessage, calc: &mut GridCalculator) {

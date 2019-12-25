@@ -35,19 +35,23 @@ impl DirectionalBlockInput {
     }
   }
 
-  pub fn add_blocks<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(&mut self, data: &Data, blocks_iter: I) {
-    fn add_to_map<T>(data: &Data, input_width: Length, vec: Vec<&Block<T>>, map: &mut Map) {
+  pub fn add_blocks<'a, T: 'a, I: Iterator<Item=&'a Block<T>>>(&mut self, data: &Data, default_calculator: &GridCalculator, loaded_calculator: &GridCalculator, blocks_iter: I) {
+    fn add_to_map<T>(data: &Data, default_calculator: &GridCalculator, loaded_calculator: &GridCalculator, input_width: Length, vec: Vec<&Block<T>>, map: &mut Map) {
       for block in vec {
+        let id = block.id.clone();
         let label = block.name(&data.localization).to_owned();
-        let (_, inner_map) = map.entry(block.id.clone()).or_insert((label, InnerMap::default()));
+        let (_, inner_map) = map.entry(id).or_insert((label, InnerMap::default()));
         for direction in Direction::iter() {
-          inner_map.insert(*direction, DataBind::new(0, "0", input_width, "#"));
+          let default_count = default_calculator.directional_blocks.get(direction).map_or(0, |map| map.get(&block.id).map_or(0, |c| *c));
+          let loaded_count = loaded_calculator.directional_blocks.get(direction).map_or(0, |map| map.get(&block.id).map_or(0, |c| *c));
+          let data_bind = DataBind::new(default_count, format!("{}", default_count), input_width, "#", format!("{}", loaded_count));
+          inner_map.insert(*direction, data_bind);
         }
       }
     }
     let (small, large) = Blocks::small_and_large_sorted(blocks_iter);
-    add_to_map(data, self.input_width, small, &mut self.small);
-    add_to_map(data, self.input_width, large, &mut self.large);
+    add_to_map(data, default_calculator, loaded_calculator, self.input_width, small, &mut self.small);
+    add_to_map(data, default_calculator, loaded_calculator, self.input_width, large, &mut self.large);
   }
 
   pub fn update(&mut self, message: DirectionalBlockInputMessage, calc: &mut GridCalculator) {

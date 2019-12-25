@@ -39,8 +39,9 @@ impl Page {
         self.name = name;
         None
       },
-      Message::Save => Some(Action::Save(self.name.clone())),
+      Message::Save if !self.name.is_empty() => Some(Action::Save(self.name.clone())),
       Message::Cancel => Some(Action::Cancel),
+      _ => None,
     }
   }
 

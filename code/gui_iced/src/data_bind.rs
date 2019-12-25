@@ -19,13 +19,24 @@ pub struct DataBind<T> {
 pub struct DataBindMessage(String);
 
 impl<T: Copy + FromStr + PartialEq> DataBind<T> {
-  pub fn new<P: Into<String>, U: Into<String>>(input_default: T, input_placeholder: P, input_width: Length, unit: U) -> Self {
+  pub fn new<P: Into<String>, U: Into<String>, V: Into<String>>(input_default: T, input_placeholder: P, input_width: Length, unit: U, value: V) -> Self {
     let input_placeholder = input_placeholder.into();
     let unit = unit.into();
-    let value = String::new();
-    let error = false;
+    let (value, error) = Self::value_and_error(value.into(), input_default);
     let state = text_input::State::default();
     Self { input_default, input_placeholder, input_width, unit, value, error, state }
+  }
+
+  fn value_and_error(val: String, default: T) -> (String, bool) {
+    if let Ok(parsed) = T::from_str(&val) {
+      if parsed == default {
+        ("".to_owned(), false)
+      } else {
+        (val, false)
+      }
+    } else {
+      (val, true)
+    }
   }
 
   pub fn update(&mut self, message: DataBindMessage, val: &mut T) {
@@ -41,17 +52,9 @@ impl<T: Copy + FromStr + PartialEq> DataBind<T> {
   }
 
   pub fn reload(&mut self, val: String) {
-    if let Ok(parsed) = T::from_str(&val) {
-      if parsed == self.input_default {
-        self.value = "".to_owned();
-      } else {
-        self.value = val;
-      }
-      self.error = false;
-    } else {
-      self.value = val;
-      self.error = true;
-    }
+    let (value, error) = Self::value_and_error(val, self.input_default);
+    self.value = value;
+    self.error = error;
   }
 
   pub fn view(&mut self) -> Element<DataBindMessage> {

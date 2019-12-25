@@ -1,6 +1,6 @@
 use iced::{Align, button, Element};
 
-use crate::storage::CalculatorStorage;
+use crate::storage::Storage;
 use crate::view::{button, col, h1, h3, row};
 use std::ops::Deref;
 
@@ -23,8 +23,8 @@ pub enum Action {
 }
 
 impl Page {
-  pub fn new(calculator_storage: &CalculatorStorage) -> Self {
-    let load_states = calculator_storage.iter().map(|(name, _)| (name.clone(), button::State::default())).collect();
+  pub fn new(calculator_storage: &Storage) -> Self {
+    let load_states = calculator_storage.iter_saved_calculators().map(|(name, _)| (name.clone(), button::State::default())).collect();
     Self { load_states, cancel_button_state: button::State::default() }
   }
 

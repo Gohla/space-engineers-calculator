@@ -59,33 +59,37 @@ pub enum Action {
 }
 
 impl Page {
-  pub fn new(data: &Data, calculator: &GridCalculator) -> Self {
+  pub fn new(data: &Data, default_calculator: &GridCalculator, loaded_calculator: &GridCalculator) -> Self {
     let input = {
-      let options = OptionInput::new(calculator);
-      let label_width = Length::Units(230);
-      let input_width = Length::Units(35);
+      let options = OptionInput::new(default_calculator, loaded_calculator);
+      #[cfg(not(target_arch = "wasm32"))] let label_width = Length::Units(230);
+      #[cfg(target_arch = "wasm32")] let label_width = Length::Units(180);
+      #[cfg(not(target_arch = "wasm32"))] let input_width = Length::Units(35);
+      #[cfg(target_arch = "wasm32")] let input_width = Length::Units(30);
       let storage = {
         let mut blocks = BlockInput::new(label_width, input_width);
-        blocks.add_blocks(&data, data.blocks.containers.values().filter(|c| c.details.store_any));
-        blocks.add_blocks(&data, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.containers.values().filter(|c| c.details.store_any));
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.cockpits.values().filter(|c| c.details.has_inventory));
         blocks
       };
       let thrust = {
-        let mut blocks = DirectionalBlockInput::new(label_width, input_width, Length::Units(49));
-        blocks.add_blocks(&data, data.blocks.thrusters.values());
+        #[cfg(not(target_arch = "wasm32"))] let direction_label_width = Length::Units(49);
+        #[cfg(target_arch = "wasm32")] let direction_label_width = Length::Units(42);
+        let mut blocks = DirectionalBlockInput::new(label_width, input_width, direction_label_width);
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.thrusters.values());
         blocks
       };
       let power = {
         let mut blocks = BlockInput::new(label_width, input_width);
-        blocks.add_blocks(&data, data.blocks.hydrogen_engines.values());
-        blocks.add_blocks(&data, data.blocks.reactors.values());
-        blocks.add_blocks(&data, data.blocks.batteries.values());
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.hydrogen_engines.values());
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.reactors.values());
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.batteries.values());
         blocks
       };
       let hydrogen = {
         let mut blocks = BlockInput::new(label_width, input_width);
-        blocks.add_blocks(&data, data.blocks.generators.values());
-        blocks.add_blocks(&data, data.blocks.hydrogen_tanks.values());
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.generators.values());
+        blocks.add_blocks(&data, default_calculator, loaded_calculator, data.blocks.hydrogen_tanks.values());
         blocks
       };
       Input {
@@ -97,7 +101,7 @@ impl Page {
         scrollable_state: Default::default(),
       }
     };
-    let result = Result { calculated: calculator.calculate(&data) };
+    let result = Result { calculated: loaded_calculator.calculate(&data) };
     let result_mut = ResultMut { scrollable_state: Default::default() };
     Self {
       input,

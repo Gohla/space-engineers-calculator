@@ -9,10 +9,13 @@ pub fn col<'a, M>() -> Column<'a, M> { Column::new().width(Length::Shrink) }
 #[inline]
 pub fn scl<M>(state: &mut scrollable::State) -> Scrollable<M> { Scrollable::new(state).width(Length::Shrink) }
 
+#[cfg(not(target_arch = "wasm32"))]
 pub const TXT_SIZE: u16 = 18;
-pub const H3_SIZE: u16 = 20;
-pub const H2_SIZE: u16 = 24;
-pub const H1_SIZE: u16 = 32;
+#[cfg(target_arch = "wasm32")]
+pub const TXT_SIZE: u16 = 14;
+pub const H3_SIZE: u16 = TXT_SIZE + 2;
+pub const H2_SIZE: u16 = H3_SIZE + 4;
+pub const H1_SIZE: u16 = H2_SIZE + 8;
 
 #[inline]
 pub fn lbl<L: Into<String>>(label: L) -> Text { Text::new(label).size(TXT_SIZE).width(Length::Shrink) }
