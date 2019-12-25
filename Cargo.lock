@@ -1231,6 +1231,7 @@ dependencies = [
 [[package]]
 name = "iced"
 version = "0.1.0-beta"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "iced_web",
  "iced_wgpu",
@@ -1240,6 +1241,7 @@ dependencies = [
 [[package]]
 name = "iced_core"
 version = "0.1.0"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "futures 0.3.1",
 ]
@@ -1247,6 +1249,7 @@ dependencies = [
 [[package]]
 name = "iced_native"
 version = "0.1.0"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "futures 0.3.1",
  "iced_core",
@@ -1258,6 +1261,7 @@ dependencies = [
 [[package]]
 name = "iced_web"
 version = "0.1.0"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "dodrio",
  "futures 0.3.1",
@@ -1270,6 +1274,7 @@ dependencies = [
 [[package]]
 name = "iced_wgpu"
 version = "0.1.0"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "font-kit",
  "glam",
@@ -1285,6 +1290,7 @@ dependencies = [
 [[package]]
 name = "iced_winit"
 version = "0.1.0-alpha"
+source = "git+https://github.com/Gohla/iced.git?branch=develop#1fb634b1e2b4b3a0380098e225fcc070f12f2c14"
 dependencies = [
  "futures 0.3.1",
  "iced_native",
