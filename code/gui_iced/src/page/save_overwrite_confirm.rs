@@ -49,7 +49,7 @@ impl Page {
       .push(row()
         .spacing(10)
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
-        .push(button(&mut self.overwrite_button_state, "Overwrite").background(danger_color()).on_press(Message::Overwrite))
+        .push(button(&mut self.overwrite_button_state, "Overwrite")/*.background(danger_color())*/.on_press(Message::Overwrite))
       )
       .into()
   }

@@ -42,7 +42,7 @@ impl Page {
       .push(row()
         .spacing(10)
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
-        .push(button(&mut self.discard_button_state, "Discard unsaved changes").background(danger_color()).on_press(Message::Discard))
+        .push(button(&mut self.discard_button_state, "Discard unsaved changes")/*.background(danger_color())*/.on_press(Message::Discard))
       )
       .into()
   }
