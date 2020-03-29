@@ -4,7 +4,6 @@ cargo-features = ["named-profiles", "profile-overrides"]
 members = [
   "code/core",
   "code/cli",
-  "code/gui_gtk",
   "code/gui_iced",
 ]
 
@@ -18,15 +17,13 @@ codegen-units = 8
 lto = false
 incremental = true
 # All dependencies (but not this crate itself)
-[profile.dev.overrides."*"]
+[profile.dev.package."*"]
 opt-level = 3
-[profile.dev.overrides."secalc_core"]
+[profile.dev.package."secalc_core"]
 opt-level = 2
-[profile.dev.overrides."secalc_cli"]
+[profile.dev.package."secalc_cli"]
 opt-level = 2
-[profile.dev.overrides."secalc_gui_gtk"]
-opt-level = 2
-[profile.dev.overrides."secalc_gui_iced"]
+[profile.dev.package."secalc_gui_iced"]
 opt-level = 2
 
 [profile.debuginfo]

@@ -38,7 +38,7 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
       if !node.is_element() { continue }
       if !node.has_tag_name(tag) { continue }
       if let Some(text) = node.text() {
-        return text.parse().map(|v| Some(v));
+        return text.trim().parse().map(|v| Some(v));
       }
     }
     Ok(None)
@@ -46,7 +46,7 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
 
   fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a>>>(&self, name: N) -> Result<Option<T>, T::Err> {
     if let Some(attribute) = self.attribute(name) {
-      return attribute.parse().map(|v| Some(v))
+      return attribute.trim().parse().map(|v| Some(v))
     }
     Ok(None)
   }
