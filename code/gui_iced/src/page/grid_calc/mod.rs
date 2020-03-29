@@ -55,7 +55,7 @@ pub enum Action {
   CalculatorModified,
   Save,
   SaveAs,
-  Load
+  Load,
 }
 
 impl Page {
@@ -109,7 +109,7 @@ impl Page {
       result_mut,
       save_button_state: Default::default(),
       save_as_button_state: Default::default(),
-      load_button_state: Default::default()
+      load_button_state: Default::default(),
     }
   }
 
@@ -118,23 +118,23 @@ impl Page {
       Message::InputOptionChange(m) => {
         self.input.options.update(m, calculator);
         Some(Action::CalculatorModified)
-      },
+      }
       Message::InputStorageChange(m) => {
         self.input.storage.update(m, calculator);
         Some(Action::CalculatorModified)
-      },
+      }
       Message::InputThrustChange(m) => {
         self.input.thrust.update(m, calculator);
         Some(Action::CalculatorModified)
-      },
+      }
       Message::InputPowerChange(m) => {
         self.input.power.update(m, calculator);
         Some(Action::CalculatorModified)
-      },
+      }
       Message::InputHydrogenChange(m) => {
         self.input.hydrogen.update(m, calculator);
         Some(Action::CalculatorModified)
-      },
+      }
       Message::SavePressed => Some(Action::Save),
       Message::SaveAsPressed => Some(Action::SaveAs),
       Message::LoadPressed => Some(Action::Load),
@@ -184,6 +184,7 @@ impl Page {
         .push(result)
       ).into();
     root
+    //.explain(iced::Color::BLACK)
   }
 
 
