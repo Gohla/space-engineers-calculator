@@ -1,6 +1,6 @@
 use iced::{Align, button, Element};
 
-use crate::view::{button, col, danger_color, h1, row};
+use crate::view::{button, col, h1, row};
 
 #[derive(Debug)]
 pub struct Page {
