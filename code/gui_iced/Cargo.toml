@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 secalc_core = { path = "../core" }
-iced = { git = 'https://github.com/Gohla/iced.git', branch = 'develop' }
+iced = { git = 'https://github.com/Gohla/iced.git', branch = 'master' }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 linked-hash-map = "0.5"

@@ -1,5 +1,4 @@
-use iced::{Application, Settings};
-use iced::settings::Window;
+use iced::{Application, Settings, window};
 
 pub mod app;
 pub mod view;
@@ -21,9 +20,9 @@ fn main() {
   }
 
   app::App::run(Settings {
-    window: Window {
+    window: window::Settings {
       size: (2300, 1000),
-      ..Window::default()
+      ..window::Settings::default()
     },
     ..Settings::default()
   })

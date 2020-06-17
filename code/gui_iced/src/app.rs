@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use iced::{Application, Command, Element};
+use iced::{Application, Command, Element, executor};
 use log::error;
 
 use secalc_core::data::Data;
@@ -73,9 +73,11 @@ impl Default for App {
 }
 
 impl Application for App {
+  type Executor = executor::Null;
   type Message = Message;
+  type Flags = ();
 
-  fn new() -> (Self, Command<Message>) {
+  fn new(_flags: Self::Flags) -> (Self, Command<Message>) {
     (Self::default(), Command::none())
   }
 
