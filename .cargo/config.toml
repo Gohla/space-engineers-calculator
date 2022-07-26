@@ -11,3 +11,7 @@ rustflags = ["-C", "link-arg=-fuse-ld=/usr/local/bin/zld", "-Zshare-generics=y"]
 [target.x86_64-pc-windows-msvc]
 linker = "rust-lld.exe"
 rustflags = ["-Zshare-generics=y"]
+
+# NOTE: you must manually install https://github.com/jakobhellermann/wasm-server-runner: `cargo install wasm-server-runner`.
+[target.wasm32-unknown-unknown]
+runner = "wasm-server-runner"

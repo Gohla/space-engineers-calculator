@@ -5,6 +5,3 @@
 # IntelliJ
 /.idea
 /*.iml
-
-# Trunk
-/**/dist
