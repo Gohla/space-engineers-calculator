@@ -39,7 +39,7 @@ impl GasProperty {
 }
 
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, Debug)]
 pub struct GasProperties {
   pub gas_properties: LinkedHashMap<String, GasProperty>,
 }

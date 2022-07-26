@@ -1,6 +1,7 @@
 use std::backtrace::Backtrace;
 use std::path::{Path, PathBuf};
 
+use linked_hash_map::LinkedHashMap;
 use roxmltree::Document;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -9,7 +10,6 @@ use crate::error::ErrorExt;
 
 use super::localization::Localization;
 use super::xml::{NodeExt, read_string_from_file};
-use linked_hash_map::LinkedHashMap;
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -40,7 +40,7 @@ impl Component {
 }
 
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, Debug)]
 pub struct Components {
   pub components: LinkedHashMap<String, Component>,
 }

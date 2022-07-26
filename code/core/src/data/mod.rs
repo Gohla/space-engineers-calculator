@@ -39,7 +39,7 @@ pub enum WriteError {
   ToJSON(#[from] serde_json::Error),
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, Debug)]
 pub struct Data {
   pub blocks: Blocks,
   pub components: Components,

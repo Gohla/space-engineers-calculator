@@ -25,5 +25,5 @@ fn main() {
       ..window::Settings::default()
     },
     ..Settings::default()
-  })
+  }).unwrap()
 }

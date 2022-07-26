@@ -1,0 +1,11 @@
+[package]
+name = "secalc_web_app"
+version = "0.1.0"
+authors = ["Gabriel Konat <gabrielkonat@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+secalc_core = { path = "../core" }
+yew = "0.19"
+wasm-bindgen = "0.2"
+web-sys = "0.3"

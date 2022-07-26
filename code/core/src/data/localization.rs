@@ -21,7 +21,7 @@ pub enum Error {
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default, Clone, Serialize, Deserialize, Debug)]
 pub struct Localization {
   pub localization: LinkedHashMap<String, String>,
 }

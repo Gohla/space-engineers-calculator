@@ -59,7 +59,7 @@ impl Default for App {
       Data::from_json(bytes).expect("Cannot read data")
     };
     let storage = Storage::load()
-      .unwrap_or_else(|e| panic!("[BUG] Could not load storage: {}", e))
+      .unwrap_or_default()
       .unwrap_or_default();
     let current_page = Page::GridCalc;
     let grid_calc_page = grid_calc::Page::new(&data, &GridCalculator::default(), &storage.calculator);
@@ -73,7 +73,7 @@ impl Default for App {
 }
 
 impl Application for App {
-  type Executor = executor::Null;
+  type Executor = executor::Default;
   type Message = Message;
   type Flags = ();
 

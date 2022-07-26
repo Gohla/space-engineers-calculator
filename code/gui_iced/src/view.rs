@@ -33,7 +33,7 @@ pub fn h2<L: Into<String>>(label: L) -> Text { Text::new(label).size(H2_SIZE) }
 pub fn h1<L: Into<String>>(label: L) -> Text { Text::new(label).size(H1_SIZE) }
 
 #[inline]
-pub fn text_input<'a, M, F: 'static + Fn(String) -> M>(width: Length, state: &'a mut text_input::State, placeholder: &str, value: &str, on_change: F) -> TextInput<'a, M> {
+pub fn text_input<'a, M: Clone, F: 'static + Fn(String) -> M>(width: Length, state: &'a mut text_input::State, placeholder: &str, value: &str, on_change: F) -> TextInput<'a, M> {
   TextInput::new(state, placeholder, value, on_change)
     .width(width)
     .padding(2)
@@ -41,7 +41,7 @@ pub fn text_input<'a, M, F: 'static + Fn(String) -> M>(width: Length, state: &'a
 }
 
 #[inline]
-pub fn button<M, L: Into<String>>(state: &mut button::State, label: L) -> Button<M> {
+pub fn button<M: Clone, L: Into<String>>(state: &mut button::State, label: L) -> Button<M> {
   Button::new(state, h2(label).vertical_alignment(VerticalAlignment::Center))
     .padding(2)
     .min_width(50)

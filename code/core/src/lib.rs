@@ -1,5 +1,3 @@
-#![feature(try_trait)]
-#![feature(clamp)]
 #![feature(backtrace)]
 
 pub mod grid;

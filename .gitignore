@@ -6,5 +6,5 @@
 /.idea
 /*.iml
 
-# Glade
-/**/*.*~
+# Trunk
+/**/dist

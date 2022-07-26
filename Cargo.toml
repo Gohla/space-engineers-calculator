@@ -2,37 +2,94 @@ cargo-features = ["named-profiles", "profile-overrides"]
 
 [workspace]
 members = [
-  "code/core",
-  "code/cli",
-  "code/gui_iced",
+  "code/*",
 ]
+default-members = [
+  "code/*",
+]
+resolver = "2"
 
+
+# Development profile: no debug information, some optimisations. Very low compile-time.
 [profile.dev]
 opt-level = 2
-overflow-checks = true
-debug-assertions = true
-panic = "abort"
 debug = false
-codegen-units = 8
-lto = false
+debug-assertions = true
+overflow-checks = true
+lto = false # Performs "thin local LTO" which performs "thin" LTO on the local crate only across its codegen units.
+panic = "abort"
 incremental = true
-# All dependencies (but not this crate itself)
+codegen-units = 256
+# Optimize all dependencies, but not our own crates, to speed up runtime.
 [profile.dev.package."*"]
 opt-level = 3
-[profile.dev.package."secalc_core"]
-opt-level = 2
-[profile.dev.package."secalc_cli"]
-opt-level = 2
-[profile.dev.package."secalc_gui_iced"]
-opt-level = 2
+debug = false
+overflow-checks = true
+debug-assertions = true
+incremental = true
+codegen-units = 256
 
-[profile.debuginfo]
-inherits = 'dev'
+
+# Debug profile: full debug information, no optimisations. Low compile-time.
+[profile.dbg]
+inherits = "dev"
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "abort"
+incremental = true
+codegen-units = 256
+# Optimize all dependencies, but not our own crates, to speed up runtime.
+[profile.dbg.package."*"]
+opt-level = 3
+debug = true
+overflow-checks = true
+debug-assertions = true
+incremental = true
+codegen-units = 256
+
+
+# Testing: same as debug profile.
+[profile.test]
+inherits = "dbg"
 debug = true
 
+
+
+# Release profile: full optimisations, including full LTO. High compile-time.
 [profile.release]
-opt-level = 's'
+opt-level = 3
+debug = false
 overflow-checks = false
 debug-assertions = false
 lto = true
-debug = false
+panic = "abort"
+
+# Development release profile: full optimisations, but without LTO. Medium compile-time.
+[profile.devrelease]
+inherits = "release"
+lto = false # Performs "thin local LTO" which performs "thin" LTO on the local crate only across its codegen units.
+incremental = true
+codegen-units = 256
+
+
+# Benchmarking profile = release. High compile-time.
+[profile.bench]
+inherits = "release"
+
+# Development benchmarking profile = fastrelease. Medium compile-time
+[profile.devbench]
+inherits = "devrelease"
+
+
+# Performance profiling profile = release + debug. High compile-time.
+[profile.profile]
+inherits = "release"
+debug = true
+
+# Development performance profiling profile = fastrelease + debug. Medium compile-time
+[profile.devprofile]
+inherits = "devrelease"
+debug = true
