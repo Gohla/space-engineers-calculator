@@ -10,6 +10,12 @@ default-members = [
 resolver = "2"
 
 
+[patch.crates-io]
+egui = { git = "https://github.com/emilk/egui", branch = "master" }
+eframe = { git = "https://github.com/emilk/egui", branch = "master" }
+
+
+
 # Development profile: no debug information, some optimisations. Very low compile-time.
 [profile.dev]
 opt-level = 2

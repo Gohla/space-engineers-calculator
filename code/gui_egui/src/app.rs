@@ -10,5 +10,7 @@ impl App {
 }
 
 impl eframe::App for App {
-  fn update(&mut self, _ctx: &Context, _frame: &mut Frame) {}
+  fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+    egui::Window::new("Space Engineers Calculator").show(ctx, |_ui| {});
+  }
 }
