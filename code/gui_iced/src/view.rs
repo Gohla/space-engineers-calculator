@@ -1,4 +1,4 @@
-use iced::{Button, button, Color, Column, HorizontalAlignment, Length, Row, Scrollable, scrollable, Text, text_input, TextInput, VerticalAlignment};
+use iced::{Button, button, Color, Column, Length, Row, Scrollable, scrollable, Text, text_input, TextInput, alignment};
 
 #[inline]
 pub fn row<'a, M>() -> Row<'a, M> { Row::new() }
@@ -21,7 +21,7 @@ pub const H1_SIZE: u16 = H2_SIZE + 8;
 pub fn lbl<L: Into<String>>(label: L) -> Text { Text::new(label).size(TXT_SIZE) }
 
 #[inline]
-pub fn val<L: Into<String>>(label: L) -> Text { Text::new(label).size(TXT_SIZE).horizontal_alignment(HorizontalAlignment::Right) }
+pub fn val<L: Into<String>>(label: L) -> Text { Text::new(label).size(TXT_SIZE).horizontal_alignment(alignment::Horizontal::Right) }
 
 #[inline]
 pub fn h3<L: Into<String>>(label: L) -> Text { Text::new(label).size(H3_SIZE) }
@@ -42,9 +42,9 @@ pub fn text_input<'a, M: Clone, F: 'static + Fn(String) -> M>(width: Length, sta
 
 #[inline]
 pub fn button<M: Clone, L: Into<String>>(state: &mut button::State, label: L) -> Button<M> {
-  Button::new(state, h2(label).vertical_alignment(VerticalAlignment::Center))
+  Button::new(state, h2(label).vertical_alignment(alignment::Vertical::Center))
     .padding(2)
-    .min_width(50)
+    .width(Length::Shrink)
     //.background(Color::from_rgb(0.75, 0.75, 0.75))
     //.border_radius(2)
 }

@@ -1,4 +1,4 @@
-use iced::{Align, button, Element, Length, text_input};
+use iced::{Alignment, button, Element, Length, text_input};
 
 use crate::view::{button, col, danger_color, foreground_color, h1, lbl, row, text_input};
 
@@ -51,7 +51,7 @@ impl Page {
       .spacing(10)
       .push(row()
         .spacing(10)
-        .align_items(Align::Center)
+        .align_items(Alignment::Center)
         .push(h1("Save as"))
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
       )

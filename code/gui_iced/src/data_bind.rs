@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::str::FromStr;
 
-use iced::{Align, Element, Length, text_input};
+use iced::{Alignment, Element, Length, text_input};
 
 use crate::view::{danger_color, foreground_color, lbl, row, text_input};
 
@@ -67,7 +67,7 @@ impl<T: Copy + FromStr + PartialEq> DataBind<T> {
     row()
       .spacing(2)
       .padding(1)
-      .align_items(Align::Center)
+      .align_items(Alignment::Center)
       .push(input)
       .push(unit)
       .into()

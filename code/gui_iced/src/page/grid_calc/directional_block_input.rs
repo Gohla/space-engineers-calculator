@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use iced::{Align, Element, Length};
+use iced::{Alignment, Element, Length};
 use linked_hash_map::LinkedHashMap;
 
 use secalc_core::data::blocks::{Block, BlockId, Blocks, GridSize};
@@ -90,7 +90,7 @@ impl DirectionalBlockInput {
       let mut first_row = row()
         .spacing(2)
         .width(Length::Shrink)
-        .align_items(Align::Center)
+        .align_items(Alignment::Center)
         .push(empty().width(label_width))
         ;
       for direction in Direction::iter() {
@@ -100,7 +100,7 @@ impl DirectionalBlockInput {
     };
 
     for (id, (label, inner_map)) in map.iter_mut() {
-      let mut row = row().spacing(2).align_items(Align::Center);
+      let mut row = row().spacing(2).align_items(Alignment::Center);
       row = row.push(lbl(label.deref()).width(label_width));
       for (direction, data_bind) in inner_map {
         // Clone and copy before closure so that we are not passing references into 'static closure.

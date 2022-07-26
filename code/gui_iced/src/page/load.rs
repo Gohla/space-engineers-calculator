@@ -1,8 +1,9 @@
-use iced::{Align, button, Element};
+use std::ops::Deref;
+
+use iced::{Alignment, button, Element};
 
 use crate::storage::Storage;
 use crate::view::{button, col, h1, h3, row};
-use std::ops::Deref;
 
 #[derive(Debug)]
 pub struct Page {
@@ -41,7 +42,7 @@ impl Page {
       .padding(10)
       .push(row()
         .spacing(10)
-        .align_items(Align::Center)
+        .align_items(Alignment::Center)
         .push(h1("Load"))
         .push(button(&mut self.cancel_button_state, "Cancel").on_press(Message::Cancel))
       )

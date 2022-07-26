@@ -1,4 +1,4 @@
-use iced::{Align, button, Element};
+use iced::{Alignment, button, Element};
 
 use crate::view::{button, col, h1, row};
 
@@ -36,7 +36,7 @@ impl Page {
       .spacing(10)
       .push(row()
         .spacing(10)
-        .align_items(Align::End)
+        .align_items(Alignment::End)
         .push(h1("Unsaved changes - discard?"))
       )
       .push(row()

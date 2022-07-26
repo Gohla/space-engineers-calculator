@@ -1,4 +1,4 @@
-use iced::{Align, button, Element, HorizontalAlignment, Length, scrollable};
+use iced::{alignment, Alignment, button, Element, Length, scrollable};
 
 use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
@@ -163,11 +163,11 @@ impl Page {
       .spacing(10)
       .padding(10)
       .push(row()
-        .align_items(Align::Center)
+        .align_items(Alignment::Center)
         .push(row()
           .spacing(10)
           .width(Length::Fill)
-          .align_items(Align::Center)
+          .align_items(Alignment::Center)
           .push(h1("Space Engineers Calculator"))
           .push(button(&mut self.save_button_state, "Save").on_press(Message::SavePressed))
           .push(button(&mut self.save_as_button_state, "Save as").on_press(Message::SaveAsPressed))
@@ -175,7 +175,7 @@ impl Page {
         )
         .push(row()
           .width(Length::Fill)
-          .push(h3("https://github.com/Gohla/space_engineers_calc").width(Length::Fill).horizontal_alignment(HorizontalAlignment::Right))
+          .push(h3("https://github.com/Gohla/space_engineers_calc").width(Length::Fill).horizontal_alignment(alignment::Horizontal::Right))
         )
       )
       .push(row()
@@ -318,8 +318,8 @@ impl Page {
       })
       .push({
         let mut column = col()
-          .push(lbl("Filled").horizontal_alignment(HorizontalAlignment::Center))
-          .push(lbl("Gravity").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("Filled").horizontal_alignment(alignment::Horizontal::Center))
+          .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
           if let Some(acceleration) = result.acceleration.get(direction) {
@@ -331,7 +331,7 @@ impl Page {
       .push({
         let mut column = col()
           .push(empty())
-          .push(lbl("No grav.").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
           if let Some(acceleration) = result.acceleration.get(direction) {
@@ -342,8 +342,8 @@ impl Page {
       })
       .push({
         let mut column = col()
-          .push(lbl("Empty").horizontal_alignment(HorizontalAlignment::Center))
-          .push(lbl("Gravity").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("Empty").horizontal_alignment(alignment::Horizontal::Center))
+          .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
           if let Some(acceleration) = result.acceleration.get(direction) {
@@ -355,7 +355,7 @@ impl Page {
       .push({
         let mut column = col()
           .push(empty())
-          .push(lbl("No grav.").horizontal_alignment(HorizontalAlignment::Center))
+          .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
           if let Some(acceleration) = result.acceleration.get(direction) {

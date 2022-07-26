@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use iced::{Align, Element, Length};
+use iced::{Alignment, Element, Length};
 
 use secalc_core::grid::GridCalculator;
 
@@ -39,7 +39,7 @@ macro_rules! create_option_input {
 
       pub fn view(&mut self) -> Element<OptionInputMessage> {
         col()
-          $(.push(row().push(lbl($label).width($label_width)).align_items(Align::Center).push(self.$field.view().map(move |s| OptionInputMessage::$message(s)))))*
+          $(.push(row().push(lbl($label).width($label_width)).align_items(Alignment::Center).push(self.$field.view().map(move |s| OptionInputMessage::$message(s)))))*
           .into()
       }
     }
