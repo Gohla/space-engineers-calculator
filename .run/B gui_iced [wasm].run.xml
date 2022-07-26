@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="B gui_iced [wasm]" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="command" value="build --bin secalc_gui_iced --target wasm32-unknown-unknown --target-dir ../../../target-wasm" />
-    <option name="workingDirectory" value="file://$PROJECT_DIR$/code/gui_egui/web" />
+    <option name="workingDirectory" value="file://$PROJECT_DIR$/code/gui_iced/web" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />
     <option name="allFeatures" value="false" />

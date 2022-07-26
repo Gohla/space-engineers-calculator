@@ -2,9 +2,12 @@
 
 use tracing_subscriber::prelude::*;
 
+use secalc_core::data::Data;
+
 use crate::app::App;
 
 mod app;
+mod widget;
 
 fn main() {
   #[cfg(target_arch = "wasm32")] { // Setup panics to log to the console on WASM.
@@ -32,13 +35,18 @@ fn main() {
       .init();
   }
 
+  let data = {
+    let bytes: &[u8] = include_bytes!("../../../data/data.json");
+    Data::from_json(bytes).expect("Cannot read data")
+  };
+
   // Run application.
   #[cfg(not(target_arch = "wasm32"))] {
     let options = eframe::NativeOptions::default();
     eframe::run_native(
       "Space Engineers Calculator",
       options,
-      Box::new(|ctx| Box::new(App::new(ctx))),
+      Box::new(|ctx| Box::new(App::new(data, ctx))),
     );
   }
   #[cfg(target_arch = "wasm32")] {
@@ -66,7 +74,7 @@ fn main() {
     eframe::start_web(
       canvas_id,
       options,
-      Box::new(|ctx| Box::new(App::new(ctx)))
+      Box::new(|ctx| Box::new(App::new(data, ctx)))
     ).unwrap();
   }
 }
