@@ -8,8 +8,6 @@ use tracing::trace;
 use secalc_core::data::Data;
 use secalc_core::grid::{GridCalculated, GridCalculator};
 
-use crate::widget::*;
-
 // App
 
 pub struct App {
@@ -37,7 +35,9 @@ impl eframe::App for App {
       trace!("Calculating");
       self.calculated = self.calculator.calculate(&self.data);
     }
-    ctx.window("Results", |ui| self.show_results(ui));
+    Window::new("Results")
+      .auto_sized()
+      .show(ctx, |ui| self.show_results(ui));
   }
 }
 
