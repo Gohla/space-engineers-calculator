@@ -1,15 +1,16 @@
 use std::ops::RangeInclusive;
 
 use eframe::Frame;
-use egui::{CollapsingHeader, Context, DragValue, Grid, Label, Ui, WidgetText, Window};
+use egui::{Button, CollapsingHeader, Context, DragValue, Grid, Ui, WidgetText, Window};
 use egui::emath::Numeric;
-use egui_extras::{Size, TableBuilder, TableRow};
-use tracing::debug;
+use tracing::trace;
 
 use secalc_core::data::Data;
 use secalc_core::grid::{GridCalculated, GridCalculator};
 
 use crate::widget::*;
+
+// App
 
 pub struct App {
   data: Data,
@@ -31,11 +32,9 @@ impl eframe::App for App {
   fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
     let changed = Window::new("Grid Calculator")
       .auto_sized()
-      .min_width(10.0)
-      .default_width(10.0)
       .show(ctx, |ui| self.show_calculator(ui)).map_or(false, |r| r.inner.unwrap_or_default());
     if changed {
-      debug!("Calculating");
+      trace!("Calculating");
       self.calculated = self.calculator.calculate(&self.data);
     }
     ctx.window("Results", |ui| self.show_results(ui));
@@ -45,23 +44,24 @@ impl eframe::App for App {
 impl App {
   fn show_calculator(&mut self, ui: &mut Ui) -> bool {
     let mut changed = false;
-    let mut edit_builder = EditBuilder::new();
     CollapsingHeader::new("Options").default_open(true).show(ui, |ui| {
-      TableBuilder::new(ui)
+      Grid::new("Options Grid")
         .striped(true)
-        .columns(Size::remainder(), 4)
-        .body(|mut body| {
-          body.row(10.0, |row|{edit_builder.edit(row, "Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);})
+        .num_columns(4)
+        .min_col_width(1.0)
+        .show(ui, |ui| {
+          let mut edit_builder = EditBuilder::new(ui, 60.0);
+          edit_builder.edit("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
+          edit_builder.edit("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
+          edit_builder.edit("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
+          edit_builder.edit("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
+          edit_builder.edit("Ice-only Fill", "%", &mut self.calculator.ice_only_fill, 0.1, 0.0..=100.0, self.calculator_default.ice_only_fill);
+          edit_builder.edit("Ore-only Fill", "%", &mut self.calculator.ore_only_fill, 0.1, 0.0..=100.0, self.calculator_default.ore_only_fill);
+          edit_builder.edit("Any-fill with Ice", "%", &mut self.calculator.any_fill_with_ice, 0.1, 0.0..=100.0, self.calculator_default.any_fill_with_ice);
+          edit_builder.edit("Any-fill with Ore", "%", &mut self.calculator.any_fill_with_ore, 0.1, 0.0..=100.0, self.calculator_default.any_fill_with_ore);
+          edit_builder.edit("Any-fill with Steel Plates", "%", &mut self.calculator.any_fill_with_steel_plates, 0.1, 0.0..=100.0, self.calculator_default.any_fill_with_steel_plates);
+          changed |= edit_builder.changed;
         });
-      // Grid::new("Options Grid").striped(true).num_columns(4).show(ui, |ui| {
-      //   let mut edit_builder = EditBuilder::new(ui);
-      //   edit_builder.edit("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
-      //   edit_builder.edit("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
-      //   edit_builder.edit("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
-      //   edit_builder.edit("Additional Mass", "kg", &mut self.calculator.additional_mass, 1.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-      //   edit_builder.edit("Ice-only Fill", "%", &mut self.calculator.ice_only_fill, 0.1, 0.0..=100.0, self.calculator_default.ice_only_fill);
-      //   changed |= edit_builder.changed;
-      // });
     });
     changed
   }
@@ -69,22 +69,32 @@ impl App {
   fn show_results(&mut self, _ui: &mut Ui) {}
 }
 
-struct EditBuilder {
+
+// Edit builder
+
+struct EditBuilder<'ui> {
+  ui: &'ui mut Ui,
+  edit_size: f32,
   changed: bool,
 }
 
-impl EditBuilder {
-  fn new() -> Self { Self { changed: false } }
-  fn edit<N: Numeric>(&mut self, mut table_row: TableRow, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
-    table_row.col(|ui| { ui.label(label); });
-    table_row.col(|ui| { ui.add(DragValue::new(value).speed(speed).clamp_range(clamp_range)); });
-    table_row.col(|ui| { ui.add(Label::new(suffix)); });
-    table_row.col(|ui| { ui.reset_button_with(value, reset_value); });
-    // // self.;
-    // let row_height = self.ui.available_height();
-    // self.changed |= self.ui.add_sized([50.0, row_height], DragValue::new(value).speed(speed).clamp_range(clamp_range)).changed();
-    // self.ui.add_sized([1.0, row_height], Label::new(suffix));
-    // self.changed |= self.ui.reset_button_with(value, reset_value).inner;
-    // self.ui.end_row();
+impl<'ui> EditBuilder<'ui> {
+  fn new(ui: &'ui mut Ui, edit_size: f32, ) -> Self {
+    Self { ui, edit_size, changed: false }
+  }
+
+  fn edit<N: Numeric>(&mut self, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
+    self.ui.label(label);
+    self.changed |= self.ui.add_sized([self.edit_size, self.ui.available_height()], DragValue::new(value).speed(speed).clamp_range(clamp_range)).changed();
+    self.ui.label(suffix);
+    self.reset_button_with(value, reset_value);
+    self.ui.end_row();
+  }
+
+  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) {
+    if self.ui.add_enabled(*value != reset_value, Button::new("↺")).clicked() {
+      *value = reset_value;
+      self.changed = true;
+    }
   }
 }

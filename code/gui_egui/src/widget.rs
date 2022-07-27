@@ -109,7 +109,7 @@ impl UiWidgetsExt for Ui {
   }
   #[inline]
   fn reset_button_without_reset(&mut self, can_reset: bool) -> Response {
-    self.add_enabled(can_reset, Button::new("↺"))
+    self.add_enabled(can_reset, Button::new("↺").small())
   }
 
 
