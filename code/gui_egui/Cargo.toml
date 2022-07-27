@@ -8,6 +8,7 @@ edition = "2021"
 secalc_core = { path = "../core" }
 egui = "0.18"
 eframe = { version = "0.18", features = ["persistence"] }
+thousands = "0.2"
 serde = { version = "1", features = ["derive"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "registry"] }

@@ -4,6 +4,7 @@ use std::ops::RangeInclusive;
 use eframe::Frame;
 use egui::{Button, CollapsingHeader, Context, DragValue, Grid, Ui, WidgetText, Window};
 use egui::emath::Numeric;
+use thousands::{Separable, SeparatorPolicy};
 use tracing::trace;
 
 use secalc_core::data::Data;
@@ -16,6 +17,7 @@ pub struct App {
   calculator: GridCalculator,
   calculator_default: GridCalculator,
   calculated: GridCalculated,
+  number_separator_policy: SeparatorPolicy<'static>,
 }
 
 impl App {
@@ -23,7 +25,12 @@ impl App {
     let calculator = GridCalculator::default();
     let calculator_default = GridCalculator::default();
     let calculated = GridCalculated::default();
-    Self { data, calculator, calculator_default, calculated }
+    let number_separator_policy = SeparatorPolicy {
+      separator: "·",
+      groups: &[3],
+      digits: thousands::digits::ASCII_DECIMAL,
+    };
+    Self { data, calculator, calculator_default, calculated, number_separator_policy }
   }
 }
 
@@ -67,7 +74,22 @@ impl App {
     changed
   }
 
-  fn show_results(&mut self, _ui: &mut Ui) {}
+  fn show_results(&mut self, ui: &mut Ui) {
+    CollapsingHeader::new("Mass").default_open(true).show(ui, |ui| {
+      Grid::new("Mass Grid")
+        .striped(true)
+        .num_columns(4)
+        .min_col_width(1.0)
+        .show(ui, |ui| {
+          ui.label("Empty");
+          ui.label(format!("{} kg", self.calculated.total_mass_empty.separate_by_policy(self.number_separator_policy)));
+          ui.end_row();
+          ui.label("Filled");
+          ui.label(format!("{} kg", self.calculated.total_mass_filled.separate_by_policy(self.number_separator_policy)));
+          ui.end_row();
+        });
+    });
+  }
 }
 
 
