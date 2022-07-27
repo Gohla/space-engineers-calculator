@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::ops::RangeInclusive;
 
 use eframe::Frame;
@@ -83,7 +84,7 @@ impl<'ui> EditBuilder<'ui> {
     Self { ui, edit_size, changed: false }
   }
 
-  fn edit<N: Numeric>(&mut self, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
+  fn edit<N: Numeric + Display>(&mut self, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
     self.ui.label(label);
     self.changed |= self.ui.add_sized([self.edit_size, self.ui.available_height()], DragValue::new(value).speed(speed).clamp_range(clamp_range)).changed();
     self.ui.label(suffix);
@@ -91,8 +92,10 @@ impl<'ui> EditBuilder<'ui> {
     self.ui.end_row();
   }
 
-  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) {
-    if self.ui.add_enabled(*value != reset_value, Button::new("↺")).clicked() {
+  fn reset_button_with<T: PartialEq + Display>(&mut self, value: &mut T, reset_value: T) {
+    let response = self.ui.add_enabled(*value != reset_value, Button::new("↺"))
+      .on_hover_text_at_pointer(format!("Reset to {}", reset_value));
+    if response.clicked() {
       *value = reset_value;
       self.changed = true;
     }
