@@ -856,6 +856,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui_extras"
+version = "0.18.0"
+source = "git+https://github.com/emilk/egui?branch=master#0571bf67e29320ea8bf154b3d442de0afacbb5a5"
+dependencies = [
+ "egui",
+]
+
+[[package]]
 name = "egui_glow"
 version = "0.18.1"
 source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
@@ -2419,6 +2427,7 @@ dependencies = [
  "dotenv",
  "eframe",
  "egui",
+ "egui_extras",
  "secalc_core",
  "serde",
  "tracing",

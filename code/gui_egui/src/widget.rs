@@ -8,12 +8,12 @@ use egui::emath::Numeric;
 // Context extensions
 
 pub trait CtxRefWidgetsExt {
-  fn window(&self, title: impl Into<WidgetText>, add_contents: impl FnOnce(&mut Ui)) -> Option<InnerResponse<Option<()>>>;
+  fn window<R>(&self, title: impl Into<WidgetText>, add_contents: impl FnOnce(&mut Ui) -> R) -> Option<InnerResponse<Option<R>>>;
 }
 
 impl CtxRefWidgetsExt for &Context {
   #[inline]
-  fn window(&self, title: impl Into<WidgetText>, add_contents: impl FnOnce(&mut Ui)) -> Option<InnerResponse<Option<()>>> {
+  fn window<R>(&self, title: impl Into<WidgetText>, add_contents: impl FnOnce(&mut Ui) -> R) -> Option<InnerResponse<Option<R>>> {
     Window::new(title).show(self, add_contents)
   }
 }
@@ -27,20 +27,29 @@ pub trait UiWidgetsExt where {
   fn collapsing_with_grid<R>(&mut self, heading: impl Into<WidgetText>, grid_id: impl Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
   fn collapsing_open_with_grid<R>(&mut self, heading: impl Into<WidgetText>, grid_id: impl Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
 
-  fn reset_button<T: Default + PartialEq>(&mut self, value: &mut T);
-  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T);
-  fn reset_button_double_click<T: Default + PartialEq>(&mut self, value: &mut T);
-  fn reset_button_double_click_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T);
-  fn reset_button_response(&mut self, can_reset: bool) -> Response;
 
-  fn drag<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response;
-  fn drag_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> Response;
-  fn drag_range<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response;
-  fn drag_range_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> Response;
-  fn drag_unlabelled<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>) -> Response;
-  fn drag_unlabelled_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, reset_value: N) -> Response;
-  fn drag_unlabelled_range<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response;
-  fn drag_unlabelled_range_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> Response;
+  fn reset_button<T: Default + PartialEq>(&mut self, value: &mut T) -> InnerResponse<bool>;
+  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) -> InnerResponse<bool>;
+  fn reset_button_double_click<T: Default + PartialEq>(&mut self, value: &mut T) -> InnerResponse<bool>;
+  fn reset_button_double_click_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) -> InnerResponse<bool>;
+  fn reset_button_without_reset(&mut self, can_reset: bool) -> Response;
+
+
+  fn drag<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>) -> Response;
+  fn drag_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool>;
+  fn drag_range<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response;
+  fn drag_range_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool>;
+
+  fn drag_prefix<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response;
+  fn drag_prefix_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool>;
+  fn drag_prefix_range<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response;
+  fn drag_prefix_range_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool>;
+
+  fn drag_suffix<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response;
+  fn drag_suffix_with_reset<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool>;
+  fn drag_suffix_range<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response;
+  fn drag_suffix_range_with_reset<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool>;
+
 
   fn show_f32_2(&mut self, float: f32);
   fn show_f32_lp_5_2(&mut self, float: f32);
@@ -73,78 +82,116 @@ impl UiWidgetsExt for Ui {
 
 
   #[inline]
-  fn reset_button<T: Default + PartialEq>(&mut self, value: &mut T) {
-    self.reset_button_with(value, T::default());
+  fn reset_button<T: Default + PartialEq>(&mut self, value: &mut T) -> InnerResponse<bool> {
+    self.reset_button_with(value, T::default())
   }
   #[inline]
-  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) {
-    if self.reset_button_response(*value != reset_value).clicked() {
+  fn reset_button_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) -> InnerResponse<bool> {
+    let response = self.reset_button_without_reset(*value != reset_value);
+    let should_reset = response.clicked();
+    if should_reset {
       *value = reset_value;
     }
+    InnerResponse::new(should_reset, response)
   }
   #[inline]
-  fn reset_button_double_click<T: Default + PartialEq>(&mut self, value: &mut T) {
-    self.reset_button_double_click_with(value, T::default());
+  fn reset_button_double_click<T: Default + PartialEq>(&mut self, value: &mut T) -> InnerResponse<bool> {
+    self.reset_button_double_click_with(value, T::default())
   }
   #[inline]
-  fn reset_button_double_click_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) {
-    if self.reset_button_response(*value != reset_value).double_clicked() {
+  fn reset_button_double_click_with<T: PartialEq>(&mut self, value: &mut T, reset_value: T) -> InnerResponse<bool> {
+    let response = self.reset_button_without_reset(*value != reset_value);
+    let should_reset = response.double_clicked();
+    if should_reset {
       *value = reset_value;
     }
+    InnerResponse::new(should_reset, response)
   }
   #[inline]
-  fn reset_button_response(&mut self, can_reset: bool) -> Response {
+  fn reset_button_without_reset(&mut self, can_reset: bool) -> Response {
     self.add_enabled(can_reset, Button::new("↺"))
   }
 
 
   #[inline]
-  fn drag<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response {
-    self.add(DragValue::new(value).prefix(prefix).speed(speed))
-  }
-  #[inline]
-  fn drag_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> Response {
-    self.horizontal(|ui| {
-      let response = ui.drag(prefix, value, speed);
-      ui.reset_button_with(value, reset_value);
-      response
-    }).response
-  }
-  #[inline]
-  fn drag_range<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response {
-    self.add(DragValue::new(value).prefix(prefix).speed(speed).clamp_range(clamp_range))
-  }
-  #[inline]
-  fn drag_range_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> Response {
-    self.horizontal(|ui| {
-      let response = ui.drag_range(prefix, value, speed, clamp_range);
-      ui.reset_button_with(value, reset_value);
-      response
-    }).response
-  }
-  #[inline]
-  fn drag_unlabelled<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>) -> Response {
+  fn drag<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>) -> Response {
     self.add(DragValue::new(value).speed(speed))
   }
   #[inline]
-  fn drag_unlabelled_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, reset_value: N) -> Response {
+  fn drag_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool> {
     self.horizontal(|ui| {
-      let response = ui.drag_unlabelled(value, speed);
-      ui.reset_button_with(value, reset_value);
-      response
-    }).response
+      let mut changed = false;
+      changed |= ui.drag(value, speed).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
   }
   #[inline]
-  fn drag_unlabelled_range<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response {
+  fn drag_range<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response {
     self.add(DragValue::new(value).speed(speed).clamp_range(clamp_range))
   }
   #[inline]
-  fn drag_unlabelled_range_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> Response {
+  fn drag_range_with_reset<N: Numeric>(&mut self, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool> {
     self.horizontal(|ui| {
-      let response = ui.drag_unlabelled_range(value, speed, clamp_range);
-      ui.reset_button_with(value, reset_value);
-      response
-    }).response
+      let mut changed = false;
+      changed |= ui.drag_range(value, speed, clamp_range).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
+  }
+
+  #[inline]
+  fn drag_prefix<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response {
+    self.add(DragValue::new(value).prefix(prefix).speed(speed))
+  }
+  #[inline]
+  fn drag_prefix_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool> {
+    self.horizontal(|ui| {
+      let mut changed = false;
+      changed |= ui.drag_prefix(prefix, value, speed).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
+  }
+  #[inline]
+  fn drag_prefix_range<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response {
+    self.add(DragValue::new(value).prefix(prefix).speed(speed).clamp_range(clamp_range))
+  }
+  #[inline]
+  fn drag_prefix_range_with_reset<N: Numeric>(&mut self, prefix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool> {
+    self.horizontal(|ui| {
+      let mut changed = false;
+      changed |= ui.drag_prefix_range(prefix, value, speed, clamp_range).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
+  }
+
+  #[inline]
+  fn drag_suffix<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>) -> Response {
+    self.add(DragValue::new(value).suffix(suffix).speed(speed))
+  }
+  #[inline]
+  fn drag_suffix_with_reset<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, reset_value: N) -> InnerResponse<bool> {
+    self.horizontal(|ui| {
+      let mut changed = false;
+      changed |= ui.drag_suffix(suffix, value, speed).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
+  }
+  #[inline]
+  fn drag_suffix_range<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>) -> Response {
+    self.add(DragValue::new(value).suffix(suffix).speed(speed).clamp_range(clamp_range))
+  }
+  #[inline]
+  fn drag_suffix_range_with_reset<N: Numeric>(&mut self, suffix: impl ToString, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) -> InnerResponse<bool> {
+    self.horizontal(|ui| {
+      let mut changed = false;
+      changed |= ui.drag_suffix_range(suffix, value, speed, clamp_range).changed();
+      changed |= ui.reset_button_with(value, reset_value).inner;
+      changed
+    })
   }
 
 
