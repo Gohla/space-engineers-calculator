@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::io;
+use std::ops::{Index, IndexMut};
 
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -19,7 +20,7 @@ pub enum WriteError {
   ToJSON(#[from] serde_json::Error),
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Serialize, Deserialize, Debug)]
+#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
 pub enum Direction {
   Up,
   Down,
@@ -30,12 +31,90 @@ pub enum Direction {
 }
 
 impl Direction {
+  #[inline]
   pub fn iter() -> impl Iterator<Item=&'static Direction> {
-    use self::Direction::*;
-    static SIDES: [Direction; 6] = [Up, Down, Front, Back, Left, Right];
-    SIDES.iter()
+    use Direction::*;
+    const DIRECTIONS: [Direction; 6] = [Up, Down, Front, Back, Left, Right];
+    DIRECTIONS.iter()
+  }
+
+  #[inline]
+  pub const fn into_index(self) -> usize {
+    use Direction::*;
+    match self {
+      Up => 0,
+      Down => 1,
+      Front => 2,
+      Back => 3,
+      Left => 4,
+      Right => 5,
+    }
   }
 }
+
+#[repr(transparent)]
+#[derive(Default, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
+pub struct PerDirection<T>([T; 6]);
+
+impl<T> PerDirection<T> {
+  #[inline]
+  pub const fn get(&self, direction: Direction) -> &T { &self.0[direction.into_index()] }
+  #[inline]
+  pub fn get_mut(&mut self, direction: Direction) -> &mut T { &mut self.0[direction.into_index()] }
+
+  #[inline]
+  pub const fn up(&self) -> &T { self.get(Direction::Up) }
+  #[inline]
+  pub const fn down(&self) -> &T { self.get(Direction::Down) }
+  #[inline]
+  pub const fn front(&self) -> &T { self.get(Direction::Front) }
+  #[inline]
+  pub const fn back(&self) -> &T { self.get(Direction::Back) }
+  #[inline]
+  pub const fn left(&self) -> &T { self.get(Direction::Left) }
+  #[inline]
+  pub const fn right(&self) -> &T { self.get(Direction::Right) }
+
+  #[inline]
+  pub fn up_mut(&mut self) -> &mut T { self.get_mut(Direction::Up) }
+  #[inline]
+  pub fn down_mut(&mut self) -> &mut T { self.get_mut(Direction::Down) }
+  #[inline]
+  pub fn front_mut(&mut self) -> &mut T { self.get_mut(Direction::Front) }
+  #[inline]
+  pub fn back_mut(&mut self) -> &mut T { self.get_mut(Direction::Back) }
+  #[inline]
+  pub fn left_mut(&mut self) -> &mut T { self.get_mut(Direction::Left) }
+  #[inline]
+  pub fn right_mut(&mut self) -> &mut T { self.get_mut(Direction::Right) }
+
+  #[inline]
+  pub fn iter(&self) -> impl Iterator<Item=&T> { self.0.iter() }
+  #[inline]
+  pub fn iter_mut(&mut self) -> impl Iterator<Item=&mut T> { self.0.iter_mut() }
+
+  #[inline]
+  pub fn iter_with_direction(&self) -> impl Iterator<Item=(Direction, &T)> {
+    Direction::iter().map(|d| (*d, &self[*d]))
+  }
+}
+
+impl<T> Index<Direction> for PerDirection<T> {
+  type Output = T;
+  #[inline]
+  fn index(&self, index: Direction) -> &Self::Output {
+    &self.0[index.into_index()]
+  }
+}
+
+impl<T> IndexMut<Direction> for PerDirection<T> {
+  #[inline]
+  fn index_mut(&mut self, index: Direction) -> &mut Self::Output {
+    &mut self.0[index.into_index()]
+  }
+}
+
+pub type CountPerDirection = PerDirection<u64>;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GridCalculator {
@@ -49,7 +128,7 @@ pub struct GridCalculator {
   pub any_fill_with_ore: f64,
   pub any_fill_with_steel_plates: f64,
   pub blocks: HashMap<BlockId, u64>,
-  pub directional_blocks: HashMap<Direction, HashMap<BlockId, u64>>,
+  pub directional_blocks: HashMap<BlockId, CountPerDirection>,
 }
 
 impl Default for GridCalculator {
@@ -65,16 +144,7 @@ impl Default for GridCalculator {
       any_fill_with_steel_plates: 0.0,
       additional_mass: 0.0,
       blocks: Default::default(),
-      directional_blocks: {
-        let mut map = HashMap::default();
-        map.insert(Direction::Up, HashMap::default());
-        map.insert(Direction::Down, HashMap::default());
-        map.insert(Direction::Front, HashMap::default());
-        map.insert(Direction::Back, HashMap::default());
-        map.insert(Direction::Left, HashMap::default());
-        map.insert(Direction::Right, HashMap::default());
-        map
-      },
+      directional_blocks: Default::default(),
     }
   }
 }
@@ -112,12 +182,12 @@ impl GridCalculator {
     let mut power_consumption_misc = 0.0;
     let mut power_consumption_generator = 0.0;
     let power_consumption_jump_drive = 0.0;
-    let mut power_consumption_thruster: HashMap<Direction, f64> = HashMap::default();
+    let mut power_consumption_thruster: PerDirection<f64> = PerDirection::default();
     let mut power_consumption_battery = 0.0;
 
     let mut hydrogen_consumption_idle = 0.0;
     let mut hydrogen_consumption_engine = 0.0;
-    let mut hydrogen_consumption_thruster: HashMap<Direction, f64> = HashMap::default();
+    let mut hydrogen_consumption_thruster: PerDirection<f64> = PerDirection::default();
 
     c.total_mass_empty += self.additional_mass;
 
@@ -148,9 +218,8 @@ impl GridCalculator {
       }
     }
     // Thrusters.
-    for (side, blocks) in self.directional_blocks.iter() {
-      let mut a = AccelerationCalculated::default();
-      for (id, count) in blocks {
+    for (id, count_per_direction) in self.directional_blocks.iter() {
+      for (direction, count) in count_per_direction.iter_with_direction() {
         if let Some(block) = data.blocks.thrusters.get(id) {
           let count = *count as f64;
           let details = &block.details;
@@ -164,22 +233,21 @@ impl GridCalculator {
           let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
           // Calculate y: y = mx + b
           let effectiveness = m * planetary_influence + b;
-          a.force += details.force * effectiveness * count;
+          c.acceleration[direction].force += details.force * effectiveness * count;
           match details.ty {
             ThrusterType::Hydrogen => {
               hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
               let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-              hydrogen_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
+              hydrogen_consumption_thruster[direction] += max_consumption;
             },
             _ => {
               power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
               let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-              power_consumption_thruster.entry(*side).and_modify(|c| *c += max_consumption).or_insert(max_consumption);
+              power_consumption_thruster[direction] += max_consumption;
             },
           }
         }
       }
-      c.acceleration.insert(*side, a);
     }
     // Hydrogen Engines.
     for (id, count) in self.blocks.iter() {
@@ -266,7 +334,7 @@ impl GridCalculator {
     c.total_items_steel_plate = steel_plates_in_any_volume * steel_plate_items_per_volume;
 
     // Calculate Acceleration
-    for a in c.acceleration.values_mut() {
+    for a in c.acceleration.iter_mut() {
       a.acceleration_empty_no_gravity = a.force / c.total_mass_empty;
       a.acceleration_filled_no_gravity = a.force / c.total_mass_filled;
       a.acceleration_empty_gravity = (a.force - (c.total_mass_empty * 9.81 * self.gravity_multiplier)) / c.total_mass_empty;
@@ -306,10 +374,8 @@ impl GridCalculator {
     c
   }
 
-  fn thruster_consumption_peak(map: &HashMap<Direction, f64>, side_1: Direction, side2: Direction) -> f64 {
-    let c1 = map.get(&side_1).map(|c| *c).unwrap_or(0.0);
-    let c2 = map.get(&side2).map(|c| *c).unwrap_or(0.0);
-    c1.max(c2)
+  fn thruster_consumption_peak(per_direction: &PerDirection<f64>, direction_a: Direction, direction_b: Direction) -> f64 {
+    per_direction[direction_a].max(per_direction[direction_b])
   }
 }
 
@@ -327,7 +393,7 @@ pub struct GridCalculated {
   pub total_items_ice: f64,
   pub total_items_steel_plate: f64,
 
-  pub acceleration: HashMap<Direction, AccelerationCalculated>,
+  pub acceleration: PerDirection<AccelerationCalculated>,
 
   pub power_generation: f64,
   pub power_capacity_battery: f64,

@@ -2,7 +2,7 @@
 name = "secalc_core"
 version = "0.1.0"
 authors = ["Gabriel Konat <gabrielkonat@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 thiserror = "1.0"
