@@ -1,6 +1,6 @@
 use std::backtrace::Backtrace;
 use std::cmp::Ordering;
-use std::fmt::Debug;
+use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 
@@ -40,9 +40,9 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
 /// Grid size.
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug, Serialize, Deserialize)]
+#[derive(Default, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug, )]
 pub enum GridSize {
-  Small,
+  #[default] Small,
   Large
 }
 
@@ -52,6 +52,15 @@ impl GridSize {
       "Small" => GridSize::Small,
       "Large" => GridSize::Large,
       t => panic!("Unrecognized grid size {}", t),
+    }
+  }
+}
+
+impl Display for GridSize {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    match self {
+      GridSize::Small => f.write_str("Small"),
+      GridSize::Large => f.write_str("Large"),
     }
   }
 }

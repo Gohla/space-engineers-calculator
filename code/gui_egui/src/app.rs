@@ -4,11 +4,12 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Align, Button, CollapsingHeader, CollapsingResponse, Context, DragValue, Grid, InnerResponse, Layout, Response, Ui, Visuals, WidgetText, Window};
+use egui::{Align, Button, CollapsingHeader, CollapsingResponse, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, Response, Ui, Visuals, WidgetText, Window};
 use egui::emath::Numeric;
 use thousands::{Separable, SeparatorPolicy};
 use tracing::trace;
 
+use secalc_core::data::blocks::GridSize;
 use secalc_core::data::Data;
 use secalc_core::grid::{CountPerDirection, GridCalculated, GridCalculator};
 
@@ -19,7 +20,9 @@ pub struct App {
   calculator: GridCalculator,
   calculator_default: GridCalculator,
   calculated: GridCalculated,
+
   number_separator_policy: SeparatorPolicy<'static>,
+  grid_size: GridSize,
 }
 
 impl App {
@@ -32,7 +35,7 @@ impl App {
       groups: &[3],
       digits: thousands::digits::ASCII_DECIMAL,
     };
-    Self { data, calculator, calculator_default, calculated, number_separator_policy }
+    Self { data, calculator, calculator_default, calculated, number_separator_policy, grid_size: GridSize::default() }
   }
 }
 
@@ -73,41 +76,53 @@ impl App {
     });
     let block_edit_size = 5.0;
     ui.open_header("Grid", |ui| {
-      ui.open_header("Storage", |ui| {
-        ui.open_header_with_grid("Small", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-          for block in self.data.blocks.containers.values().filter(|b| b.is_small()) {
-            ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-          }
-          changed |= ui.changed
+      ComboBox::from_id_source("Grid Size")
+        .selected_text(format!("{}", self.grid_size))
+        .show_ui(ui, |ui| {
+          ui.selectable_value(&mut self.grid_size, GridSize::Small, "Small");
+          ui.selectable_value(&mut self.grid_size, GridSize::Large, "Large");
         });
-        ui.open_header_with_grid("Large", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-          for block in self.data.blocks.containers.values().filter(|b| b.is_large()) {
-            ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-          }
-          changed |= ui.changed
-        });
+      ui.open_header_with_grid("Storage", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.containers.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.cockpits.values().filter(|b| b.size == self.grid_size && b.has_inventory) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        changed |= ui.changed
       });
-      ui.open_header("Thrusters", |ui| {
-        ui.open_header_with_grid("Small", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-          ui.header_count_directed_row();
-          for block in self.data.blocks.thrusters.values().filter(|b| b.is_small()) {
-            let count_per_direction = self.calculator.directional_blocks.entry(block.id.clone()).or_default();
-            ui.edit_count_directed_row(block.name(&self.data.localization), count_per_direction);
-          }
-          changed |= ui.changed
-        });
-        ui.open_header_with_grid("Large", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-          ui.header_count_directed_row();
-          for block in self.data.blocks.thrusters.values().filter(|b| b.is_large()) {
-            let count_per_direction = self.calculator.directional_blocks.entry(block.id.clone()).or_default();
-            ui.edit_count_directed_row(block.name(&self.data.localization), count_per_direction);
-          }
-          changed |= ui.changed
-        });
+      ui.open_header_with_grid("Thrusters", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        ui.header_count_directed_row();
+        for block in self.data.blocks.thrusters.values().filter(|b| b.size == self.grid_size) {
+          let count_per_direction = self.calculator.directional_blocks.entry(block.id.clone()).or_default();
+          ui.edit_count_directed_row(block.name(&self.data.localization), count_per_direction);
+        }
+        changed |= ui.changed
+      });
+      ui.open_header_with_grid("Power", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.hydrogen_engines.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.reactors.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.batteries.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        changed |= ui.changed
+      });
+      ui.open_header_with_grid("Hydrogen", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.generators.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.hydrogen_tanks.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        changed |= ui.changed
       });
     });
     changed
