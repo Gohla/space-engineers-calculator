@@ -1,5 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use egui::Vec2;
 use tracing_subscriber::prelude::*;
 
 use secalc_core::data::Data;
@@ -41,7 +42,10 @@ fn main() {
 
   // Run application.
   #[cfg(not(target_arch = "wasm32"))] {
-    let options = eframe::NativeOptions::default();
+    let options = eframe::NativeOptions {
+      min_window_size: Some(Vec2::new(855.0, 900.0)),
+      ..eframe::NativeOptions::default()
+    };
     eframe::run_native(
       "Space Engineers Calculator",
       options,

@@ -4,14 +4,15 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Align, Button, CollapsingHeader, CollapsingResponse, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, Response, Ui, Visuals, WidgetText, Window};
+use egui::{Align, Button, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, SidePanel, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText};
 use egui::emath::Numeric;
+use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
 use tracing::trace;
 
 use secalc_core::data::blocks::GridSize;
 use secalc_core::data::Data;
-use secalc_core::grid::{CountPerDirection, GridCalculated, GridCalculator};
+use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, GridCalculated, GridCalculator, PerDirection};
 
 // App
 
@@ -41,16 +42,34 @@ impl App {
 
 impl eframe::App for App {
   fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-    let changed = Window::new("Grid Calculator")
-      .auto_sized()
-      .show(ctx, |ui| self.show_calculator(ui)).map_or(false, |r| r.inner.unwrap_or_default());
-    if changed {
-      trace!("Calculating");
-      self.calculated = self.calculator.calculate(&self.data);
-    }
-    Window::new("Results")
-      .auto_sized()
-      .show(ctx, |ui| self.show_results(ui));
+    TopBottomPanel::top("Menu Panel")
+      .resizable(false)
+      .show(ctx, |ui| {
+      menu::bar(ui, |ui| {
+        ui.menu_button("Grid", |ui| {
+          ui.button("Save [nyi]")
+        });
+      });
+    });
+    SidePanel::left("Calculator Panel")
+      .resizable(false)
+      .min_width(525.0)
+      .show(ctx, |ui| {
+      ScrollArea::vertical().show(ui, |ui| {
+        if self.show_calculator(ui) {
+          trace!("Calculating");
+          self.calculated = self.calculator.calculate(&self.data);
+        }
+      });
+    });
+    SidePanel::left("Results Panel")
+      .resizable(false)
+      .min_width(300.0)
+      .show(ctx, |ui| {
+      ScrollArea::vertical().show(ui, |ui| {
+        self.show_results(ui, ctx);
+      });
+    });
   }
 
   fn clear_color(&self, visuals: &Visuals) -> Rgba {
@@ -128,25 +147,45 @@ impl App {
     changed
   }
 
-  fn show_results(&mut self, ui: &mut Ui) {
+  fn show_results(&mut self, ui: &mut Ui, ctx: &Context) {
     ui.open_header_with_grid("Mass", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
-      ui.show("Empty", format!("{} kg", self.calculated.total_mass_empty.round()));
-      ui.show("Filled", format!("{} kg", self.calculated.total_mass_filled.round()));
+      ui.show_row("Empty", format!("{} kg", self.calculated.total_mass_empty.round()));
+      ui.show_row("Filled", format!("{} kg", self.calculated.total_mass_filled.round()));
     });
     ui.open_header_with_grid("Volume", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
-      ui.show("Any", format!("{} L", self.calculated.total_volume_any));
-      ui.show("Ore", format!("{} L", self.calculated.total_volume_ore));
-      ui.show("Ice", format!("{} L", self.calculated.total_volume_ice));
-      ui.show("Ore-only", format!("{} L", self.calculated.total_volume_ore_only));
-      ui.show("Ice-only", format!("{} L", self.calculated.total_volume_ice_only));
+      ui.show_row("Any", format!("{} L", self.calculated.total_volume_any));
+      ui.show_row("Ore", format!("{} L", self.calculated.total_volume_ore));
+      ui.show_row("Ice", format!("{} L", self.calculated.total_volume_ice));
+      ui.show_row("Ore-only", format!("{} L", self.calculated.total_volume_ore_only));
+      ui.show_row("Ice-only", format!("{} L", self.calculated.total_volume_ice_only));
     });
     ui.open_header_with_grid("Items", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
-      ui.show("Ore", format!("{} #", self.calculated.total_items_ore.round()));
-      ui.show("Ice", format!("{} #", self.calculated.total_items_ice.round()));
-      ui.show("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
+      ui.show_row("Ore", format!("{} #", self.calculated.total_items_ore.round()));
+      ui.show_row("Ice", format!("{} #", self.calculated.total_items_ice.round()));
+      ui.show_row("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
+    });
+    ui.open_header_with_grid("Acceleration", |ui| {
+      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
+      ui.label("");
+      ui.label("Filled");
+      ui.label("");
+      ui.label("Empty");
+      ui.label("");
+      ui.label("");
+      ui.end_row();
+      ui.label("");
+      ui.label("Gravity");
+      ui.label("No grav.");
+      ui.label("Gravity");
+      ui.label("No grav.");
+      ui.label("");
+      ui.end_row();
+      for direction in Direction::iter() {
+        ui.acceleration_row(*direction, &self.calculated.acceleration, ctx);
+      }
     });
   }
 }
@@ -269,9 +308,34 @@ impl<'ui> CalculatedUi<'ui> {
     Self { ui, number_separator_policy }
   }
 
-  fn show(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>) {
+  fn show_row(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>) {
     self.ui.label(label);
-    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(value.borrow().separate_by_policy(self.number_separator_policy)));
+    self.right_align_value(value);
+    self.ui.end_row();
+  }
+
+  fn right_align_value(&mut self, value: impl Borrow<str>) {
+    self.right_align_label(value.borrow().separate_by_policy(self.number_separator_policy));
+  }
+
+  fn right_align_label(&mut self, label: impl Into<WidgetText>) {
+    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(label));
+  }
+
+  fn acceleration_label(&mut self, ctx: &Context) {
+    let mut acceleration = LayoutJob::default();
+    acceleration.append("m/s", 0.0, TextFormat { color: Color32::BLACK, ..TextFormat::default() });
+    acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color: Color32::BLACK, valign: Align::Min, ..TextFormat::default() });
+    self.ui.label(acceleration);
+  }
+
+  fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>, ctx: &Context) {
+    self.right_align_label(format!("{}", direction));
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_filled_gravity));
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_filled_no_gravity));
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_empty_gravity));
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_empty_no_gravity));
+    self.acceleration_label(ctx);
     self.ui.end_row();
   }
 }

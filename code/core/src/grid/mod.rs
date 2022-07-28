@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
 use std::io;
 use std::ops::{Index, IndexMut};
 
@@ -38,6 +39,19 @@ impl Direction {
       Back => 3,
       Left => 4,
       Right => 5,
+    }
+  }
+}
+
+impl Display for Direction {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    match self {
+      Direction::Up => f.write_str("Up"),
+      Direction::Down => f.write_str("Down"),
+      Direction::Front => f.write_str("Front"),
+      Direction::Back => f.write_str("Back"),
+      Direction::Left => f.write_str("Left"),
+      Direction::Right => f.write_str("Right"),
     }
   }
 }
