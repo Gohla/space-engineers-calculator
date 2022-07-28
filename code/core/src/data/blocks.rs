@@ -79,10 +79,17 @@ pub struct Block<T> {
 }
 
 impl<T> Block<T> {
+  #[inline]
   pub fn name<'a>(&'a self, localization: &'a Localization) -> &'a str {
     localization.get(&self.name).unwrap_or(&self.name)
   }
 
+  #[inline]
+  pub fn is_small(&self) -> bool { self.size == GridSize::Small }
+  #[inline]
+  pub fn is_large(&self) -> bool { self.size == GridSize::Large }
+
+  #[inline]
   pub fn mass(&self, components: &Components) -> f64 {
     let mut mass = 0.0;
     if !self.has_physics { return mass }
