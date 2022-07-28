@@ -8,17 +8,7 @@ use thiserror::Error;
 use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
 
-#[derive(Error, Debug)]
-pub enum ReadError {
-  #[error("Could not read grid from JSON")]
-  FromJSON(#[from] serde_json::Error),
-}
-
-#[derive(Error, Debug)]
-pub enum WriteError {
-  #[error("Could not write grid to JSON")]
-  ToJSON(#[from] serde_json::Error),
-}
+// Direction
 
 #[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
 pub enum Direction {
@@ -51,6 +41,9 @@ impl Direction {
     }
   }
 }
+
+
+// Per-direction data
 
 #[repr(transparent)]
 #[derive(Default, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
@@ -116,6 +109,9 @@ impl<T> IndexMut<Direction> for PerDirection<T> {
 
 pub type CountPerDirection = PerDirection<u64>;
 
+
+// Calculator
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GridCalculator {
   pub gravity_multiplier: f64,
@@ -152,16 +148,6 @@ impl Default for GridCalculator {
 impl GridCalculator {
   pub fn new() -> Self {
     Self::default()
-  }
-
-  pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
-    let grid = serde_json::from_reader::<_, Self>(reader)?;
-    Ok(grid)
-  }
-
-  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
-    serde_json::to_writer_pretty(writer, self)?;
-    Ok(())
   }
 
   pub fn iter_block_counts(&self) -> impl Iterator<Item=(&BlockId, &u64)> {
@@ -380,6 +366,8 @@ impl GridCalculator {
 }
 
 
+// Calculated data
+
 #[derive(Default)]
 pub struct GridCalculated {
   pub total_volume_any: f64,
@@ -448,4 +436,31 @@ impl GridCalculated {
   fn hydrogen_resource(&self, consumption: f64) -> ResourceCalculated {
     ResourceCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, 1.0 / 60.0 /* L/s to mins */)
   }
+}
+
+
+// JSON serde
+
+impl GridCalculator {
+  pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
+    let grid = serde_json::from_reader::<_, Self>(reader)?;
+    Ok(grid)
+  }
+
+  pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
+    serde_json::to_writer_pretty(writer, self)?;
+    Ok(())
+  }
+}
+
+#[derive(Error, Debug)]
+pub enum ReadError {
+  #[error("Could not read grid from JSON")]
+  FromJSON(#[from] serde_json::Error),
+}
+
+#[derive(Error, Debug)]
+pub enum WriteError {
+  #[error("Could not write grid to JSON")]
+  ToJSON(#[from] serde_json::Error),
 }
