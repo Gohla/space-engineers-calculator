@@ -4,7 +4,7 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Button, CollapsingHeader, CollapsingResponse, Context, DragValue, Grid, InnerResponse, Ui, Visuals, WidgetText, Window};
+use egui::{Align, Button, CollapsingHeader, CollapsingResponse, Context, DragValue, Grid, InnerResponse, Layout, Ui, Visuals, WidgetText, Window};
 use egui::emath::Numeric;
 use thousands::{Separable, SeparatorPolicy};
 use tracing::trace;
@@ -96,8 +96,22 @@ impl App {
   fn show_results(&mut self, ui: &mut Ui) {
     ui.open_header_with_grid("Mass", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
-      ui.show("Empty", format!("{} kg", self.calculated.total_mass_empty));
-      ui.show("Filled", format!("{} kg", self.calculated.total_mass_filled));
+      ui.show("Empty", format!("{} kg", self.calculated.total_mass_empty.round()));
+      ui.show("Filled", format!("{} kg", self.calculated.total_mass_filled.round()));
+    });
+    ui.open_header_with_grid("Volume", |ui| {
+      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
+      ui.show("Any", format!("{} L", self.calculated.total_volume_any));
+      ui.show("Ore", format!("{} L", self.calculated.total_volume_ore));
+      ui.show("Ice", format!("{} L", self.calculated.total_volume_ice));
+      ui.show("Ore-only", format!("{} L", self.calculated.total_volume_ore_only));
+      ui.show("Ice-only", format!("{} L", self.calculated.total_volume_ice_only));
+    });
+    ui.open_header_with_grid("Items", |ui| {
+      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
+      ui.show("Ore", format!("{} #", self.calculated.total_items_ore.round()));
+      ui.show("Ice", format!("{} #", self.calculated.total_items_ice.round()));
+      ui.show("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
     });
   }
 }
@@ -178,7 +192,7 @@ impl<'ui> CalculatedUi<'ui> {
 
   fn show(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>) {
     self.ui.label(label);
-    self.ui.label(value.borrow().separate_by_policy(self.number_separator_policy));
+    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(value.borrow().separate_by_policy(self.number_separator_policy)));
     self.ui.end_row();
   }
 }

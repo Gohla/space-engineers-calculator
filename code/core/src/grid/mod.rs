@@ -261,8 +261,8 @@ impl GridCalculator {
     c.total_mass_filled = c.total_mass_empty + ice_only_mass + ore_only_mass + any_mass;
 
     // Calculate filled items.
-    c.total_items_ice = (ice_only_volume + ice_in_any_volume) * ice_items_per_volume;
     c.total_items_ore = (ore_only_volume + ore_in_any_volume) * ore_items_per_volume;
+    c.total_items_ice = (ice_only_volume + ice_in_any_volume) * ice_items_per_volume;
     c.total_items_steel_plate = steel_plates_in_any_volume * steel_plate_items_per_volume;
 
     // Calculate Acceleration
@@ -323,8 +323,8 @@ pub struct GridCalculated {
   pub total_volume_ice_only: f64,
   pub total_mass_empty: f64,
   pub total_mass_filled: f64,
-  pub total_items_ice: f64,
   pub total_items_ore: f64,
+  pub total_items_ice: f64,
   pub total_items_steel_plate: f64,
 
   pub acceleration: HashMap<Direction, AccelerationCalculated>,
