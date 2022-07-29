@@ -77,21 +77,25 @@ impl eframe::App for App {
       });
     SidePanel::left("Calculator Panel")
       .resizable(false)
-      .min_width(525.0)
+      .min_width(512.0)
       .show(ctx, |ui| {
-        ScrollArea::vertical().show(ui, |ui| {
-          if self.show_calculator(ui) {
-            self.calculate();
-          }
-        });
+        ScrollArea::vertical()
+          .auto_shrink([false; 2])
+          .show(ui, |ui| {
+            if self.show_calculator(ui) {
+              self.calculate();
+            }
+          });
       });
     SidePanel::left("Results Panel")
       .resizable(false)
-      .min_width(300.0)
+      .min_width(512.0)
       .show(ctx, |ui| {
-        ScrollArea::vertical().show(ui, |ui| {
-          self.show_results(ui, ctx);
-        });
+        ScrollArea::vertical()
+          .auto_shrink([false; 2])
+          .show(ui, |ui| {
+            self.show_results(ui, ctx);
+          });
       });
   }
 
