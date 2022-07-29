@@ -334,11 +334,13 @@ impl GridCalculator {
     c.total_items_steel_plate = steel_plates_in_any_volume * steel_plate_items_per_volume;
 
     // Calculate Acceleration
+    let has_mass_empty = c.total_mass_empty != 0.0;
+    let has_mass_filled = c.total_mass_filled != 0.0;
     for a in c.acceleration.iter_mut() {
-      a.acceleration_empty_no_gravity = a.force / c.total_mass_empty;
-      a.acceleration_filled_no_gravity = a.force / c.total_mass_filled;
-      a.acceleration_empty_gravity = (a.force - (c.total_mass_empty * 9.81 * self.gravity_multiplier)) / c.total_mass_empty;
-      a.acceleration_filled_gravity = (a.force - (c.total_mass_filled * 9.81 * self.gravity_multiplier)) / c.total_mass_filled;
+      a.acceleration_empty_no_gravity = has_mass_empty.then(|| a.force / c.total_mass_empty);
+      a.acceleration_filled_no_gravity = has_mass_filled.then(|| a.force / c.total_mass_filled);
+      a.acceleration_empty_gravity = has_mass_empty.then(|| (a.force - (c.total_mass_empty * 9.81 * self.gravity_multiplier)) / c.total_mass_empty);
+      a.acceleration_filled_gravity = has_mass_filled.then(|| (a.force - (c.total_mass_filled * 9.81 * self.gravity_multiplier)) / c.total_mass_filled);
     }
 
     {
@@ -364,11 +366,11 @@ impl GridCalculator {
       let mut consumption = hydrogen_consumption_engine;
       c.hydrogen_engine = c.hydrogen_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Up, Direction::Down);
-      c.hydrogen_upto_up_down_thruster = c.hydrogen_resource(consumption);
+      c.hydrogen_upto_up_down_thruster = c.hydrogen_tank_only_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Front, Direction::Back);
-      c.hydrogen_upto_front_back_thruster = c.hydrogen_resource(consumption);
+      c.hydrogen_upto_front_back_thruster = c.hydrogen_tank_only_resource(consumption);
       consumption += Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Left, Direction::Right);
-      c.hydrogen_upto_left_right_thruster = c.hydrogen_resource(consumption);
+      c.hydrogen_upto_left_right_thruster = c.hydrogen_tank_only_resource(consumption);
     }
 
     c
@@ -399,56 +401,78 @@ pub struct GridCalculated {
 
   pub power_generation: f64,
   pub power_capacity_battery: f64,
-  pub power_idle: ResourceCalculated,
-  pub power_misc: ResourceCalculated,
-  pub power_upto_generator: ResourceCalculated,
-  pub power_upto_jump_drive: ResourceCalculated,
-  pub power_upto_up_down_thruster: ResourceCalculated,
-  pub power_upto_front_back_thruster: ResourceCalculated,
-  pub power_upto_left_right_thruster: ResourceCalculated,
-  pub power_upto_battery: ResourceCalculated,
+  pub power_idle: PowerCalculated,
+  pub power_misc: PowerCalculated,
+  pub power_upto_generator: PowerCalculated,
+  pub power_upto_jump_drive: PowerCalculated,
+  pub power_upto_up_down_thruster: PowerCalculated,
+  pub power_upto_front_back_thruster: PowerCalculated,
+  pub power_upto_left_right_thruster: PowerCalculated,
+  pub power_upto_battery: PowerCalculated,
 
   pub hydrogen_generation: f64,
   pub hydrogen_capacity_tank: f64,
   pub hydrogen_capacity_engine: f64,
-  pub hydrogen_idle: ResourceCalculated,
-  pub hydrogen_engine: ResourceCalculated,
-  pub hydrogen_upto_up_down_thruster: ResourceCalculated,
-  pub hydrogen_upto_front_back_thruster: ResourceCalculated,
-  pub hydrogen_upto_left_right_thruster: ResourceCalculated,
+  pub hydrogen_idle: HydrogenCalculated,
+  pub hydrogen_engine: HydrogenCalculated,
+  pub hydrogen_upto_up_down_thruster: HydrogenCalculated,
+  pub hydrogen_upto_front_back_thruster: HydrogenCalculated,
+  pub hydrogen_upto_left_right_thruster: HydrogenCalculated,
 }
 
 #[derive(Default)]
 pub struct AccelerationCalculated {
   pub force: f64,
-  pub acceleration_empty_no_gravity: f64,
-  pub acceleration_empty_gravity: f64,
-  pub acceleration_filled_no_gravity: f64,
-  pub acceleration_filled_gravity: f64,
+  pub acceleration_empty_no_gravity: Option<f64>,
+  pub acceleration_empty_gravity: Option<f64>,
+  pub acceleration_filled_no_gravity: Option<f64>,
+  pub acceleration_filled_gravity: Option<f64>,
 }
 
 #[derive(Default)]
-pub struct ResourceCalculated {
+pub struct PowerCalculated {
   pub consumption: f64,
   pub balance: f64,
-  pub duration: f64,
+  pub duration_battery: Option<f64>,
 }
 
-impl ResourceCalculated {
-  fn new(consumption: f64, generation: f64, capacity: f64, conversion_rate: f64) -> Self {
+impl PowerCalculated {
+  fn new(consumption: f64, generation: f64, capacity_battery: f64, conversion_rate: f64) -> Self {
     let balance = generation - consumption;
-    let duration = (capacity / consumption) * conversion_rate;
-    ResourceCalculated { consumption, balance, duration }
+    let duration_battery = (consumption != 0.0).then(|| (capacity_battery / consumption) * conversion_rate);
+    PowerCalculated { consumption, balance, duration_battery }
+  }
+}
+
+#[derive(Default)]
+pub struct HydrogenCalculated {
+  pub consumption: f64,
+  pub balance: f64,
+  pub duration_tank: Option<f64>,
+  pub duration_engine: Option<f64>,
+}
+
+impl HydrogenCalculated {
+  fn new(consumption: f64, generation: f64, capacity_tanks: f64, capacity_engines: Option<f64>, conversion_rate: f64) -> Self {
+    let balance = generation - consumption;
+    let has_consumption = consumption != 0.0;
+    let duration_tank = has_consumption.then(|| (capacity_tanks / consumption) * conversion_rate);
+    let duration_engine = has_consumption.then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
+    HydrogenCalculated { consumption, balance, duration_tank, duration_engine }
   }
 }
 
 impl GridCalculated {
-  fn power_resource(&self, consumption: f64) -> ResourceCalculated {
-    ResourceCalculated::new(consumption, self.power_generation, self.power_capacity_battery, 60.0 /* MWh to mins */)
+  fn power_resource(&self, consumption: f64) -> PowerCalculated {
+    PowerCalculated::new(consumption, self.power_generation, self.power_capacity_battery, 60.0 /* MWh to mins */)
   }
 
-  fn hydrogen_resource(&self, consumption: f64) -> ResourceCalculated {
-    ResourceCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, 1.0 / 60.0 /* L/s to mins */)
+  fn hydrogen_resource(&self, consumption: f64) -> HydrogenCalculated {
+    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, Some(self.hydrogen_capacity_engine), 1.0 / 60.0 /* L/s to mins */)
+  }
+
+  fn hydrogen_tank_only_resource(&self, consumption: f64) -> HydrogenCalculated {
+    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, None, 1.0 / 60.0 /* L/s to mins */)
   }
 }
 
