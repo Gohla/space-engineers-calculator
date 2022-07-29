@@ -4,7 +4,7 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Align, Button, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, SidePanel, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText};
+use egui::{Align, Align2, Button, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, SidePanel, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText, Window};
 use egui::emath::Numeric;
 use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
@@ -19,9 +19,12 @@ use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, Gr
 #[serde(default)]
 pub struct App {
   #[serde(skip)] data: Data,
+  #[serde(skip)] number_separator_policy: SeparatorPolicy<'static>,
   #[serde(skip)] calculator_default: GridCalculator,
   #[serde(skip)] calculated: GridCalculated,
-  #[serde(skip)] number_separator_policy: SeparatorPolicy<'static>,
+
+  #[serde(skip)] enable_gui: bool,
+  #[serde(skip)] show_reset_confirm_window: bool,
 
   calculator: GridCalculator,
   grid_size: GridSize,
@@ -49,18 +52,23 @@ impl Default for App {
       let bytes: &[u8] = include_bytes!("../../../data/data.json");
       Data::from_json(bytes).expect("Cannot read data")
     };
-    let calculator_default = GridCalculator::default();
-    let calculated = GridCalculated::default();
     let number_separator_policy = SeparatorPolicy {
       separator: "·",
       groups: &[3],
       digits: thousands::digits::ASCII_DECIMAL,
     };
+    Self {
+      data,
+      number_separator_policy,
+      calculator_default: GridCalculator::default(),
+      calculated: GridCalculated::default(),
 
-    let calculator = GridCalculator::default();
-    let grid_size = GridSize::default();
+      enable_gui: true,
+      show_reset_confirm_window: false,
 
-    Self { data, calculator, calculator_default, calculated, number_separator_policy, grid_size }
+      calculator: GridCalculator::default(),
+      grid_size: GridSize::default(),
+    }
   }
 }
 
@@ -69,33 +77,66 @@ impl eframe::App for App {
     TopBottomPanel::top("Menu Panel")
       .resizable(false)
       .show(ctx, |ui| {
-        menu::bar(ui, |ui| {
-          ui.menu_button("Grid", |ui| {
-            ui.button("Save [nyi]")
+        ui.add_enabled_ui(self.enable_gui, |ui| {
+          menu::bar(ui, |ui| {
+            ui.menu_button("Grid", |ui| {
+              if ui.button("Reset").clicked() {
+                self.enable_gui = false;
+                self.show_reset_confirm_window = true;
+                ui.close_menu();
+              }
+            });
           });
         });
       });
+
+    if self.show_reset_confirm_window {
+      Window::new("Confirm Reset")
+        .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
+        .collapsible(false)
+        .auto_sized()
+        .show(ctx, |ui| {
+          ui.label("Are you sure you want to reset all grid data (left-side panel) to their defaults? Any unsaved data will be lost.");
+          ui.horizontal(|ui| {
+            if ui.button("Reset").clicked() {
+              self.enable_gui = true;
+              self.show_reset_confirm_window = false;
+              self.calculator = self.calculator_default.clone();
+              self.calculate();
+            }
+            if ui.button("Cancel").clicked() {
+              self.enable_gui = true;
+              self.show_reset_confirm_window = false;
+            }
+          });
+        });
+    }
+
     SidePanel::left("Calculator Panel")
       .resizable(false)
       .min_width(512.0)
       .show(ctx, |ui| {
-        ScrollArea::vertical()
-          .auto_shrink([false; 2])
-          .show(ui, |ui| {
-            if self.show_calculator(ui) {
-              self.calculate();
-            }
-          });
+        ui.add_enabled_ui(self.enable_gui, |ui| {
+          ScrollArea::vertical()
+            .auto_shrink([false; 2])
+            .show(ui, |ui| {
+              if self.show_calculator(ui) {
+                self.calculate();
+              }
+            });
+        });
       });
     SidePanel::left("Results Panel")
       .resizable(false)
       .min_width(512.0)
       .show(ctx, |ui| {
-        ScrollArea::vertical()
-          .auto_shrink([false; 2])
-          .show(ui, |ui| {
-            self.show_results(ui, ctx);
-          });
+        ui.add_enabled_ui(self.enable_gui, |ui| {
+          ScrollArea::vertical()
+            .auto_shrink([false; 2])
+            .show(ui, |ui| {
+              self.show_results(ui, ctx);
+            });
+        });
       });
   }
 
@@ -325,7 +366,7 @@ impl<'ui> CalculatorUi<'ui> {
     self.unlabelled_edit_count(count_per_direction.back_mut());
     self.unlabelled_edit_count(count_per_direction.left_mut());
     self.unlabelled_edit_count(count_per_direction.right_mut());
-    self.reset_button_with_hover_tooltip(count_per_direction, CountPerDirection::default(), "Reset all to 0");
+    self.reset_button_with_hover_tooltip(count_per_direction, CountPerDirection::default(), "Double-click to reset all to 0");
     self.ui.end_row();
   }
 
@@ -349,13 +390,13 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
   fn reset_button_with<T: PartialEq + Display + Copy>(&mut self, value: &mut T, reset_value: T) {
-    self.reset_button_with_hover_tooltip(value, reset_value, format!("Reset to {}", reset_value))
+    self.reset_button_with_hover_tooltip(value, reset_value, format!("Double-click to reset to {}", reset_value))
   }
 
   fn reset_button_with_hover_tooltip<T: PartialEq>(&mut self, value: &mut T, reset_value: T, hover_tooltip: impl Into<WidgetText>) {
     let response = self.reset_button(*value != reset_value)
       .on_hover_text_at_pointer(hover_tooltip);
-    if response.clicked() {
+    if response.double_clicked() {
       *value = reset_value;
       self.changed = true;
     }
