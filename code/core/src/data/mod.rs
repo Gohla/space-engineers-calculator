@@ -50,10 +50,10 @@ pub struct Data {
 impl Data {
   pub fn extract_from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self, ExtractError> {
     let se_dir_path = se_dir_path.as_ref();
-    let blocks = Blocks::from_se_dir(se_dir_path)?;
+    let localization = Localization::from_se_dir(se_dir_path)?;
+    let blocks = Blocks::from_se_dir(se_dir_path, &localization)?;
     let components = Components::from_se_dir(se_dir_path)?;
     let gas_properties = GasProperties::from_se_dir(se_dir_path)?;
-    let localization = Localization::from_se_dir(se_dir_path)?;
     Ok(Self { blocks, components, gas_properties, localization })
   }
 

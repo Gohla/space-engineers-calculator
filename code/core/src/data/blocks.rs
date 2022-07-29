@@ -1,5 +1,6 @@
 use std::backtrace::Backtrace;
 use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
@@ -436,11 +437,41 @@ pub struct Blocks {
 }
 
 impl Blocks {
-  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P) -> Result<Self> {
-    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"))
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P, localization: &Localization) -> Result<Self> {
+    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"), localization)
   }
 
-  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P) -> Result<Self> {
+  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P, localization: &Localization) -> Result<Self> {
+    let block_name_excludes = HashSet::from([
+      // Small grid storage
+      "Weapon Rack",
+      "Control Seat",
+      "Passenger Seat Offset",
+      "Passenger Bench",
+      // Large grid storage
+      "Armory",
+      "Armory Lockers",
+      "Lockers",
+      "Large Industrial Cargo Container",
+      "Weapon Rack",
+      "Control Station",
+      // Small and large grid storage
+      "Passenger Seat",
+      // Small and large grid thrusters
+      "Industrial Large Hydrogen Thruster",
+      "Industrial Hydrogen Thruster",
+      "Sci-Fi Ion Thruster",
+      "Sci-Fi Large Ion Thruster",
+      "Sci-Fi Large Atmospheric Thruster",
+      "Sci-Fi Atmospheric Thruster",
+      "Warfare Ion Thruster",
+      "Warfare Large Ion Thruster",
+      "Small Warfare Reactor",
+      "Large Warfare Reactor",
+      "Warfare Battery",
+      "Industrial Hydrogen Tank",
+    ]);
+
     let entity_components_file_path = entity_components_file_path.as_ref();
     let entity_components_string = read_string_from_file(entity_components_file_path)
       .map_err(|source| Error::ReadEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
@@ -479,36 +510,52 @@ impl Blocks {
           match ty {
             "MyObjectBuilder_BatteryBlockDefinition" => {
               let block = Block::<Battery>::from_def(&def, &entity_components_node, id);
-              blocks.batteries.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.batteries.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_ThrustDefinition" => {
               let block = Block::<Thruster>::from_def(&def, &entity_components_node, id);
-              blocks.thrusters.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.thrusters.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_HydrogenEngineDefinition" => {
               let block = Block::<HydrogenEngine>::from_def(&def, &entity_components_node, id);
-              blocks.hydrogen_engines.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.hydrogen_engines.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_ReactorDefinition" => {
               let block = Block::<Reactor>::from_def(&def, &entity_components_node, id);
-              blocks.reactors.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.reactors.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_OxygenGeneratorDefinition" => {
               let block = Block::<Generator>::from_def(&def, &entity_components_node, id);
-              blocks.generators.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.generators.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_GasTankDefinition" => {
               if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
               let block = Block::<HydrogenTank>::from_def(&def, &entity_components_node, id);
-              blocks.hydrogen_tanks.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.hydrogen_tanks.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_CargoContainerDefinition" => {
               let block = Block::<Container>::from_def(&def, &entity_components_node, id);
-              blocks.containers.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.containers.insert(block.id.clone(), block);
+              }
             }
             "MyObjectBuilder_CockpitDefinition" => {
               let block = Block::<Cockpit>::from_def(&def, &entity_components_node, id);
-              blocks.cockpits.insert(block.id.clone(), block);
+              if !block_name_excludes.contains(block.name(localization)) {
+                blocks.cockpits.insert(block.id.clone(), block);
+              }
             }
             _ => {}
           }

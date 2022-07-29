@@ -35,7 +35,7 @@ fn main() {
     } => {
       let se_directory = se_directory.or(get_se_path()).expect("Space Engineers directory was not set, and failed to automatically infer the directory");
       let data = Data::extract_from_se_dir(se_directory).expect("Failed to read Space Engineers data");
-      let writer = OpenOptions::new().write(true).create(true).open(output_file).expect("Failed to create a writer for writing game data to file");
+      let writer = OpenOptions::new().write(true).create(true).truncate(true).open(output_file).expect("Failed to create a writer for writing game data to file");
       data.to_json(writer).expect("Failed to write game data to file");
     },
   }

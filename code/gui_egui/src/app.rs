@@ -73,13 +73,19 @@ impl Default for App {
 }
 
 impl eframe::App for App {
-  fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+  fn update(&mut self, ctx: &Context, frame: &mut Frame) {
     TopBottomPanel::top("Menu Panel")
       .resizable(false)
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
           menu::bar(ui, |ui| {
             ui.menu_button("Grid", |ui| {
+              if ui.button("Save").clicked() {
+                if let Some(storage) = frame.storage_mut() {
+                  self.save(storage);
+                }
+                ui.close_menu();
+              }
               if ui.button("Reset").clicked() {
                 self.enable_gui = false;
                 self.show_reset_confirm_window = true;

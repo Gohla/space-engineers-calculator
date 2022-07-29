@@ -1,6 +1,7 @@
 # Rust
 /target
 /target-wasm
+**/wasm_out
 **/*.rs.bk
 
 # IntelliJ
