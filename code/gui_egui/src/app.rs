@@ -12,7 +12,7 @@ use tracing::trace;
 
 use secalc_core::data::blocks::GridSize;
 use secalc_core::data::Data;
-use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, GridCalculated, GridCalculator, PerDirection};
+use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, GridCalculated, GridCalculator, PerDirection, ResourceCalculated};
 
 // App
 
@@ -193,6 +193,26 @@ impl App {
         ui.acceleration_row(*direction, &self.calculated.acceleration, ctx);
       }
     });
+    ui.open_header_with_grid("Power", |ui| {
+      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
+      ui.show_row("Generation", format!("{:.2} MW", self.calculated.power_generation));
+      ui.show_row("Capacity: Batteries", format!("{:.2} MWh", self.calculated.power_capacity_battery));
+      ui.label("");
+      ui.label("Consumption");
+      ui.label("Balance");
+      ui.label("Duration: Batteries");
+      ui.end_row();
+      let resource_formatter = |v| format!("{:.2} MW", v);
+      let duration_formatter = |v| format!("{:.2} min", v);
+      ui.resource_row("Idle", resource_formatter, duration_formatter, &self.calculated.power_idle);
+      ui.resource_row("Misc", resource_formatter, duration_formatter, &self.calculated.power_misc);
+      ui.resource_row("+ Charge Jump Drives", resource_formatter, duration_formatter, &self.calculated.power_upto_jump_drive);
+      ui.resource_row("+ O2/H2 Generators", resource_formatter, duration_formatter, &self.calculated.power_upto_generator);
+      ui.resource_row("+ Up/Down Thrusters", resource_formatter, duration_formatter, &self.calculated.power_upto_up_down_thruster);
+      ui.resource_row("+ Front/Back Thrusters", resource_formatter, duration_formatter, &self.calculated.power_upto_front_back_thruster);
+      ui.resource_row("+ Left/Right Thrusters", resource_formatter, duration_formatter, &self.calculated.power_upto_left_right_thruster);
+      ui.resource_row("+ Charge Batteries", resource_formatter, duration_formatter, &self.calculated.power_upto_battery);
+    });
   }
 }
 
@@ -314,14 +334,14 @@ impl<'ui> CalculatedUi<'ui> {
     Self { ui, number_separator_policy }
   }
 
-  
+
   fn show_row(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>) {
     self.ui.label(label);
     self.right_align_value(value);
     self.ui.end_row();
   }
 
-  
+
   fn right_align_value(&mut self, value: impl Borrow<str>) {
     self.right_align_label(value.borrow().separate_by_policy(self.number_separator_policy));
   }
@@ -330,15 +350,15 @@ impl<'ui> CalculatedUi<'ui> {
     self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(label));
   }
 
-  
+
   fn force_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>) {
     self.right_align_label(format!("{}", direction));
     self.right_align_value(format!("{:.2}", acceleration.get(direction).force / 1000.0));
     self.label("kN");
     self.ui.end_row();
   }
-  
-  
+
+
   fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>, ctx: &Context) {
     self.right_align_label(format!("{}", direction));
     self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_filled_gravity));
@@ -354,6 +374,14 @@ impl<'ui> CalculatedUi<'ui> {
     acceleration.append("m/s", 0.0, TextFormat { color: Color32::BLACK, ..TextFormat::default() });
     acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color: Color32::BLACK, valign: Align::Min, ..TextFormat::default() });
     self.ui.label(acceleration);
+  }
+
+  fn resource_row(&mut self, label: impl Into<WidgetText>, resource_formatter: impl Fn(f64) -> String, duration_formatter: impl Fn(f64) -> String, resource: &ResourceCalculated) {
+    self.ui.label(label);
+    self.right_align_value(resource_formatter(resource.consumption));
+    self.right_align_value(resource_formatter(resource.balance));
+    self.right_align_value(duration_formatter(resource.duration));
+    self.ui.end_row();
   }
 }
 
