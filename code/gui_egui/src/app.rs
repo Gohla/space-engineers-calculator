@@ -8,7 +8,6 @@ use egui::{Align, Button, CollapsingHeader, CollapsingResponse, Color32, ComboBo
 use egui::emath::Numeric;
 use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
-use tracing::trace;
 
 use secalc_core::data::blocks::GridSize;
 use secalc_core::data::Data;
@@ -19,16 +18,12 @@ use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, Gr
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct App {
-  #[serde(skip)]
-  data: Data,
-  calculator: GridCalculator,
-  #[serde(skip)]
-  calculator_default: GridCalculator,
-  #[serde(skip)]
-  calculated: GridCalculated,
+  #[serde(skip)] data: Data,
+  #[serde(skip)] calculator_default: GridCalculator,
+  #[serde(skip)] calculated: GridCalculated,
+  #[serde(skip)] number_separator_policy: SeparatorPolicy<'static>,
 
-  #[serde(skip)]
-  number_separator_policy: SeparatorPolicy<'static>,
+  calculator: GridCalculator,
   grid_size: GridSize,
 }
 
@@ -54,7 +49,6 @@ impl Default for App {
       let bytes: &[u8] = include_bytes!("../../../data/data.json");
       Data::from_json(bytes).expect("Cannot read data")
     };
-    let calculator = GridCalculator::default();
     let calculator_default = GridCalculator::default();
     let calculated = GridCalculated::default();
     let number_separator_policy = SeparatorPolicy {
@@ -62,7 +56,10 @@ impl Default for App {
       groups: &[3],
       digits: thousands::digits::ASCII_DECIMAL,
     };
+
+    let calculator = GridCalculator::default();
     let grid_size = GridSize::default();
+
     Self { data, calculator, calculator_default, calculated, number_separator_policy, grid_size }
   }
 }
@@ -84,8 +81,7 @@ impl eframe::App for App {
       .show(ctx, |ui| {
         ScrollArea::vertical().show(ui, |ui| {
           if self.show_calculator(ui) {
-            trace!("Calculating");
-            self.calculated = self.calculator.calculate(&self.data);
+            self.calculate();
           }
         });
       });

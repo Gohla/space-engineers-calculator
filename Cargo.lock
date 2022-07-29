@@ -468,9 +468,9 @@ dependencies = [
 
 [[package]]
 name = "concurrent-queue"
-version = "1.2.2"
+version = "1.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30ed07550be01594c6026cff2a1d7fe9c8f683caa798e12b68694ac9e88286a3"
+checksum = "af4780a44ab5696ea9e28294517f1fffb421a83a25af521333c838635509db9c"
 dependencies = [
  "cache-padded",
 ]
@@ -806,7 +806,7 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 [[package]]
 name = "eframe"
 version = "0.18.0"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "bytemuck",
  "dark-light",
@@ -830,7 +830,7 @@ dependencies = [
 [[package]]
 name = "egui"
 version = "0.18.1"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "ahash 0.7.6",
  "epaint",
@@ -843,7 +843,7 @@ dependencies = [
 [[package]]
 name = "egui-winit"
 version = "0.18.0"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "arboard",
  "egui",
@@ -858,7 +858,7 @@ dependencies = [
 [[package]]
 name = "egui_glow"
 version = "0.18.1"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "bytemuck",
  "egui",
@@ -878,7 +878,7 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 [[package]]
 name = "emath"
 version = "0.18.0"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "bytemuck",
  "serde",
@@ -908,7 +908,7 @@ dependencies = [
 [[package]]
 name = "epaint"
 version = "0.18.1"
-source = "git+https://github.com/emilk/egui?branch=master#2278128e6679bd51940bac9bf0b7b9f29afc4182"
+source = "git+https://github.com/emilk/egui?branch=master#c6c6d2dc5de622441b014f99975b3bd204d1b873"
 dependencies = [
  "ab_glyph",
  "ahash 0.7.6",
@@ -941,9 +941,9 @@ dependencies = [
 
 [[package]]
 name = "event-listener"
-version = "2.5.2"
+version = "2.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77f3309417938f28bf8228fcff79a4a37103981e3e186d2ccd19c74b38f4eb71"
+checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
 name = "fastrand"
@@ -2022,9 +2022,9 @@ dependencies = [
 
 [[package]]
 name = "owned_ttf_parser"
-version = "0.15.0"
+version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fb1e509cfe7a12db2a90bfa057dfcdbc55a347f5da677c506b53dd099cfec9d"
+checksum = "07ef1a404ae479dd6906f4fa2c88b3c94028f1284beb42a47c183a7c27ee9a3e"
 dependencies = [
  "ttf-parser",
 ]
@@ -2265,9 +2265,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.15"
+version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "534cfe58d6a18cc17120fbf4635d53d14691c1fe4d951064df9bd326178d7d5a"
+checksum = "fb5a58c1855b4b6819d59012155603f0b22ad30cad752600aadfcb695265519a"
 dependencies = [
  "bitflags",
 ]
