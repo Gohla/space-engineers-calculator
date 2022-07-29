@@ -45,31 +45,31 @@ impl eframe::App for App {
     TopBottomPanel::top("Menu Panel")
       .resizable(false)
       .show(ctx, |ui| {
-      menu::bar(ui, |ui| {
-        ui.menu_button("Grid", |ui| {
-          ui.button("Save [nyi]")
+        menu::bar(ui, |ui| {
+          ui.menu_button("Grid", |ui| {
+            ui.button("Save [nyi]")
+          });
         });
       });
-    });
     SidePanel::left("Calculator Panel")
       .resizable(false)
       .min_width(525.0)
       .show(ctx, |ui| {
-      ScrollArea::vertical().show(ui, |ui| {
-        if self.show_calculator(ui) {
-          trace!("Calculating");
-          self.calculated = self.calculator.calculate(&self.data);
-        }
+        ScrollArea::vertical().show(ui, |ui| {
+          if self.show_calculator(ui) {
+            trace!("Calculating");
+            self.calculated = self.calculator.calculate(&self.data);
+          }
+        });
       });
-    });
     SidePanel::left("Results Panel")
       .resizable(false)
       .min_width(300.0)
       .show(ctx, |ui| {
-      ScrollArea::vertical().show(ui, |ui| {
-        self.show_results(ui, ctx);
+        ScrollArea::vertical().show(ui, |ui| {
+          self.show_results(ui, ctx);
+        });
       });
-    });
   }
 
   fn clear_color(&self, visuals: &Visuals) -> Rgba {
@@ -166,6 +166,12 @@ impl App {
       ui.show_row("Ore", format!("{} #", self.calculated.total_items_ore.round()));
       ui.show_row("Ice", format!("{} #", self.calculated.total_items_ice.round()));
       ui.show_row("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
+    });
+    ui.open_header_with_grid("Force", |ui| {
+      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
+      for direction in Direction::iter() {
+        ui.force_row(*direction, &self.calculated.acceleration);
+      }
     });
     ui.open_header_with_grid("Acceleration", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
@@ -308,12 +314,14 @@ impl<'ui> CalculatedUi<'ui> {
     Self { ui, number_separator_policy }
   }
 
+  
   fn show_row(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>) {
     self.ui.label(label);
     self.right_align_value(value);
     self.ui.end_row();
   }
 
+  
   fn right_align_value(&mut self, value: impl Borrow<str>) {
     self.right_align_label(value.borrow().separate_by_policy(self.number_separator_policy));
   }
@@ -322,13 +330,15 @@ impl<'ui> CalculatedUi<'ui> {
     self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(label));
   }
 
-  fn acceleration_label(&mut self, ctx: &Context) {
-    let mut acceleration = LayoutJob::default();
-    acceleration.append("m/s", 0.0, TextFormat { color: Color32::BLACK, ..TextFormat::default() });
-    acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color: Color32::BLACK, valign: Align::Min, ..TextFormat::default() });
-    self.ui.label(acceleration);
+  
+  fn force_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>) {
+    self.right_align_label(format!("{}", direction));
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).force / 1000.0));
+    self.label("kN");
+    self.ui.end_row();
   }
-
+  
+  
   fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>, ctx: &Context) {
     self.right_align_label(format!("{}", direction));
     self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_filled_gravity));
@@ -337,6 +347,13 @@ impl<'ui> CalculatedUi<'ui> {
     self.right_align_value(format!("{:.2}", acceleration.get(direction).acceleration_empty_no_gravity));
     self.acceleration_label(ctx);
     self.ui.end_row();
+  }
+
+  fn acceleration_label(&mut self, ctx: &Context) {
+    let mut acceleration = LayoutJob::default();
+    acceleration.append("m/s", 0.0, TextFormat { color: Color32::BLACK, ..TextFormat::default() });
+    acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color: Color32::BLACK, valign: Align::Min, ..TextFormat::default() });
+    self.ui.label(acceleration);
   }
 }
 
