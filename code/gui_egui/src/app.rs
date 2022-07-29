@@ -16,18 +16,44 @@ use secalc_core::grid::{AccelerationCalculated, CountPerDirection, Direction, Gr
 
 // App
 
+#[derive(serde::Deserialize, serde::Serialize)]
+#[serde(default)]
 pub struct App {
+  #[serde(skip)]
   data: Data,
   calculator: GridCalculator,
+  #[serde(skip)]
   calculator_default: GridCalculator,
+  #[serde(skip)]
   calculated: GridCalculated,
 
+  #[serde(skip)]
   number_separator_policy: SeparatorPolicy<'static>,
   grid_size: GridSize,
 }
 
 impl App {
-  pub fn new(data: Data, _ctx: &eframe::CreationContext<'_>) -> Self {
+  pub fn new(ctx: &eframe::CreationContext<'_>) -> Self {
+    let mut app = if let Some(storage) = ctx.storage {
+      eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default()
+    } else {
+      Self::default()
+    };
+    app.calculate();
+    app
+  }
+
+  fn calculate(&mut self) {
+    self.calculated = self.calculator.calculate(&self.data);
+  }
+}
+
+impl Default for App {
+  fn default() -> Self {
+    let data = {
+      let bytes: &[u8] = include_bytes!("../../../data/data.json");
+      Data::from_json(bytes).expect("Cannot read data")
+    };
     let calculator = GridCalculator::default();
     let calculator_default = GridCalculator::default();
     let calculated = GridCalculated::default();
@@ -36,7 +62,8 @@ impl App {
       groups: &[3],
       digits: thousands::digits::ASCII_DECIMAL,
     };
-    Self { data, calculator, calculator_default, calculated, number_separator_policy, grid_size: GridSize::default() }
+    let grid_size = GridSize::default();
+    Self { data, calculator, calculator_default, calculated, number_separator_policy, grid_size }
   }
 }
 
@@ -70,6 +97,10 @@ impl eframe::App for App {
           self.show_results(ui, ctx);
         });
       });
+  }
+
+  fn save(&mut self, storage: &mut dyn eframe::Storage) {
+    eframe::set_value(storage, eframe::APP_KEY, self);
   }
 
   fn clear_color(&self, visuals: &Visuals) -> Rgba {
