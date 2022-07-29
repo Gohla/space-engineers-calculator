@@ -1,6 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use egui::Vec2;
 use tracing_subscriber::prelude::*;
 
 use crate::app::App;
@@ -36,7 +35,7 @@ fn main() {
   // Run application.
   #[cfg(not(target_arch = "wasm32"))] {
     let options = eframe::NativeOptions {
-      min_window_size: Some(Vec2::new(512.0 + 512.0 + 32.0, 1024.0)),
+      min_window_size: Some(egui::Vec2::new(512.0 + 512.0 + 32.0, 1024.0)),
       ..eframe::NativeOptions::default()
     };
     eframe::run_native(
