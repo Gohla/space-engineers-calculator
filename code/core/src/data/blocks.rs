@@ -462,10 +462,10 @@ impl Blocks {
       "Industrial Hydrogen Thruster",
       "Sci-Fi Ion Thruster",
       "Sci-Fi Large Ion Thruster",
-      "Sci-Fi Large Atmospheric Thruster",
       "Sci-Fi Atmospheric Thruster",
+      "Sci-Fi Large Atmospheric Thruster",
       "Warfare Ion Thruster",
-      "Warfare Large Ion Thruster",
+      "Large Warfare Ion Thruster",
       "Small Warfare Reactor",
       "Large Warfare Reactor",
       "Warfare Battery",
@@ -482,7 +482,15 @@ impl Blocks {
     let entity_components_node = entity_components_root_node.child_elem("EntityComponents")
       .ok_or(Error::XmlStructure(Backtrace::capture()))?;
 
-    let mut blocks = Blocks::default();
+    let mut batteries: Vec<Block<Battery>> = Vec::new();
+    let mut thrusters: Vec<Block<Thruster>> = Vec::new();
+    let mut hydrogen_engines: Vec<Block<HydrogenEngine>> = Vec::new();
+    let mut reactors: Vec<Block<Reactor>> = Vec::new();
+    let mut generators: Vec<Block<Generator>> = Vec::new();
+    let mut hydrogen_tanks: Vec<Block<HydrogenTank>> = Vec::new();
+    let mut containers: Vec<Block<Container>> = Vec::new();
+    let mut cockpits: Vec<Block<Cockpit>> = Vec::new();
+
     let mut id = 0;
     let cube_blocks_file_paths = WalkDir::new(cube_blocks_search_dir)
       .into_iter()
@@ -511,50 +519,50 @@ impl Blocks {
             "MyObjectBuilder_BatteryBlockDefinition" => {
               let block = Block::<Battery>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.batteries.insert(block.id.clone(), block);
+                batteries.push(block);
               }
             }
             "MyObjectBuilder_ThrustDefinition" => {
               let block = Block::<Thruster>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.thrusters.insert(block.id.clone(), block);
+                thrusters.push(block);
               }
             }
             "MyObjectBuilder_HydrogenEngineDefinition" => {
               let block = Block::<HydrogenEngine>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.hydrogen_engines.insert(block.id.clone(), block);
+                hydrogen_engines.push(block);
               }
             }
             "MyObjectBuilder_ReactorDefinition" => {
               let block = Block::<Reactor>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.reactors.insert(block.id.clone(), block);
+                reactors.push(block);
               }
             }
             "MyObjectBuilder_OxygenGeneratorDefinition" => {
               let block = Block::<Generator>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.generators.insert(block.id.clone(), block);
+                generators.push(block);
               }
             }
             "MyObjectBuilder_GasTankDefinition" => {
               if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
               let block = Block::<HydrogenTank>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.hydrogen_tanks.insert(block.id.clone(), block);
+                hydrogen_tanks.push(block);
               }
             }
             "MyObjectBuilder_CargoContainerDefinition" => {
               let block = Block::<Container>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.containers.insert(block.id.clone(), block);
+                containers.push(block);
               }
             }
             "MyObjectBuilder_CockpitDefinition" => {
               let block = Block::<Cockpit>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
-                blocks.cockpits.insert(block.id.clone(), block);
+                cockpits.push(block);
               }
             }
             _ => {}
@@ -564,6 +572,30 @@ impl Blocks {
       }
     }
 
+    fn sort_block_vec<T>(vec: &mut Vec<Block<T>>, localization: &Localization) {
+      vec.sort_by_key(|b| b.name(localization).to_string());
+    }
+    sort_block_vec(&mut batteries, localization);
+    sort_block_vec(&mut thrusters, localization);
+    sort_block_vec(&mut hydrogen_engines, localization);
+    sort_block_vec(&mut reactors, localization);
+    sort_block_vec(&mut generators, localization);
+    sort_block_vec(&mut hydrogen_tanks, localization);
+    sort_block_vec(&mut containers, localization);
+    sort_block_vec(&mut cockpits, localization);
+    fn create_map<T>(vec: Vec<Block<T>>) -> LinkedHashMap<BlockId, Block<T>> {
+      LinkedHashMap::from_iter(vec.into_iter().map(|b| (b.id.clone(), b)))
+    }
+    let blocks = Blocks {
+      batteries: create_map(batteries),
+      thrusters: create_map(thrusters),
+      hydrogen_engines: create_map(hydrogen_engines),
+      reactors: create_map(reactors),
+      generators: create_map(generators),
+      hydrogen_tanks: create_map(hydrogen_tanks),
+      containers: create_map(containers),
+      cockpits: create_map(cockpits),
+    };
     Ok(blocks)
   }
 
