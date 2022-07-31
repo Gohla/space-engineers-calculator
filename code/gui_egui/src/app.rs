@@ -4,9 +4,10 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Align, Align2, Button, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, SidePanel, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText, Window};
+use egui::{Align, Align2, Button, CentralPanel, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, Separator, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText, Window};
 use egui::emath::Numeric;
 use egui::text::LayoutJob;
+use egui_extras::{Size, StripBuilder};
 use thousands::{Separable, SeparatorPolicy};
 
 use secalc_core::data::blocks::GridSize;
@@ -74,7 +75,8 @@ impl Default for App {
 
 impl eframe::App for App {
   fn update(&mut self, ctx: &Context, frame: &mut Frame) {
-    TopBottomPanel::top("Menu Panel")
+    // Top panel
+    TopBottomPanel::top("Top Panel")
       .resizable(false)
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
@@ -95,7 +97,7 @@ impl eframe::App for App {
           });
         });
       });
-
+    // Modal windows
     if self.show_reset_confirm_window {
       Window::new("Confirm Reset")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -117,30 +119,38 @@ impl eframe::App for App {
           });
         });
     }
-
-    SidePanel::left("Calculator Panel")
-      .resizable(false)
-      .min_width(512.0)
+    // Main content
+    CentralPanel::default()
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
-          ScrollArea::vertical()
-            .auto_shrink([false; 2])
-            .show(ui, |ui| {
-              if self.show_calculator(ui) {
-                self.calculate();
-              }
-            });
-        });
-      });
-    SidePanel::left("Results Panel")
-      .resizable(false)
-      .min_width(512.0)
-      .show(ctx, |ui| {
-        ui.add_enabled_ui(self.enable_gui, |ui| {
-          ScrollArea::vertical()
-            .auto_shrink([false; 2])
-            .show(ui, |ui| {
-              self.show_results(ui, ctx);
+          let layout = Layout::top_down(Align::LEFT);
+          StripBuilder::new(ui)
+            .cell_layout(layout)
+            .size(Size::remainder())
+            .size(Size::exact(1.0))
+            .size(Size::remainder())
+            .horizontal(|mut strip| {
+              strip.cell(|ui| {
+                ScrollArea::vertical()
+                  .id_source("Calculator Scroll")
+                  .auto_shrink([false; 2])
+                  .show(ui, |ui| {
+                    if self.show_calculator(ui) {
+                      self.calculate();
+                    }
+                  });
+              });
+              strip.cell(|ui| {
+                ui.add(Separator::default().spacing(0.0).vertical());
+              });
+              strip.cell(|ui| {
+                ScrollArea::vertical()
+                  .id_source("Result Scroll")
+                  .auto_shrink([false; 2])
+                  .show(ui, |ui| {
+                    self.show_results(ui, ctx);
+                  });
+              });
             });
         });
       });
@@ -245,13 +255,7 @@ impl App {
       ui.show_row("Ice", format!("{} #", self.calculated.total_items_ice.round()));
       ui.show_row("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
     });
-    ui.open_header_with_grid("Force", |ui| {
-      let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
-      for direction in Direction::iter() {
-        ui.force_row(*direction, &self.calculated.acceleration);
-      }
-    });
-    ui.open_header_with_grid("Acceleration", |ui| {
+    ui.open_header_with_grid("Acceleration & Force", |ui| {
       let mut ui = CalculatedUi::new(ui, self.number_separator_policy);
       ui.label("");
       ui.label("Filled");
@@ -259,6 +263,7 @@ impl App {
       ui.label("Empty");
       ui.label("");
       ui.label("");
+      ui.label("Force");
       ui.end_row();
       ui.label("");
       ui.label("Gravity");
@@ -460,14 +465,6 @@ impl<'ui> CalculatedUi<'ui> {
   }
 
 
-  fn force_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>) {
-    self.right_align_label(format!("{}", direction));
-    self.right_align_value(format!("{:.2}", acceleration.get(direction).force / 1000.0));
-    self.label("kN");
-    self.ui.end_row();
-  }
-
-
   fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>, ctx: &Context) {
     self.right_align_label(format!("{}", direction));
     self.right_align_optional_value(acceleration.get(direction).acceleration_filled_gravity.map(|a| format!("{:.2}", a)));
@@ -475,6 +472,8 @@ impl<'ui> CalculatedUi<'ui> {
     self.right_align_optional_value(acceleration.get(direction).acceleration_empty_gravity.map(|a| format!("{:.2}", a)));
     self.right_align_optional_value(acceleration.get(direction).acceleration_empty_no_gravity.map(|a| format!("{:.2}", a)));
     self.acceleration_label(ctx);
+    self.right_align_value(format!("{:.2}", acceleration.get(direction).force / 1000.0));
+    self.label("kN");
     self.ui.end_row();
   }
 
