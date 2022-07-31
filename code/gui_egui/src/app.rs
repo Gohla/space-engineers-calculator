@@ -4,7 +4,7 @@ use std::ops::{Deref, DerefMut, RangeInclusive};
 
 use eframe::epaint::Rgba;
 use eframe::Frame;
-use egui::{Align, Align2, Button, CentralPanel, CollapsingHeader, CollapsingResponse, Color32, ComboBox, Context, DragValue, Grid, InnerResponse, Layout, menu, Response, ScrollArea, Separator, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText, Window};
+use egui::{Align, Align2, Button, CentralPanel, CollapsingHeader, CollapsingResponse, ComboBox, Context, DragValue, global_dark_light_mode_switch, Grid, InnerResponse, Layout, menu, Response, ScrollArea, Separator, TextFormat, TextStyle, TopBottomPanel, Ui, Visuals, WidgetText, Window};
 use egui::emath::Numeric;
 use egui::text::LayoutJob;
 use egui_extras::{Size, StripBuilder};
@@ -26,6 +26,9 @@ pub struct App {
 
   #[serde(skip)] enable_gui: bool,
   #[serde(skip)] show_reset_confirm_window: bool,
+  #[serde(skip)] show_debug_settings_window: bool,
+  #[serde(skip)] show_debug_inspection_window: bool,
+  #[serde(skip)] show_debug_memory_window: bool,
 
   calculator: GridCalculator,
   grid_size: GridSize,
@@ -66,6 +69,9 @@ impl Default for App {
 
       enable_gui: true,
       show_reset_confirm_window: false,
+      show_debug_settings_window: false,
+      show_debug_inspection_window: false,
+      show_debug_memory_window: false,
 
       calculator: GridCalculator::default(),
       grid_size: GridSize::default(),
@@ -81,6 +87,7 @@ impl eframe::App for App {
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
           menu::bar(ui, |ui| {
+            global_dark_light_mode_switch(ui);
             ui.menu_button("Grid", |ui| {
               if ui.button("Save").clicked() {
                 if let Some(storage) = frame.storage_mut() {
@@ -91,6 +98,17 @@ impl eframe::App for App {
               if ui.button("Reset").clicked() {
                 self.enable_gui = false;
                 self.show_reset_confirm_window = true;
+                ui.close_menu();
+              }
+            });
+            ui.menu_button("Debug", |ui| {
+              if ui.checkbox(&mut self.show_debug_settings_window, "Settings").clicked() {
+                ui.close_menu();
+              }
+              if ui.checkbox(&mut self.show_debug_inspection_window, "Inspections").clicked() {
+                ui.close_menu();
+              }
+              if ui.checkbox(&mut self.show_debug_memory_window, "Memory").clicked() {
                 ui.close_menu();
               }
             });
@@ -119,11 +137,21 @@ impl eframe::App for App {
           });
         });
     }
+    // Non-modal windows
+    Window::new("Settings")
+      .open(&mut self.show_debug_settings_window)
+      .show(ctx, |ui| { ctx.settings_ui(ui) });
+    Window::new("Inspection")
+      .open(&mut self.show_debug_inspection_window)
+      .show(ctx, |ui| { ctx.inspection_ui(ui) });
+    Window::new("Memory")
+      .open(&mut self.show_debug_memory_window)
+      .show(ctx, |ui| { ctx.memory_ui(ui) });
     // Main content
     CentralPanel::default()
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
-          let layout = Layout::left_to_right().with_main_wrap(true);
+          let layout = Layout::top_down(Align::LEFT);
           StripBuilder::new(ui)
             .cell_layout(layout)
             .size(Size::remainder())
@@ -479,8 +507,9 @@ impl<'ui> CalculatedUi<'ui> {
 
   fn acceleration_label(&mut self, ctx: &Context) {
     let mut acceleration = LayoutJob::default();
-    acceleration.append("m/s", 0.0, TextFormat { color: Color32::BLACK, ..TextFormat::default() });
-    acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color: Color32::BLACK, valign: Align::Min, ..TextFormat::default() });
+    let color = ctx.style().visuals.text_color();
+    acceleration.append("m/s", 0.0, TextFormat { color, ..TextFormat::default() });
+    acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color, valign: Align::Min, ..TextFormat::default() });
     self.ui.label(acceleration);
   }
 
