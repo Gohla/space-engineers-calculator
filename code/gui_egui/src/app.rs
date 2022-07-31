@@ -123,7 +123,7 @@ impl eframe::App for App {
     CentralPanel::default()
       .show(ctx, |ui| {
         ui.add_enabled_ui(self.enable_gui, |ui| {
-          let layout = Layout::top_down(Align::LEFT);
+          let layout = Layout::left_to_right().with_main_wrap(true);
           StripBuilder::new(ui)
             .cell_layout(layout)
             .size(Size::remainder())
@@ -457,7 +457,7 @@ impl<'ui> CalculatedUi<'ui> {
   }
 
   fn right_align_label(&mut self, label: impl Into<WidgetText>) {
-    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(label));
+    self.ui.with_layout(Layout::right_to_left(), |ui| ui.label(label));
   }
 
   fn empty_label(&mut self) {
