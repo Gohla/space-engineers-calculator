@@ -35,22 +35,25 @@ impl App {
           ui.selectable_value(&mut self.grid_size, GridSize::Small, "Small");
           ui.selectable_value(&mut self.grid_size, GridSize::Large, "Large");
         });
-      ui.open_header_with_grid("Storage", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for block in self.data.blocks.containers.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.cockpits.values().filter(|b| b.size == self.grid_size && b.has_inventory) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        changed |= ui.changed
-      });
       ui.open_header_with_grid("Thrusters", |ui| {
         let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
         ui.header_count_directed_row();
         for block in self.data.blocks.thrusters.values().filter(|b| b.size == self.grid_size) {
           let count_per_direction = self.calculator.directional_blocks.entry(block.id.clone()).or_default();
           ui.edit_count_directed_row(block.name(&self.data.localization), count_per_direction);
+        }
+        changed |= ui.changed
+      });
+      ui.open_header_with_grid("Storage", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.containers.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.connectors.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        for block in self.data.blocks.cockpits.values().filter(|b| b.size == self.grid_size && b.has_inventory) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
         }
         changed |= ui.changed
       });
@@ -73,6 +76,13 @@ impl App {
           ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
         }
         for block in self.data.blocks.hydrogen_tanks.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        changed |= ui.changed
+      });
+      ui.open_header_with_grid("Ship Tools", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.drills.values().filter(|b| b.size == self.grid_size) {
           ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
         }
         changed |= ui.changed

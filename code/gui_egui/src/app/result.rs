@@ -19,11 +19,11 @@ impl App {
     });
     ui.open_header_with_grid("Volume", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);
-      ui.show_row("Any", format!("{} L", self.calculated.total_volume_any));
-      ui.show_row("Ore", format!("{} L", self.calculated.total_volume_ore));
-      ui.show_row("Ice", format!("{} L", self.calculated.total_volume_ice));
-      ui.show_row("Ore-only", format!("{} L", self.calculated.total_volume_ore_only));
-      ui.show_row("Ice-only", format!("{} L", self.calculated.total_volume_ice_only));
+      ui.show_row("Any", format!("{} L", self.calculated.total_volume_any.round()));
+      ui.show_row("Ore", format!("{} L", self.calculated.total_volume_ore.round()));
+      ui.show_row("Ice", format!("{} L", self.calculated.total_volume_ice.round()));
+      ui.show_row("Ore-only", format!("{} L", self.calculated.total_volume_ore_only.round()));
+      ui.show_row("Ice-only", format!("{} L", self.calculated.total_volume_ice_only.round()));
     });
     ui.open_header_with_grid("Items", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);

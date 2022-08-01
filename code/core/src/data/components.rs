@@ -41,6 +41,7 @@ impl Component {
 
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]
+#[serde(default)]
 pub struct Components {
   pub components: LinkedHashMap<String, Component>,
 }

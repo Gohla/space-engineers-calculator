@@ -197,11 +197,22 @@ impl GridCalculator {
         let count = *count as f64;
         c.total_mass_empty += block.mass(&data.components) * count;
         if block.store_any {
-          let volume = block.details.capacity * count * self.container_multiplier;
+          let volume = block.details.inventory_volume_any * count * self.container_multiplier;
           c.total_volume_any += volume;
           c.total_volume_ore += volume;
           c.total_volume_ice += volume;
         }
+      }
+    }
+    // Connectors.
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.connectors.get(id) {
+        let count = *count as f64;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        let volume = block.details.inventory_volume_any * count * self.container_multiplier;
+        c.total_volume_any += volume;
+        c.total_volume_ore += volume;
+        c.total_volume_ice += volume;
       }
     }
     // Cockpits.
@@ -210,7 +221,7 @@ impl GridCalculator {
         let count = *count as f64;
         c.total_mass_empty += block.mass(&data.components) * count;
         if block.has_inventory {
-          let volume = block.details.capacity * count * self.container_multiplier;
+          let volume = block.details.inventory_volume_any * count * self.container_multiplier;
           c.total_volume_any += volume;
           c.total_volume_ore += volume;
           c.total_volume_ice += volume;
@@ -267,6 +278,7 @@ impl GridCalculator {
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
         c.power_generation += details.max_power_generation * count;
+        // TODO: inventory - uranium ingot only
         // TODO: fuel capacity/use
       }
     }
@@ -286,11 +298,8 @@ impl GridCalculator {
       if let Some(block) = data.blocks.generators.get(id) {
         let count = *count as f64;
         let details = &block.details;
-        // Mass
         c.total_mass_empty += block.mass(&data.components) * count;
-        // Volume
         c.total_volume_ice_only += details.inventory_volume_ice * count;
-        // Power consumption
         power_consumption_idle += details.idle_power_consumption * count;
         power_consumption_generator += details.operational_power_consumption * count;
         c.hydrogen_generation += details.hydrogen_generation * count;
@@ -302,17 +311,26 @@ impl GridCalculator {
       if let Some(block) = data.blocks.hydrogen_tanks.get(id) {
         let count = *count as f64;
         let details = &block.details;
-        // Mass
         c.total_mass_empty += block.mass(&data.components) * count;
         power_consumption_idle += details.idle_power_consumption * count;
         power_consumption_misc += details.operational_power_consumption * count;
         c.hydrogen_capacity_tank += details.capacity * count;
       }
     }
+    // Drills
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.drills.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        c.total_volume_ore_only += details.inventory_volume_ore * count;
+        power_consumption_idle += details.idle_power_consumption * count;
+        power_consumption_misc += details.operational_power_consumption * count;
+      }
+    }
 
     // TODO: add jump drive block
     // TODO: add gyroscopes
-    // TODO: add drills
 
     // Calculate filled volumes.
     let ice_only_volume = c.total_volume_ice_only * (self.ice_only_fill / 100.0);

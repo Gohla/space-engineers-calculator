@@ -22,6 +22,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]
+#[serde(default)]
 pub struct Localization {
   pub localization: LinkedHashMap<String, String>,
 }

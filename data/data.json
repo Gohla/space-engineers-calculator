@@ -628,7 +628,7 @@
         },
         "has_physics": true,
         "details": {
-          "capacity": 15625.0,
+          "inventory_volume_any": 15625.0,
           "store_any": true
         }
       },
@@ -648,7 +648,7 @@
         },
         "has_physics": true,
         "details": {
-          "capacity": 421875.0,
+          "inventory_volume_any": 421875.0,
           "store_any": true
         }
       },
@@ -666,7 +666,7 @@
         },
         "has_physics": true,
         "details": {
-          "capacity": 3375.0,
+          "inventory_volume_any": 3375.0,
           "store_any": true
         }
       },
@@ -684,7 +684,7 @@
         },
         "has_physics": true,
         "details": {
-          "capacity": 125.0,
+          "inventory_volume_any": 125.0,
           "store_any": true
         }
       },
@@ -704,8 +704,61 @@
         },
         "has_physics": true,
         "details": {
-          "capacity": 15625.0,
+          "inventory_volume_any": 15625.0,
           "store_any": true
+        }
+      }
+    },
+    "connectors": {
+      "ShipConnector.Connector": {
+        "id": "ShipConnector.Connector",
+        "index": 458,
+        "name": "DisplayName_Block_Connector",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 150.0,
+          "Construction": 40.0,
+          "SmallTube": 12.0,
+          "Motor": 8.0,
+          "Computer": 20.0
+        },
+        "has_physics": true,
+        "details": {
+          "inventory_volume_any": 8000.0
+        }
+      },
+      "ShipConnector.ConnectorMedium": {
+        "id": "ShipConnector.ConnectorMedium",
+        "index": 460,
+        "name": "DisplayName_Block_Connector",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 21.0,
+          "Construction": 12.0,
+          "SmallTube": 6.0,
+          "Motor": 6.0,
+          "Computer": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "inventory_volume_any": 1152.0000000000005
+        }
+      },
+      "ShipConnector.ConnectorSmall": {
+        "id": "ShipConnector.ConnectorSmall",
+        "index": 459,
+        "name": "DisplayName_Block_ConnectorSmall",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 7.0,
+          "Construction": 4.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0,
+          "Computer": 4.0
+        },
+        "has_physics": true,
+        "details": {
+          "inventory_volume_any": 64.00000000000001
         }
       }
     },
@@ -725,7 +778,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.BuggyCockpit": {
@@ -743,7 +796,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCockpitSeat": {
@@ -762,7 +815,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.SmallBlockCockpit": {
@@ -781,7 +834,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCouchCorner": {
@@ -796,7 +849,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockCouch": {
@@ -811,7 +864,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDesk": {
@@ -826,7 +879,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDeskCorner": {
@@ -841,7 +894,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDeskCornerInv": {
@@ -856,7 +909,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.DBSmallBlockFighterCockpit": {
@@ -877,7 +930,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.CockpitOpen": {
@@ -895,7 +948,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.SmallBlockStandingCockpit": {
@@ -913,7 +966,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockStandingCockpit": {
@@ -931,7 +984,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.SmallBlockCockpitIndustrial": {
@@ -952,7 +1005,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCockpitIndustrial": {
@@ -973,7 +1026,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.RoverCockpit": {
@@ -991,7 +1044,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": true,
-          "capacity": 1000.0
+          "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockBathroomOpen": {
@@ -1009,7 +1062,7 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockToilet": {
@@ -1027,7 +1080,47 @@
         "has_physics": true,
         "details": {
           "has_inventory": false,
-          "capacity": 0.0
+          "inventory_volume_any": 0.0
+        }
+      }
+    },
+    "drills": {
+      "Drill.SmallBlockDrill": {
+        "id": "Drill.SmallBlockDrill",
+        "index": 700,
+        "name": "DisplayName_Block_Drill",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 32.0,
+          "Construction": 30.0,
+          "LargeTube": 4.0,
+          "Motor": 1.0,
+          "Computer": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "inventory_volume_ore": 3375.0,
+          "operational_power_consumption": 0.002,
+          "idle_power_consumption": 1e-6
+        }
+      },
+      "Drill.LargeBlockDrill": {
+        "id": "Drill.LargeBlockDrill",
+        "index": 701,
+        "name": "DisplayName_Block_Drill",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 300.0,
+          "Construction": 40.0,
+          "LargeTube": 12.0,
+          "Motor": 5.0,
+          "Computer": 5.0
+        },
+        "has_physics": true,
+        "details": {
+          "inventory_volume_ore": 23437.5,
+          "operational_power_consumption": 0.002,
+          "idle_power_consumption": 1e-6
         }
       }
     }

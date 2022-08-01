@@ -55,6 +55,14 @@ impl GridSize {
       t => panic!("Unrecognized grid size {}", t),
     }
   }
+
+  /// Cube size as defined by Configuration.sbc
+  pub fn size(&self) -> f64 {
+    match self {
+      GridSize::Small => 0.5,
+      GridSize::Large => 2.5,
+    }
+  }
 }
 
 impl Display for GridSize {
@@ -69,7 +77,7 @@ impl Display for GridSize {
 
 /// Data which can be created from a definition in a SBC XML file.
 pub trait FromDef: Clone + Debug {
-  fn from_def(def: &Node, entity_components: &Node) -> Self;
+  fn from_def(def: &Node, size: GridSize, entity_components: &Node) -> Self;
 }
 
 
@@ -120,15 +128,15 @@ impl<T: FromDef> Block<T> {
     let id = type_id + "." + &subtype_id;
     let name = def.parse_child_elem("DisplayName").unwrap().unwrap();
     let mut components = LinkedHashMap::new();
-    let grid_type = GridSize::from_def(def);
+    let size = GridSize::from_def(def);
     for component in def.child_elem("Components").unwrap().children_elems("Component") {
       if let (Some(component_id), Some(count)) = (component.parse_attribute("Subtype").unwrap(), component.parse_attribute::<f64, _>("Count").unwrap()) {
         *components.entry(component_id).or_insert(0.0) += count;
       }
     }
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
-    let details = T::from_def(def, entity_components);
-    Block { id, index, name, size: grid_type, components, has_physics, details }
+    let details = T::from_def(def, size, entity_components);
+    Block { id, index, name, size, components, has_physics, details }
   }
 }
 
@@ -173,7 +181,7 @@ pub struct Battery {
 }
 
 impl FromDef for Battery {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let capacity: f64 = def.parse_child_elem("MaxStoredPower").unwrap().unwrap();
     let input: f64 = def.parse_child_elem("RequiredPowerInput").unwrap().unwrap();
     let output: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
@@ -248,7 +256,7 @@ impl Thruster {
 }
 
 impl FromDef for Thruster {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let ty = ThrusterType::from_def(def);
     let force = def.parse_child_elem("ForceMagnitude").unwrap().unwrap();
     let fuel_gas_id = def.child_elem("FuelConverter").map(|n| n.first_element_child().unwrap().parse_child_elem("SubtypeId").unwrap().unwrap());
@@ -276,7 +284,7 @@ pub struct HydrogenEngine {
 }
 
 impl FromDef for HydrogenEngine {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let fuel_capacity: f64 = def.parse_child_elem("FuelCapacity").unwrap().unwrap();
     let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
     let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem("FuelProductionToCapacityMultiplier").unwrap().unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
@@ -296,7 +304,7 @@ pub struct Reactor {
 }
 
 impl FromDef for Reactor {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
     let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem("FuelProductionToCapacityMultiplier").unwrap().unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
     let max_fuel_consumption = max_power_generation / fuel_production_to_capacity_multiplier;
@@ -323,9 +331,9 @@ pub struct Generator {
 }
 
 impl FromDef for Generator {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let ice_consumption: f64 = def.parse_child_elem("IceConsumptionPerSecond").unwrap().unwrap();
-    let inventory_volume_ice: f64 = def.parse_child_elem::<f64>("InventoryMaxVolume").unwrap().unwrap() * 1000.0;
+    let inventory_volume_ice: f64 = def.parse_child_elem::<f64>("InventoryMaxVolume").unwrap().unwrap() * VOLUME_MULTIPLIER;
     let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption").unwrap().unwrap();
     let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption").unwrap().unwrap();
     let mut oxygen_generation = 0.0;
@@ -351,6 +359,7 @@ impl FromDef for Generator {
   }
 }
 
+
 /// Hydrogen tank
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct HydrogenTank {
@@ -363,7 +372,7 @@ pub struct HydrogenTank {
 }
 
 impl FromDef for HydrogenTank {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let capacity: f64 = def.parse_child_elem("Capacity").unwrap().unwrap();
     let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption").unwrap().unwrap();
     let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption").unwrap().unwrap();
@@ -375,16 +384,16 @@ impl FromDef for HydrogenTank {
 /// Container
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Container {
-  /// Inventory capacity (L)
-  pub capacity: f64,
+  /// Inventory volume (L)
+  pub inventory_volume_any: f64,
   /// Stores any item?
   pub store_any: bool,
 }
 
 impl FromDef for Container {
-  fn from_def(def: &Node, entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, entity_components: &Node) -> Self {
     let subtype_id: String = def.child_elem("Id").unwrap().parse_child_elem("SubtypeId").unwrap().unwrap();
-    let mut capacity = 0.0;
+    let mut inventory_volume_any = 0.0;
     let mut store_any = false;
     for entity_component in entity_components.children_elems("EntityComponent") {
       if let Some("MyObjectBuilder_InventoryComponentDefinition") = entity_component.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
@@ -394,37 +403,92 @@ impl FromDef for Container {
         let x: f64 = size.parse_attribute("x").unwrap().unwrap();
         let y: f64 = size.parse_attribute("y").unwrap().unwrap();
         let z: f64 = size.parse_attribute("z").unwrap().unwrap();
-        capacity = x * y * z * VOLUME_MULTIPLIER;
+        inventory_volume_any = x * y * z * VOLUME_MULTIPLIER;
         store_any = entity_component.child_elem("InputConstraint").map_or(true, |_| false);
         break;
       }
     }
-    if capacity == 0.0 {
+    if inventory_volume_any == 0.0 {
       panic!("Unrecognized container {:?}", def);
     }
-    Container { capacity, store_any }
+    Container { inventory_volume_any, store_any }
+  }
+}
+
+
+/// Connector
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Connector {
+  /// Inventory volume (L)
+  pub inventory_volume_any: f64,
+}
+
+impl FromDef for Connector {
+  fn from_def(def: &Node, grid_size: GridSize, _entity_components: &Node) -> Self {
+    let size = def.child_elem("Size").unwrap();
+    let x: f64 = size.parse_attribute("x").unwrap().unwrap();
+    let y: f64 = size.parse_attribute("y").unwrap().unwrap();
+    let z: f64 = size.parse_attribute("z").unwrap().unwrap();
+    let multiplier = grid_size.size() * 0.8;
+    let inventory_volume_any = (x * multiplier) * (y * multiplier) * (z * multiplier) * VOLUME_MULTIPLIER; // Inventory capacity according to MyShipConnector.cs.
+    Self {
+      inventory_volume_any,
+    }
   }
 }
 
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+/// Cockpit
 pub struct Cockpit {
   /// Whether 'cockpit' has an inventory.
   pub has_inventory: bool,
-  /// Inventory capacity (L)
-  pub capacity: f64,
+  /// Inventory volume (L)
+  pub inventory_volume_any: f64,
 }
 
 impl FromDef for Cockpit {
-  fn from_def(def: &Node, _entity_components: &Node) -> Self {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
     let has_inventory = def.parse_child_elem("HasInventory").unwrap().unwrap_or(true);
-    // All cockpits have a volume of 1.0 (times VOLUME_MULTIPLIER) according to SE's code.
-    let capacity = if has_inventory { VOLUME_MULTIPLIER } else { 0.0 };
-    Cockpit { has_inventory, capacity }
+    let inventory_volume_any = if has_inventory { VOLUME_MULTIPLIER } else { 0.0 }; // Inventory capacity according to MyCockpit.cs.
+    Cockpit { has_inventory, inventory_volume_any }
   }
 }
 
+
+/// Drill
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Drill {
+  /// Inventory volume - ore only (L)
+  pub inventory_volume_ore: f64,
+  /// Operational power consumption (MW)
+  pub operational_power_consumption: f64,
+  /// Idle power consumption (MW)
+  pub idle_power_consumption: f64,
+}
+
+impl FromDef for Drill {
+  fn from_def(def: &Node, grid_size: GridSize, _entity_components: &Node) -> Self {
+    let size = def.child_elem("Size").unwrap();
+    let x: f64 = size.parse_attribute("x").unwrap().unwrap();
+    let y: f64 = size.parse_attribute("y").unwrap().unwrap();
+    let z: f64 = size.parse_attribute("z").unwrap().unwrap();
+    let cube_size = grid_size.size();
+    let inventory_volume_ore = x * y * z * cube_size * cube_size * cube_size * 0.5 * VOLUME_MULTIPLIER; // Inventory capacity according to MyShipDrill.cs.
+    let operational_power_consumption: f64 = 1.0 / 500.0 * 1.0; // Maximum required power according to ComputeMaxRequiredPower in MyShipDrill.cs.
+    let idle_power_consumption: f64 = 1e-06; // Idle power according to ComputeMaxRequiredPower in MyShipDrill.cs.
+    Self {
+      inventory_volume_ore,
+      operational_power_consumption,
+      idle_power_consumption,
+    }
+  }
+}
+
+
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
+#[serde(default)]
+/// All blocks
 pub struct Blocks {
   pub batteries: LinkedHashMap<BlockId, Block<Battery>>,
   pub thrusters: LinkedHashMap<BlockId, Block<Thruster>>,
@@ -433,7 +497,9 @@ pub struct Blocks {
   pub generators: LinkedHashMap<BlockId, Block<Generator>>,
   pub hydrogen_tanks: LinkedHashMap<BlockId, Block<HydrogenTank>>,
   pub containers: LinkedHashMap<BlockId, Block<Container>>,
+  pub connectors: LinkedHashMap<BlockId, Block<Connector>>,
   pub cockpits: LinkedHashMap<BlockId, Block<Cockpit>>,
+  pub drills: LinkedHashMap<BlockId, Block<Drill>>,
 }
 
 impl Blocks {
@@ -489,7 +555,9 @@ impl Blocks {
     let mut generators: Vec<Block<Generator>> = Vec::new();
     let mut hydrogen_tanks: Vec<Block<HydrogenTank>> = Vec::new();
     let mut containers: Vec<Block<Container>> = Vec::new();
+    let mut connectors: Vec<Block<Connector>> = Vec::new();
     let mut cockpits: Vec<Block<Cockpit>> = Vec::new();
+    let mut drills: Vec<Block<Drill>> = Vec::new();
 
     let mut id = 0;
     let cube_blocks_file_paths = WalkDir::new(cube_blocks_search_dir)
@@ -559,10 +627,22 @@ impl Blocks {
                 containers.push(block);
               }
             }
+            "MyObjectBuilder_ShipConnectorDefinition" => {
+              let block = Block::<Connector>::from_def(&def, &entity_components_node, id);
+              if !block_name_excludes.contains(block.name(localization)) {
+                connectors.push(block);
+              }
+            }
             "MyObjectBuilder_CockpitDefinition" => {
               let block = Block::<Cockpit>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
                 cockpits.push(block);
+              }
+            }
+            "MyObjectBuilder_ShipDrillDefinition" => {
+              let block = Block::<Drill>::from_def(&def, &entity_components_node, id);
+              if !block_name_excludes.contains(block.name(localization)) {
+                drills.push(block);
               }
             }
             _ => {}
@@ -582,7 +662,9 @@ impl Blocks {
     sort_block_vec(&mut generators, localization);
     sort_block_vec(&mut hydrogen_tanks, localization);
     sort_block_vec(&mut containers, localization);
+    sort_block_vec(&mut connectors, localization);
     sort_block_vec(&mut cockpits, localization);
+    sort_block_vec(&mut drills, localization);
     fn create_map<T>(vec: Vec<Block<T>>) -> LinkedHashMap<BlockId, Block<T>> {
       LinkedHashMap::from_iter(vec.into_iter().map(|b| (b.id.clone(), b)))
     }
@@ -594,7 +676,9 @@ impl Blocks {
       generators: create_map(generators),
       hydrogen_tanks: create_map(hydrogen_tanks),
       containers: create_map(containers),
+      connectors: create_map(connectors),
       cockpits: create_map(cockpits),
+      drills: create_map(drills),
     };
     Ok(blocks)
   }
