@@ -1,6 +1,6 @@
 use eframe::epaint::Rgba;
-use eframe::Frame;
-use egui::{Align, Align2, Button, CentralPanel, Context, Layout, menu, ScrollArea, Separator, TopBottomPanel, Visuals, Window};
+use egui::{Align, Align2, Button, CentralPanel, Context, Frame, Layout, menu, ScrollArea, Separator, Visuals, Window};
+use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
 use thousands::SeparatorPolicy;
 
@@ -88,87 +88,95 @@ impl Default for App {
 }
 
 impl eframe::App for App {
-  fn update(&mut self, ctx: &Context, frame: &mut Frame) {
-    // Top panel
-    TopBottomPanel::top("Top Panel")
-      .resizable(false)
-      .show(ctx, |ui| {
-        ui.add_enabled_ui(self.enable_gui, |ui| {
-          menu::bar(ui, |ui| {
-            ui.menu_button("Grid", |ui| {
-              if ui.button("Save").clicked() {
-                if let Some(storage) = frame.storage_mut() {
-                  self.save(storage);
-                }
-                ui.close_menu();
-              }
-              if ui.button("Reset").clicked() {
-                self.enable_gui = false;
-                self.show_reset_confirm_window = true;
-                ui.close_menu();
-              }
-            });
-            ui.menu_button("Debug", |ui| {
-              if ui.checkbox(&mut self.show_debug_gui_settings_window, "GUI Settings").clicked() {
-                ui.close_menu();
-              }
-              if ui.checkbox(&mut self.show_debug_gui_inspection_window, "GUI Inspections").clicked() {
-                ui.close_menu();
-              }
-              if ui.checkbox(&mut self.show_debug_gui_memory_window, "GUI Memory").clicked() {
-                ui.close_menu();
-              }
-            });
-            ui.with_layout(Layout::right_to_left(), |ui| {
-              if self.dark_mode {
-                if ui.add(Button::new("☀")).clicked() {
-                  self.set_dark_mode(false, ctx);
-                }
-              } else {
-                if ui.add(Button::new("🌙")).clicked() {
-                  self.set_dark_mode(true, ctx);
-                }
-              }
-            });
-          });
-        });
-      });
-
-    // Main content
-    CentralPanel::default()
-      .show(ctx, |ui| {
-        ui.add_enabled_ui(self.enable_gui, |ui| {
-          let layout = Layout::top_down(Align::LEFT);
-          StripBuilder::new(ui)
-            .cell_layout(layout)
-            .size(Size::remainder())
-            .size(Size::exact(1.0))
-            .size(Size::remainder())
-            .horizontal(|mut strip| {
-              strip.cell(|ui| {
-                ScrollArea::vertical()
-                  .id_source("Calculator Scroll")
-                  .auto_shrink([false; 2])
-                  .show(ui, |ui| {
-                    if self.show_calculator(ui) {
-                      self.calculate();
+  fn update(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+    let central_frame = Frame::none().fill(ctx.style().visuals.window_fill()).inner_margin(Margin::same(4.0));
+    CentralPanel::default().frame(central_frame).show(ctx, |ui| {
+      ui.add_enabled_ui(self.enable_gui, |ui| {
+        StripBuilder::new(ui)
+          .size(Size::exact(20.0))
+          .size(Size::exact(1.0))
+          .size(Size::remainder())
+          .vertical(|mut strip| {
+            // Top panel with menu
+            strip.cell(|ui| {
+              ui.add_enabled_ui(self.enable_gui, |ui| {
+                menu::bar(ui, |ui| {
+                  ui.menu_button("Grid", |ui| {
+                    if ui.button("Save").clicked() {
+                      if let Some(storage) = frame.storage_mut() {
+                        self.save(storage);
+                      }
+                      ui.close_menu();
+                    }
+                    if ui.button("Reset").clicked() {
+                      self.enable_gui = false;
+                      self.show_reset_confirm_window = true;
+                      ui.close_menu();
                     }
                   });
-              });
-              strip.cell(|ui| {
-                ui.add(Separator::default().spacing(0.0).vertical());
-              });
-              strip.cell(|ui| {
-                ScrollArea::vertical()
-                  .id_source("Result Scroll")
-                  .auto_shrink([false; 2])
-                  .show(ui, |ui| {
-                    self.show_results(ui, ctx);
+                  ui.menu_button("Debug", |ui| {
+                    if ui.checkbox(&mut self.show_debug_gui_settings_window, "GUI Settings").clicked() {
+                      ui.close_menu();
+                    }
+                    if ui.checkbox(&mut self.show_debug_gui_inspection_window, "GUI Inspections").clicked() {
+                      ui.close_menu();
+                    }
+                    if ui.checkbox(&mut self.show_debug_gui_memory_window, "GUI Memory").clicked() {
+                      ui.close_menu();
+                    }
                   });
+                  ui.with_layout(Layout::right_to_left(), |ui| {
+                    if self.dark_mode {
+                      if ui.add(Button::new("☀")).clicked() {
+                        self.set_dark_mode(false, ctx);
+                      }
+                    } else {
+                      if ui.add(Button::new("🌙")).clicked() {
+                        self.set_dark_mode(true, ctx);
+                      }
+                    }
+                  });
+                });
               });
             });
-        });
+            // Horizontal line
+            strip.cell(|ui| { ui.add(Separator::default().spacing(0.0).horizontal()); });
+            // Main content panel
+            strip.strip(|strip_builder| {
+              let layout = Layout::top_down(Align::LEFT);
+              strip_builder
+                .cell_layout(layout)
+                .size(Size::remainder())
+                .size(Size::exact(1.0))
+                .size(Size::remainder())
+                .horizontal(|mut strip| {
+                  // Calculator
+                  strip.cell(|ui| {
+                    ScrollArea::vertical()
+                      .id_source("Calculator Scroll")
+                      .auto_shrink([false; 2])
+                      .show(ui, |ui| {
+                        if self.show_calculator(ui) {
+                          self.calculate();
+                        }
+                      });
+                  });
+                  // Vertical line
+                  strip.cell(|ui| { ui.add(Separator::default().spacing(0.0).vertical()); });
+                  // Result (calculated)
+                  strip.cell(|ui| {
+                    ScrollArea::vertical()
+                      .id_source("Result Scroll")
+                      .auto_shrink([false; 2])
+                      .show(ui, |ui| {
+                        self.show_results(ui, ctx);
+                      });
+                  });
+                });
+            });
+          });
       });
+    });
 
     // Modal windows
     if self.show_reset_confirm_window {
@@ -192,7 +200,7 @@ impl eframe::App for App {
           });
         });
     }
-    
+
     // Non-modal windows
     Window::new("GUI Settings")
       .open(&mut self.show_debug_gui_settings_window)
