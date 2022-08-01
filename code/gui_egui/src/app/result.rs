@@ -12,24 +12,28 @@ use crate::widget::UiExtensions;
 
 impl App {
   pub(crate) fn show_results(&mut self, ui: &mut Ui, ctx: &Context) {
-    ui.open_header_with_grid("Mass", |ui| {
-      let mut ui = ResultUi::new(ui, self.number_separator_policy);
-      ui.show_row("Empty", format!("{} kg", self.calculated.total_mass_empty.round()));
-      ui.show_row("Filled", format!("{} kg", self.calculated.total_mass_filled.round()));
-    });
-    ui.open_header_with_grid("Volume", |ui| {
-      let mut ui = ResultUi::new(ui, self.number_separator_policy);
-      ui.show_row("Any", format!("{} L", self.calculated.total_volume_any.round()));
-      ui.show_row("Ore", format!("{} L", self.calculated.total_volume_ore.round()));
-      ui.show_row("Ice", format!("{} L", self.calculated.total_volume_ice.round()));
-      ui.show_row("Ore-only", format!("{} L", self.calculated.total_volume_ore_only.round()));
-      ui.show_row("Ice-only", format!("{} L", self.calculated.total_volume_ice_only.round()));
-    });
-    ui.open_header_with_grid("Items", |ui| {
-      let mut ui = ResultUi::new(ui, self.number_separator_policy);
-      ui.show_row("Ore", format!("{} #", self.calculated.total_items_ore.round()));
-      ui.show_row("Ice", format!("{} #", self.calculated.total_items_ice.round()));
-      ui.show_row("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
+    ui.horizontal(|ui|{
+      ui.open_header_with_grid("Volume", |ui| {
+        let mut ui = ResultUi::new(ui, self.number_separator_policy);
+        ui.show_row("Any", format!("{} L", self.calculated.total_volume_any.round()));
+        ui.show_row("Ore", format!("{} L", self.calculated.total_volume_ore.round()));
+        ui.show_row("Ice", format!("{} L", self.calculated.total_volume_ice.round()));
+        ui.show_row("Ore-only", format!("{} L", self.calculated.total_volume_ore_only.round()));
+        ui.show_row("Ice-only", format!("{} L", self.calculated.total_volume_ice_only.round()));
+      });
+      ui.vertical(|ui|{
+        ui.open_header_with_grid("Mass", |ui| {
+          let mut ui = ResultUi::new(ui, self.number_separator_policy);
+          ui.show_row("Empty", format!("{} kg", self.calculated.total_mass_empty.round()));
+          ui.show_row("Filled", format!("{} kg", self.calculated.total_mass_filled.round()));
+        });
+        ui.open_header_with_grid("Items", |ui| {
+          let mut ui = ResultUi::new(ui, self.number_separator_policy);
+          ui.show_row("Ore", format!("{} #", self.calculated.total_items_ore.round()));
+          ui.show_row("Ice", format!("{} #", self.calculated.total_items_ice.round()));
+          ui.show_row("Steel Plate", format!("{} #", self.calculated.total_items_steel_plate.round()));
+        });
+      });
     });
     ui.open_header_with_grid("Acceleration & Force", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);

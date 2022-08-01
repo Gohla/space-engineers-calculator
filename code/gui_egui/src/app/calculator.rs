@@ -44,41 +44,45 @@ impl App {
         }
         changed |= ui.changed
       });
-      ui.open_header_with_grid("Storage", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for block in self.data.blocks.containers.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.connectors.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.cockpits.values().filter(|b| b.size == self.grid_size && b.has_inventory) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        changed |= ui.changed
-      });
-      ui.open_header_with_grid("Power", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for block in self.data.blocks.hydrogen_engines.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.reactors.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.batteries.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        changed |= ui.changed
-      });
-      ui.open_header_with_grid("Hydrogen", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for block in self.data.blocks.generators.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        for block in self.data.blocks.hydrogen_tanks.values().filter(|b| b.size == self.grid_size) {
-          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
-        }
-        changed |= ui.changed
+      ui.horizontal(|ui| {
+        ui.open_header_with_grid("Storage", |ui| {
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+          for block in self.data.blocks.containers.values().filter(|b| b.size == self.grid_size) {
+            ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+          }
+          for block in self.data.blocks.connectors.values().filter(|b| b.size == self.grid_size) {
+            ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+          }
+          for block in self.data.blocks.cockpits.values().filter(|b| b.size == self.grid_size && b.has_inventory) {
+            ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+          }
+          changed |= ui.changed
+        });
+        ui.vertical(|ui| {
+          ui.open_header_with_grid("Power", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for block in self.data.blocks.hydrogen_engines.values().filter(|b| b.size == self.grid_size) {
+              ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+            }
+            for block in self.data.blocks.reactors.values().filter(|b| b.size == self.grid_size) {
+              ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+            }
+            for block in self.data.blocks.batteries.values().filter(|b| b.size == self.grid_size) {
+              ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+            }
+            changed |= ui.changed
+          });
+          ui.open_header_with_grid("Hydrogen", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for block in self.data.blocks.generators.values().filter(|b| b.size == self.grid_size) {
+              ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+            }
+            for block in self.data.blocks.hydrogen_tanks.values().filter(|b| b.size == self.grid_size) {
+              ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+            }
+            changed |= ui.changed
+          });
+        });
       });
       ui.open_header_with_grid("Ship Tools", |ui| {
         let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
