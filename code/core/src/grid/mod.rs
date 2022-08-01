@@ -439,7 +439,7 @@ pub struct PowerCalculated {
 impl PowerCalculated {
   fn new(consumption: f64, generation: f64, capacity_battery: f64, conversion_rate: f64) -> Self {
     let balance = generation - consumption;
-    let duration_battery = (consumption != 0.0).then(|| (capacity_battery / consumption) * conversion_rate);
+    let duration_battery = (consumption != 0.0 && capacity_battery != 0.0).then(|| (capacity_battery / consumption) * conversion_rate);
     PowerCalculated { consumption, balance, duration_battery }
   }
 }
@@ -456,8 +456,9 @@ impl HydrogenCalculated {
   fn new(consumption: f64, generation: f64, capacity_tanks: f64, capacity_engines: Option<f64>, conversion_rate: f64) -> Self {
     let balance = generation - consumption;
     let has_consumption = consumption != 0.0;
-    let duration_tank = has_consumption.then(|| (capacity_tanks / consumption) * conversion_rate);
-    let duration_engine = has_consumption.then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
+    let duration_tank = (has_consumption && capacity_tanks != 0.0).then(|| (capacity_tanks / consumption) * conversion_rate);
+    let has_capacity_engines = capacity_engines.map_or(false, |c| c != 0.0);
+    let duration_engine = (has_consumption && has_capacity_engines).then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
     HydrogenCalculated { consumption, balance, duration_tank, duration_engine }
   }
 }
