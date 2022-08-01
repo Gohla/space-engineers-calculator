@@ -5,6 +5,7 @@ use tracing_subscriber::prelude::*;
 use crate::app::App;
 
 mod app;
+mod widget;
 
 fn main() {
   #[cfg(target_arch = "wasm32")] { // Setup panics to log to the console on WASM.
