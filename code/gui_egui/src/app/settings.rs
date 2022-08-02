@@ -10,6 +10,12 @@ impl App {
       if ui.add(DragValue::new(&mut self.font_size_modifier).clamp_range(-2..=10)).changed() {
         self.apply_style(ctx);
       }
+      ui.end_row();
+      ui.label("Increase contrast");
+      if ui.checkbox(&mut self.increase_contrast, "").changed() {
+        self.apply_style(ctx);
+      }
+      ui.end_row();
     });
   }
 }

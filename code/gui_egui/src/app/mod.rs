@@ -31,6 +31,7 @@ pub struct App {
 
   dark_mode: bool,
   font_size_modifier: i32,
+  increase_contrast: bool,
 
   calculator: GridCalculator,
   grid_size: GridSize,
@@ -59,13 +60,17 @@ impl App {
     let mut style = (*ctx.style()).clone(); // Clone entire style, not the Arc.
     let mut visuals = if self.dark_mode {
       let mut dark = Visuals::dark();
-      dark.override_text_color = Some(Color32::from_rgb(210, 210, 210));
-      dark.widgets.noninteractive.bg_fill = Color32::from_rgb(20, 20, 20);
+      if self.increase_contrast {
+        dark.override_text_color = Some(Color32::from_rgb(210, 210, 210));
+        dark.widgets.noninteractive.bg_fill = Color32::from_rgb(20, 20, 20);
+      }
       dark
     } else {
       let mut light = Visuals::light();
-      light.override_text_color = Some(Color32::from_rgb(0, 0, 0));
-      light.widgets.noninteractive.bg_fill = Color32::from_rgb(255, 255, 255);
+      if self.increase_contrast {
+        light.override_text_color = Some(Color32::from_rgb(0, 0, 0));
+        light.widgets.noninteractive.bg_fill = Color32::from_rgb(255, 255, 255);
+      }
       light
     };
     visuals.widgets.noninteractive.rounding = Rounding::none();
@@ -104,6 +109,7 @@ impl Default for App {
 
       enable_gui: true,
       show_reset_confirm_window: false,
+      increase_contrast: false,
 
       show_settings_window: false,
       show_debug_gui_settings_window: false,
