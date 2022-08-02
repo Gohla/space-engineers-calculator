@@ -1,5 +1,5 @@
 use eframe::epaint::Rgba;
-use egui::{Align, Align2, Button, CentralPanel, Context, Frame, Layout, menu, ScrollArea, Separator, Visuals, Window};
+use egui::{Align, Align2, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Visuals, Window};
 use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
 use thousands::SeparatorPolicy;
@@ -10,6 +10,7 @@ use secalc_core::grid::{GridCalculated, GridCalculator};
 
 mod calculator;
 mod result;
+mod settings;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -18,23 +19,28 @@ pub struct App {
   #[serde(skip)] number_separator_policy: SeparatorPolicy<'static>,
   #[serde(skip)] calculator_default: GridCalculator,
   #[serde(skip)] calculated: GridCalculated,
+  #[serde(skip)] style_default: Style,
 
   #[serde(skip)] enable_gui: bool,
   #[serde(skip)] show_reset_confirm_window: bool,
+
+  #[serde(skip)] show_settings_window: bool,
   #[serde(skip)] show_debug_gui_settings_window: bool,
   #[serde(skip)] show_debug_gui_inspection_window: bool,
   #[serde(skip)] show_debug_gui_memory_window: bool,
 
+  dark_mode: bool,
+  font_size_modifier: i32,
+
   calculator: GridCalculator,
   grid_size: GridSize,
-  dark_mode: bool,
 }
 
 impl App {
   pub fn new(ctx: &eframe::CreationContext<'_>) -> Self {
     let mut app = if let Some(storage) = ctx.storage {
       let mut app: Self = eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
-      app.set_dark_mode(app.dark_mode, &ctx.egui_ctx);
+      app.apply_style(&ctx.egui_ctx);
       app
     } else {
       let mut app = Self::default();
@@ -49,10 +55,31 @@ impl App {
     self.calculated = self.calculator.calculate(&self.data);
   }
 
-  fn set_dark_mode(&mut self, dark_mode: bool, ctx: &Context) {
-    self.dark_mode = dark_mode;
+  fn apply_style(&mut self, ctx: &Context) {
     let mut style = (*ctx.style()).clone(); // Clone entire style, not the Arc.
-    style.visuals = if dark_mode { Visuals::dark() } else { Visuals::light() };
+    let mut visuals = if self.dark_mode {
+      let mut dark = Visuals::dark();
+      dark.override_text_color = Some(Color32::from_rgb(210, 210, 210));
+      dark.widgets.noninteractive.bg_fill = Color32::from_rgb(20, 20, 20);
+      dark
+    } else {
+      let mut light = Visuals::light();
+      light.override_text_color = Some(Color32::from_rgb(0, 0, 0));
+      light.widgets.noninteractive.bg_fill = Color32::from_rgb(255, 255, 255);
+      light
+    };
+    visuals.widgets.noninteractive.rounding = Rounding::none();
+    visuals.widgets.inactive.rounding = Rounding::none();
+    visuals.widgets.hovered.rounding = Rounding::none();
+    visuals.widgets.active.rounding = Rounding::none();
+    visuals.widgets.open.rounding = Rounding::none();
+    visuals.window_rounding = Rounding::none();
+    style.visuals = visuals;
+    for (text_style, font_id) in style.text_styles.iter_mut() {
+      if let Some(default_font_id) = self.style_default.text_styles.get(text_style) {
+        font_id.size = default_font_id.size + self.font_size_modifier as f32;
+      }
+    }
     ctx.set_style(style);
   }
 }
@@ -73,16 +100,21 @@ impl Default for App {
       number_separator_policy,
       calculator_default: GridCalculator::default(),
       calculated: GridCalculated::default(),
+      style_default: Style::default(),
 
       enable_gui: true,
       show_reset_confirm_window: false,
+
+      show_settings_window: false,
       show_debug_gui_settings_window: false,
       show_debug_gui_inspection_window: false,
       show_debug_gui_memory_window: false,
 
+      dark_mode: false,
+      font_size_modifier: 0,
+
       calculator: GridCalculator::default(),
       grid_size: GridSize::default(),
-      dark_mode: false,
     }
   }
 }
@@ -114,6 +146,11 @@ impl eframe::App for App {
                       ui.close_menu();
                     }
                   });
+                  ui.menu_button("Window", |ui| {
+                    if ui.checkbox(&mut self.show_settings_window, "Settings").clicked() {
+                      ui.close_menu();
+                    }
+                  });
                   ui.menu_button("Debug", |ui| {
                     if ui.checkbox(&mut self.show_debug_gui_settings_window, "GUI Settings").clicked() {
                       ui.close_menu();
@@ -128,11 +165,13 @@ impl eframe::App for App {
                   ui.with_layout(Layout::right_to_left(), |ui| {
                     if self.dark_mode {
                       if ui.add(Button::new("☀")).clicked() {
-                        self.set_dark_mode(false, ctx);
+                        self.dark_mode = false;
+                        self.apply_style(ctx);
                       }
                     } else {
                       if ui.add(Button::new("🌙")).clicked() {
-                        self.set_dark_mode(true, ctx);
+                        self.dark_mode = true;
+                        self.apply_style(ctx);
                       }
                     }
                   });
@@ -202,6 +241,11 @@ impl eframe::App for App {
     }
 
     // Non-modal windows
+    let mut show_settings_window = self.show_settings_window;
+    Window::new("Settings")
+      .open(&mut show_settings_window)
+      .show(ctx, |ui| { self.show_settings(ui, ctx) });
+    self.show_settings_window = show_settings_window;
     Window::new("GUI Settings")
       .open(&mut self.show_debug_gui_settings_window)
       .show(ctx, |ui| { ctx.settings_ui(ui) });

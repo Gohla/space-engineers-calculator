@@ -11,7 +11,7 @@ use crate::App;
 use crate::widget::UiExtensions;
 
 impl App {
-  pub(crate) fn show_results(&mut self, ui: &mut Ui, ctx: &Context) {
+  pub fn show_results(&mut self, ui: &mut Ui, ctx: &Context) {
     ui.horizontal(|ui|{
       ui.open_header_with_grid("Volume", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
@@ -153,7 +153,7 @@ impl<'ui> ResultUi<'ui> {
   fn acceleration_label(&mut self, ctx: &Context) {
     let mut acceleration = LayoutJob::default();
     let color = ctx.style().visuals.text_color();
-    acceleration.append("m/s", 0.0, TextFormat { color, ..TextFormat::default() });
+    acceleration.append("m/s", 0.0, TextFormat { font_id: TextStyle::Body.resolve(&ctx.style()), color, ..TextFormat::default() });
     acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color, valign: Align::Min, ..TextFormat::default() });
     self.ui.label(acceleration);
   }

@@ -12,7 +12,7 @@ use crate::App;
 use crate::widget::UiExtensions;
 
 impl App {
-  pub(crate) fn show_calculator(&mut self, ui: &mut Ui) -> bool {
+  pub fn show_calculator(&mut self, ui: &mut Ui) -> bool {
     let mut changed = false;
     ui.open_header_with_grid("Options", |ui| {
       let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
