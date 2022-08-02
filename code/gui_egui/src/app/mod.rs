@@ -65,7 +65,7 @@ impl App {
       }
     }
     // Spacing
-    style.spacing.item_spacing = Vec2::new(6.0, 2.0);
+    style.spacing.item_spacing = Vec2::new(8.0, 2.0);
     style.spacing.button_padding = Vec2::new(4.0, 2.0);
     // Visuals
     let mut visuals = if self.dark_mode {
