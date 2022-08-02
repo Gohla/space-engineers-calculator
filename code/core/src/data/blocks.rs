@@ -209,6 +209,7 @@ impl ThrusterType {
   }
 }
 
+
 /// Thruster.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Thruster {
@@ -268,6 +269,27 @@ impl FromDef for Thruster {
     let effectiveness_at_max_influence = def.parse_child_elem("EffectivenessAtMaxInfluence").unwrap().unwrap_or(1.0);
     let needs_atmosphere_for_influence = def.parse_child_elem("NeedsAtmosphereForInfluence").unwrap().unwrap_or(false);
     Thruster { ty, fuel_gas_id, force, max_consumption, min_consumption, min_planetary_influence, max_planetary_influence, effectiveness_at_min_influence, effectiveness_at_max_influence, needs_atmosphere_for_influence }
+  }
+}
+
+
+/// Wheel suspension.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct WheelSuspension {
+  /// Force (N)
+  pub force: f64,
+  /// Operational power consumption (MW)
+  pub operational_power_consumption: f64,
+  /// Idle power consumption (MW)
+  pub idle_power_consumption: f64,
+}
+
+impl FromDef for WheelSuspension {
+  fn from_def(def: &Node, _size: GridSize, _entity_components: &Node) -> Self {
+    let force: f64 = def.parse_child_elem("PropulsionForce").unwrap().unwrap();
+    let operational_power_consumption: f64 = def.parse_child_elem("RequiredPowerInput").unwrap().unwrap();
+    let idle_power_consumption: f64 = def.parse_child_elem("RequiredIdlePowerInput").unwrap().unwrap();
+    Self { force, operational_power_consumption, idle_power_consumption }
   }
 }
 
@@ -492,6 +514,7 @@ impl FromDef for Drill {
 pub struct Blocks {
   pub batteries: LinkedHashMap<BlockId, Block<Battery>>,
   pub thrusters: LinkedHashMap<BlockId, Block<Thruster>>,
+  pub wheel_suspensions: LinkedHashMap<BlockId, Block<WheelSuspension>>,
   pub hydrogen_engines: LinkedHashMap<BlockId, Block<HydrogenEngine>>,
   pub reactors: LinkedHashMap<BlockId, Block<Reactor>>,
   pub generators: LinkedHashMap<BlockId, Block<Generator>>,
@@ -550,6 +573,7 @@ impl Blocks {
 
     let mut batteries: Vec<Block<Battery>> = Vec::new();
     let mut thrusters: Vec<Block<Thruster>> = Vec::new();
+    let mut wheel_suspensions: Vec<Block<WheelSuspension>> = Vec::new();
     let mut hydrogen_engines: Vec<Block<HydrogenEngine>> = Vec::new();
     let mut reactors: Vec<Block<Reactor>> = Vec::new();
     let mut generators: Vec<Block<Generator>> = Vec::new();
@@ -594,6 +618,12 @@ impl Blocks {
               let block = Block::<Thruster>::from_def(&def, &entity_components_node, id);
               if !block_name_excludes.contains(block.name(localization)) {
                 thrusters.push(block);
+              }
+            }
+            "MyObjectBuilder_MotorSuspensionDefinition" => {
+              let block = Block::<WheelSuspension>::from_def(&def, &entity_components_node, id);
+              if !block_name_excludes.contains(block.name(localization)) {
+                wheel_suspensions.push(block);
               }
             }
             "MyObjectBuilder_HydrogenEngineDefinition" => {
@@ -657,6 +687,7 @@ impl Blocks {
     }
     sort_block_vec(&mut batteries, localization);
     sort_block_vec(&mut thrusters, localization);
+    sort_block_vec(&mut wheel_suspensions, localization);
     sort_block_vec(&mut hydrogen_engines, localization);
     sort_block_vec(&mut reactors, localization);
     sort_block_vec(&mut generators, localization);
@@ -671,6 +702,7 @@ impl Blocks {
     let blocks = Blocks {
       batteries: create_map(batteries),
       thrusters: create_map(thrusters),
+      wheel_suspensions: create_map(wheel_suspensions),
       hydrogen_engines: create_map(hydrogen_engines),
       reactors: create_map(reactors),
       generators: create_map(generators),

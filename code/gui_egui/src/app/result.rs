@@ -5,7 +5,7 @@ use egui::{Align, Context, Grid, Layout, TextFormat, TextStyle, Ui, WidgetText};
 use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
 
-use secalc_core::grid::{AccelerationCalculated, Direction, HydrogenCalculated, PerDirection, PowerCalculated};
+use secalc_core::grid::{Direction, HydrogenCalculated, PerDirection, PowerCalculated, ThrusterAccelerationCalculated};
 
 use crate::App;
 use crate::widget::UiExtensions;
@@ -35,7 +35,7 @@ impl App {
         });
       });
     });
-    ui.open_header_with_grid("Acceleration & Force", |ui| {
+    ui.open_header_with_grid("Thruster Acceleration & Force", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);
       ui.label("");
       ui.label("Filled");
@@ -53,8 +53,12 @@ impl App {
       ui.label("");
       ui.end_row();
       for direction in Direction::iter() {
-        ui.acceleration_row(*direction, &self.calculated.acceleration, ctx);
+        ui.acceleration_row(*direction, &self.calculated.thruster_acceleration, ctx);
       }
+    });
+    ui.open_header_with_grid("Wheel Force", |ui| {
+      let mut ui = ResultUi::new(ui, self.number_separator_policy);
+      ui.show_row("Force", format!("{:.2}", self.calculated.wheel_force / 1000.0), "kN");
     });
     ui.open_header("Power", |ui| {
       Grid::new("Power Grid 1").striped(true).show(ui, |ui| {
@@ -75,6 +79,7 @@ impl App {
         ui.power_row("Misc:", power_formatter, duration_formatter, &self.calculated.power_misc);
         ui.power_row("+ Charge Jump Drives:", power_formatter, duration_formatter, &self.calculated.power_upto_jump_drive);
         ui.power_row("+ O2/H2 Generators:", power_formatter, duration_formatter, &self.calculated.power_upto_generator);
+        ui.power_row("+ Wheel Suspensions:", power_formatter, duration_formatter, &self.calculated.power_upto_wheel_suspension);
         ui.power_row("+ Up/Down Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_up_down_thruster);
         ui.power_row("+ Front/Back Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_front_back_thruster);
         ui.power_row("+ Left/Right Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_left_right_thruster);
@@ -162,7 +167,7 @@ impl<'ui> ResultUi<'ui> {
   }
 
 
-  fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<AccelerationCalculated>, ctx: &Context) {
+  fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<ThrusterAccelerationCalculated>, ctx: &Context) {
     self.right_align_label(format!("{}", direction));
     self.right_align_optional_value(acceleration.get(direction).acceleration_filled_gravity.map(|a| format!("{:.2}", a)));
     self.right_align_optional_value(acceleration.get(direction).acceleration_filled_no_gravity.map(|a| format!("{:.2}", a)));

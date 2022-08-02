@@ -362,6 +362,452 @@
         }
       }
     },
+    "wheel_suspensions": {
+      "MotorSuspension.OffroadSuspension1x1mirrored": {
+        "id": "MotorSuspension.OffroadSuspension1x1mirrored",
+        "index": 530,
+        "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension1x1mirrored": {
+        "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored",
+        "index": 533,
+        "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension1x1": {
+        "id": "MotorSuspension.OffroadSuspension1x1",
+        "index": 524,
+        "name": "DisplayName_Block_OffroadSuspension1x1",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension1x1": {
+        "id": "MotorSuspension.OffroadSmallSuspension1x1",
+        "index": 527,
+        "name": "DisplayName_Block_OffroadSuspension1x1",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension3x3mirrored": {
+        "id": "MotorSuspension.OffroadSuspension3x3mirrored",
+        "index": 528,
+        "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension3x3mirrored": {
+        "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored",
+        "index": 531,
+        "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension3x3": {
+        "id": "MotorSuspension.OffroadSuspension3x3",
+        "index": 522,
+        "name": "DisplayName_Block_OffroadSuspension3x3",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension3x3": {
+        "id": "MotorSuspension.OffroadSmallSuspension3x3",
+        "index": 525,
+        "name": "DisplayName_Block_OffroadSuspension3x3",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension5x5mirrored": {
+        "id": "MotorSuspension.OffroadSuspension5x5mirrored",
+        "index": 529,
+        "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 70.0,
+          "Construction": 40.0,
+          "LargeTube": 20.0,
+          "SmallTube": 30.0,
+          "Motor": 20.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension5x5mirrored": {
+        "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored",
+        "index": 532,
+        "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 16.0,
+          "Construction": 12.0,
+          "SmallTube": 4.0,
+          "Motor": 2.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension5x5": {
+        "id": "MotorSuspension.OffroadSuspension5x5",
+        "index": 523,
+        "name": "DisplayName_Block_OffroadSuspension5x5",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 70.0,
+          "Construction": 40.0,
+          "LargeTube": 20.0,
+          "SmallTube": 30.0,
+          "Motor": 20.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension5x5": {
+        "id": "MotorSuspension.OffroadSmallSuspension5x5",
+        "index": 526,
+        "name": "DisplayName_Block_OffroadSuspension5x5",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 16.0,
+          "Construction": 12.0,
+          "SmallTube": 4.0,
+          "Motor": 2.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension1x1mirrored": {
+        "id": "MotorSuspension.Suspension1x1mirrored",
+        "index": 798,
+        "name": "DisplayName_Block_Suspension1x1mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension1x1mirrored": {
+        "id": "MotorSuspension.SmallSuspension1x1mirrored",
+        "index": 801,
+        "name": "DisplayName_Block_Suspension1x1mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension1x1": {
+        "id": "MotorSuspension.Suspension1x1",
+        "index": 792,
+        "name": "DisplayName_Block_Suspension1x1",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension1x1": {
+        "id": "MotorSuspension.SmallSuspension1x1",
+        "index": 795,
+        "name": "DisplayName_Block_Suspension1x1",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension3x3mirrored": {
+        "id": "MotorSuspension.Suspension3x3mirrored",
+        "index": 796,
+        "name": "DisplayName_Block_Suspension3x3mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension3x3mirrored": {
+        "id": "MotorSuspension.SmallSuspension3x3mirrored",
+        "index": 799,
+        "name": "DisplayName_Block_Suspension3x3mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension3x3": {
+        "id": "MotorSuspension.Suspension3x3",
+        "index": 790,
+        "name": "DisplayName_Block_Suspension3x3",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 25.0,
+          "Construction": 15.0,
+          "LargeTube": 6.0,
+          "SmallTube": 12.0,
+          "Motor": 6.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension3x3": {
+        "id": "MotorSuspension.SmallSuspension3x3",
+        "index": 793,
+        "name": "DisplayName_Block_Suspension3x3",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 8.0,
+          "Construction": 7.0,
+          "SmallTube": 2.0,
+          "Motor": 1.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension5x5mirrored": {
+        "id": "MotorSuspension.Suspension5x5mirrored",
+        "index": 797,
+        "name": "DisplayName_Block_Suspension5x5mirrored",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 70.0,
+          "Construction": 40.0,
+          "LargeTube": 20.0,
+          "SmallTube": 30.0,
+          "Motor": 20.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension5x5mirrored": {
+        "id": "MotorSuspension.SmallSuspension5x5mirrored",
+        "index": 800,
+        "name": "DisplayName_Block_Suspension5x5mirrored",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 16.0,
+          "Construction": 12.0,
+          "SmallTube": 4.0,
+          "Motor": 2.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension5x5": {
+        "id": "MotorSuspension.Suspension5x5",
+        "index": 791,
+        "name": "DisplayName_Block_Suspension5x5",
+        "size": "Large",
+        "components": {
+          "SteelPlate": 70.0,
+          "Construction": 40.0,
+          "LargeTube": 20.0,
+          "SmallTube": 30.0,
+          "Motor": 20.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension5x5": {
+        "id": "MotorSuspension.SmallSuspension5x5",
+        "index": 794,
+        "name": "DisplayName_Block_Suspension5x5",
+        "size": "Small",
+        "components": {
+          "SteelPlate": 16.0,
+          "Construction": 12.0,
+          "SmallTube": 4.0,
+          "Motor": 2.0
+        },
+        "has_physics": true,
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      }
+    },
     "hydrogen_engines": {
       "HydrogenEngine.LargeHydrogenEngine": {
         "id": "HydrogenEngine.LargeHydrogenEngine",

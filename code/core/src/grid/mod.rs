@@ -131,6 +131,7 @@ pub struct GridCalculator {
   pub gravity_multiplier: f64,
   pub container_multiplier: f64,
   pub planetary_influence: f64,
+  pub wheel_power: f64,
   pub additional_mass: f64,
   pub ice_only_fill: f64,
   pub ore_only_fill: f64,
@@ -147,6 +148,7 @@ impl Default for GridCalculator {
       gravity_multiplier: 1.0,
       container_multiplier: 1.0,
       planetary_influence: 1.0,
+      wheel_power: 100.0,
       ice_only_fill: 100.0,
       ore_only_fill: 100.0,
       any_fill_with_ice: 0.0,
@@ -182,6 +184,7 @@ impl GridCalculator {
     let mut power_consumption_misc = 0.0;
     let mut power_consumption_generator = 0.0;
     let power_consumption_jump_drive = 0.0;
+    let mut power_consumption_wheel_suspension = 0.0;
     let mut power_consumption_thruster: PerDirection<f64> = PerDirection::default();
     let mut power_consumption_battery = 0.0;
 
@@ -244,7 +247,7 @@ impl GridCalculator {
           let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
           // Calculate y: y = mx + b
           let effectiveness = m * planetary_influence + b;
-          c.acceleration[direction].force += details.force * effectiveness * count;
+          c.thruster_acceleration[direction].force += details.force * effectiveness * count;
           match details.ty {
             ThrusterType::Hydrogen => {
               hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
@@ -257,6 +260,20 @@ impl GridCalculator {
               power_consumption_thruster[direction] += max_consumption;
             },
           }
+        }
+      }
+    }
+    // Wheel suspensions
+    {
+      let power_ratio = self.wheel_power / 100.0;
+      for (id, count) in self.blocks.iter() {
+        if let Some(block) = data.blocks.wheel_suspensions.get(id) {
+          let count = *count as f64;
+          let details = &block.details;
+          c.total_mass_empty += block.mass(&data.components) * count;
+          c.wheel_force += details.force * count * power_ratio;
+          power_consumption_idle += details.idle_power_consumption * count;
+          power_consumption_wheel_suspension += details.operational_power_consumption * count * power_ratio;
         }
       }
     }
@@ -354,7 +371,7 @@ impl GridCalculator {
     // Calculate Acceleration
     let has_mass_empty = c.total_mass_empty != 0.0;
     let has_mass_filled = c.total_mass_filled != 0.0;
-    for a in c.acceleration.iter_mut() {
+    for a in c.thruster_acceleration.iter_mut() {
       a.acceleration_empty_no_gravity = has_mass_empty.then(|| a.force / c.total_mass_empty);
       a.acceleration_filled_no_gravity = has_mass_filled.then(|| a.force / c.total_mass_filled);
       a.acceleration_empty_gravity = has_mass_empty.then(|| (a.force - (c.total_mass_empty * 9.81 * self.gravity_multiplier)) / c.total_mass_empty);
@@ -369,6 +386,8 @@ impl GridCalculator {
       c.power_upto_jump_drive = c.power_resource(consumption);
       consumption += power_consumption_generator;
       c.power_upto_generator = c.power_resource(consumption);
+      consumption += power_consumption_wheel_suspension;
+      c.power_upto_wheel_suspension = c.power_resource(consumption);
       consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Up, Direction::Down);
       c.power_upto_up_down_thruster = c.power_resource(consumption);
       consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Front, Direction::Back);
@@ -415,7 +434,9 @@ pub struct GridCalculated {
   pub total_items_ice: f64,
   pub total_items_steel_plate: f64,
 
-  pub acceleration: PerDirection<AccelerationCalculated>,
+  pub thruster_acceleration: PerDirection<ThrusterAccelerationCalculated>,
+  /// Force (N)
+  pub wheel_force: f64,
 
   pub power_generation: f64,
   pub power_capacity_battery: f64,
@@ -423,6 +444,7 @@ pub struct GridCalculated {
   pub power_misc: PowerCalculated,
   pub power_upto_generator: PowerCalculated,
   pub power_upto_jump_drive: PowerCalculated,
+  pub power_upto_wheel_suspension: PowerCalculated,
   pub power_upto_up_down_thruster: PowerCalculated,
   pub power_upto_front_back_thruster: PowerCalculated,
   pub power_upto_left_right_thruster: PowerCalculated,
@@ -439,11 +461,16 @@ pub struct GridCalculated {
 }
 
 #[derive(Default)]
-pub struct AccelerationCalculated {
+pub struct ThrusterAccelerationCalculated {
+  /// Force (N)
   pub force: f64,
+  /// Acceleration when empty and outside of gravity (m/s^2)
   pub acceleration_empty_no_gravity: Option<f64>,
+  /// Acceleration when empty and inside of gravity (m/s^2)
   pub acceleration_empty_gravity: Option<f64>,
+  /// Acceleration when filled and outside of gravity (m/s^2)
   pub acceleration_filled_no_gravity: Option<f64>,
+  /// Acceleration when filled and outside of gravity (m/s^2)
   pub acceleration_filled_gravity: Option<f64>,
 }
 

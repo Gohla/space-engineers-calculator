@@ -322,7 +322,7 @@ impl Page {
           .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
-          if let Some(acceleration) = result.acceleration.get(direction) {
+          if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_gravity)))
           }
         }
@@ -334,7 +334,7 @@ impl Page {
           .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
-          if let Some(acceleration) = result.acceleration.get(direction) {
+          if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_no_gravity)))
           }
         }
@@ -346,7 +346,7 @@ impl Page {
           .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
-          if let Some(acceleration) = result.acceleration.get(direction) {
+          if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_gravity)))
           }
         }
@@ -358,7 +358,7 @@ impl Page {
           .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
         for direction in Direction::iter() {
-          if let Some(acceleration) = result.acceleration.get(direction) {
+          if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_no_gravity)))
           }
         }

@@ -14,18 +14,27 @@ use crate::widget::UiExtensions;
 impl App {
   pub fn show_calculator(&mut self, ui: &mut Ui) -> bool {
     let mut changed = false;
-    ui.open_header_with_grid("Options", |ui| {
-      let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
-      ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
-      ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
-      ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
-      ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-      ui.edit_percentage_row("Ice-only Fill", &mut self.calculator.ice_only_fill, self.calculator_default.ice_only_fill);
-      ui.edit_percentage_row("Ore-only Fill", &mut self.calculator.ore_only_fill, self.calculator_default.ore_only_fill);
-      ui.edit_percentage_row("Any-fill with Ice", &mut self.calculator.any_fill_with_ice, self.calculator_default.any_fill_with_ice);
-      ui.edit_percentage_row("Any-fill with Ore", &mut self.calculator.any_fill_with_ore, self.calculator_default.any_fill_with_ore);
-      ui.edit_percentage_row("Any-fill with Steel Plates", &mut self.calculator.any_fill_with_steel_plates, self.calculator_default.any_fill_with_steel_plates);
-      changed |= ui.changed
+    ui.open_header("Options", |ui| {
+      ui.horizontal_top(|ui| {
+        ui.grid("Options Grid 1", |ui| {
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
+          ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
+          ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
+          ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
+          ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
+          ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
+          changed |= ui.changed
+        });
+        ui.grid("Options Grid 2", |ui| {
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
+          ui.edit_percentage_row("Ice-only Fill", &mut self.calculator.ice_only_fill, self.calculator_default.ice_only_fill);
+          ui.edit_percentage_row("Ore-only Fill", &mut self.calculator.ore_only_fill, self.calculator_default.ore_only_fill);
+          ui.edit_percentage_row("Any-fill with Ice", &mut self.calculator.any_fill_with_ice, self.calculator_default.any_fill_with_ice);
+          ui.edit_percentage_row("Any-fill with Ore", &mut self.calculator.any_fill_with_ore, self.calculator_default.any_fill_with_ore);
+          ui.edit_percentage_row("Any-fill with Steel Plates", &mut self.calculator.any_fill_with_steel_plates, self.calculator_default.any_fill_with_steel_plates);
+          changed |= ui.changed
+        });
+      });
     });
     let block_edit_size = 40.0 + self.font_size_modifier as f32;
     ui.open_header("Grid", |ui| {
@@ -87,6 +96,13 @@ impl App {
       ui.open_header_with_grid("Ship Tools", |ui| {
         let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
         for block in self.data.blocks.drills.values().filter(|b| b.size == self.grid_size) {
+          ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
+        }
+        changed |= ui.changed
+      });
+      ui.open_header_with_grid("Wheel Suspensions", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for block in self.data.blocks.wheel_suspensions.values().filter(|b| b.size == self.grid_size) {
           ui.edit_count_row(block.name(&self.data.localization), self.calculator.blocks.entry(block.id.clone()).or_default());
         }
         changed |= ui.changed
