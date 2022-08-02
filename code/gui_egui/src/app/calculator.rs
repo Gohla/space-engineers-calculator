@@ -27,7 +27,7 @@ impl App {
       ui.edit_percentage_row("Any-fill with Steel Plates", &mut self.calculator.any_fill_with_steel_plates, self.calculator_default.any_fill_with_steel_plates);
       changed |= ui.changed
     });
-    let block_edit_size = 5.0;
+    let block_edit_size = 40.0 + self.font_size_modifier as f32;
     ui.open_header("Grid", |ui| {
       ComboBox::from_id_source("Grid Size")
         .selected_text(format!("{}", self.grid_size))

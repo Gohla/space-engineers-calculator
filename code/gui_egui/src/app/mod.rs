@@ -1,5 +1,5 @@
 use eframe::epaint::Rgba;
-use egui::{Align, Align2, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Visuals, Window};
+use egui::{Align, Align2, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals, Window};
 use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
 use thousands::SeparatorPolicy;
@@ -58,6 +58,16 @@ impl App {
 
   fn apply_style(&mut self, ctx: &Context) {
     let mut style = (*ctx.style()).clone(); // Clone entire style, not the Arc.
+    // Text style
+    for (text_style, font_id) in style.text_styles.iter_mut() {
+      if let Some(default_font_id) = self.style_default.text_styles.get(text_style) {
+        font_id.size = default_font_id.size + self.font_size_modifier as f32;
+      }
+    }
+    // Spacing
+    style.spacing.item_spacing = Vec2::new(6.0, 2.0);
+    style.spacing.button_padding = Vec2::new(4.0, 2.0);
+    // Visuals
     let mut visuals = if self.dark_mode {
       let mut dark = Visuals::dark();
       if self.increase_contrast {
@@ -80,11 +90,7 @@ impl App {
     visuals.widgets.open.rounding = Rounding::none();
     visuals.window_rounding = Rounding::none();
     style.visuals = visuals;
-    for (text_style, font_id) in style.text_styles.iter_mut() {
-      if let Some(default_font_id) = self.style_default.text_styles.get(text_style) {
-        font_id.size = default_font_id.size + self.font_size_modifier as f32;
-      }
-    }
+    // Apply style
     ctx.set_style(style);
   }
 }
