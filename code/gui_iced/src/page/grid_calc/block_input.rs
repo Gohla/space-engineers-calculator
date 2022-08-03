@@ -8,6 +8,7 @@ use secalc_core::data::Data;
 use secalc_core::grid::GridCalculator;
 
 use crate::data_bind::{DataBind, DataBindMessage};
+use crate::page::grid_calc::small_and_large_sorted;
 use crate::view::{col, h3, lbl, row};
 
 type Map = LinkedHashMap<BlockId, (String, DataBind<u64>)>;
@@ -45,7 +46,7 @@ impl BlockInput {
         })
       );
     }
-    let (small, large) = Blocks::small_and_large_sorted(blocks_iter);
+    let (small, large) = small_and_large_sorted(blocks_iter);
     add_to_map(data, default_calculator, loaded_calculator, self.input_width, small, &mut self.small);
     add_to_map(data, default_calculator, loaded_calculator, self.input_width, large, &mut self.large);
   }

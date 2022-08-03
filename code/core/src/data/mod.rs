@@ -18,7 +18,7 @@ pub mod xml;
 #[derive(Error, Debug)]
 pub enum ExtractError {
   #[error("Could not read blocks")]
-  ReadBlocks(#[from] blocks::Error),
+  ReadBlocks(#[from] blocks::extract::Error),
   #[error("Could not read components")]
   ReadComponents(#[from] components::Error),
   #[error("Could not read gas properties")]

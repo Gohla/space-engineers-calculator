@@ -137,7 +137,7 @@ impl eframe::App for App {
     CentralPanel::default().frame(central_frame).show(ctx, |ui| {
       ui.add_enabled_ui(self.enable_gui, |ui| {
         StripBuilder::new(ui)
-          .size(Size::exact(20.0))
+          .size(Size::exact(20.0 + (self.font_size_modifier.max(0) as f32 / 2.0)))
           .size(Size::exact(1.0))
           .size(Size::remainder())
           .vertical(|mut strip| {

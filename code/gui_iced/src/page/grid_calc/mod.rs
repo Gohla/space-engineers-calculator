@@ -1,4 +1,5 @@
 use iced::{alignment, Alignment, button, Element, Length, scrollable};
+use secalc_core::data::blocks::{Block, GridSize};
 
 use secalc_core::data::Data;
 use secalc_core::grid::{Direction, GridCalculated, GridCalculator};
@@ -482,4 +483,18 @@ impl Page {
       )
       .into()
   }
+}
+
+pub fn small_and_large_sorted<'a, T, I: Iterator<Item=&'a Block<T>>>(iter: I) -> (Vec<&'a Block<T>>, Vec<&'a Block<T>>) {
+  let mut small_vec = Vec::new();
+  let mut large_vec = Vec::new();
+  for block in iter {
+    match block.data.size {
+      GridSize::Small => small_vec.push(block),
+      GridSize::Large => large_vec.push(block),
+    }
+  }
+  small_vec.sort();
+  large_vec.sort();
+  (small_vec, large_vec)
 }

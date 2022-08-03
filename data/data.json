@@ -2,17 +2,21 @@
   "blocks": {
     "batteries": {
       "BatteryBlock.LargeBlockBatteryBlock": {
-        "id": "BatteryBlock.LargeBlockBatteryBlock",
-        "index": 325,
-        "name": "DisplayName_Block_Battery",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 80.0,
-          "Construction": 30.0,
-          "PowerCell": 80.0,
-          "Computer": 25.0
+        "data": {
+          "id": "BatteryBlock.LargeBlockBatteryBlock",
+          "name": "DisplayName_Block_Battery",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 80.0,
+            "Construction": 30.0,
+            "PowerCell": 80.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 325,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 3.0,
           "input": 12.0,
@@ -20,17 +24,21 @@
         }
       },
       "BatteryBlock.SmallBlockBatteryBlock": {
-        "id": "BatteryBlock.SmallBlockBatteryBlock",
-        "index": 326,
-        "name": "DisplayName_Block_Battery",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 5.0,
-          "PowerCell": 20.0,
-          "Computer": 2.0
+        "data": {
+          "id": "BatteryBlock.SmallBlockBatteryBlock",
+          "name": "DisplayName_Block_Battery",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 5.0,
+            "PowerCell": 20.0,
+            "Computer": 2.0
+          },
+          "has_physics": true,
+          "index": 326,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 1.0,
           "input": 4.0,
@@ -38,38 +46,90 @@
         }
       },
       "BatteryBlock.SmallBlockSmallBatteryBlock": {
-        "id": "BatteryBlock.SmallBlockSmallBatteryBlock",
-        "index": 327,
-        "name": "DisplayName_Block_SmallBattery",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 4.0,
-          "Construction": 2.0,
-          "PowerCell": 2.0,
-          "Computer": 2.0
+        "data": {
+          "id": "BatteryBlock.SmallBlockSmallBatteryBlock",
+          "name": "DisplayName_Block_SmallBattery",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 4.0,
+            "Construction": 2.0,
+            "PowerCell": 2.0,
+            "Computer": 2.0
+          },
+          "has_physics": true,
+          "index": 327,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 0.05,
           "input": 0.2,
           "output": 0.2
         }
+      },
+      "BatteryBlock.LargeBlockBatteryBlockWarfare2": {
+        "data": {
+          "id": "BatteryBlock.LargeBlockBatteryBlockWarfare2",
+          "name": "DisplayName_Block_BatteryWarfare2",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 80.0,
+            "Construction": 30.0,
+            "PowerCell": 80.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 754,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "capacity": 3.0,
+          "input": 12.0,
+          "output": 12.0
+        }
+      },
+      "BatteryBlock.SmallBlockBatteryBlockWarfare2": {
+        "data": {
+          "id": "BatteryBlock.SmallBlockBatteryBlockWarfare2",
+          "name": "DisplayName_Block_BatteryWarfare2",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 5.0,
+            "PowerCell": 20.0,
+            "Computer": 2.0
+          },
+          "has_physics": true,
+          "index": 755,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "capacity": 1.0,
+          "input": 4.0,
+          "output": 4.0
+        }
       }
     },
     "thrusters": {
       "Thrust.LargeBlockSmallAtmosphericThrust": {
-        "id": "Thrust.LargeBlockSmallAtmosphericThrust",
-        "index": 697,
-        "name": "DisplayName_Block_SmallAtmoThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 35.0,
-          "Construction": 50.0,
-          "LargeTube": 8.0,
-          "MetalGrid": 10.0,
-          "Motor": 110.0
+        "data": {
+          "id": "Thrust.LargeBlockSmallAtmosphericThrust",
+          "name": "DisplayName_Block_SmallAtmoThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 35.0,
+            "Construction": 50.0,
+            "LargeTube": 8.0,
+            "MetalGrid": 10.0,
+            "Motor": 110.0
+          },
+          "has_physics": true,
+          "index": 697,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Atmospheric",
           "fuel_gas_id": null,
@@ -84,18 +144,22 @@
         }
       },
       "Thrust.SmallBlockSmallAtmosphericThrust": {
-        "id": "Thrust.SmallBlockSmallAtmosphericThrust",
-        "index": 699,
-        "name": "DisplayName_Block_SmallAtmoThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 3.0,
-          "Construction": 22.0,
-          "LargeTube": 1.0,
-          "MetalGrid": 1.0,
-          "Motor": 18.0
+        "data": {
+          "id": "Thrust.SmallBlockSmallAtmosphericThrust",
+          "name": "DisplayName_Block_SmallAtmoThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 3.0,
+            "Construction": 22.0,
+            "LargeTube": 1.0,
+            "MetalGrid": 1.0,
+            "Motor": 18.0
+          },
+          "has_physics": true,
+          "index": 699,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Atmospheric",
           "fuel_gas_id": null,
@@ -110,17 +174,21 @@
         }
       },
       "Thrust.LargeBlockSmallHydrogenThrust": {
-        "id": "Thrust.LargeBlockSmallHydrogenThrust",
-        "index": 693,
-        "name": "DisplayName_Block_SmallHydrogenThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 60.0,
-          "MetalGrid": 40.0,
-          "LargeTube": 8.0
+        "data": {
+          "id": "Thrust.LargeBlockSmallHydrogenThrust",
+          "name": "DisplayName_Block_SmallHydrogenThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 60.0,
+            "MetalGrid": 40.0,
+            "LargeTube": 8.0
+          },
+          "has_physics": true,
+          "index": 693,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Hydrogen",
           "fuel_gas_id": "Hydrogen",
@@ -135,17 +203,21 @@
         }
       },
       "Thrust.SmallBlockSmallHydrogenThrust": {
-        "id": "Thrust.SmallBlockSmallHydrogenThrust",
-        "index": 695,
-        "name": "DisplayName_Block_SmallHydrogenThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 7.0,
-          "Construction": 15.0,
-          "MetalGrid": 4.0,
-          "LargeTube": 2.0
+        "data": {
+          "id": "Thrust.SmallBlockSmallHydrogenThrust",
+          "name": "DisplayName_Block_SmallHydrogenThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 7.0,
+            "Construction": 15.0,
+            "MetalGrid": 4.0,
+            "LargeTube": 2.0
+          },
+          "has_physics": true,
+          "index": 695,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Hydrogen",
           "fuel_gas_id": "Hydrogen",
@@ -159,18 +231,138 @@
           "needs_atmosphere_for_influence": false
         }
       },
-      "Thrust.SmallBlockSmallThrust": {
-        "id": "Thrust.SmallBlockSmallThrust",
-        "index": 688,
-        "name": "DisplayName_Block_SmallThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 2.0,
-          "Construction": 2.0,
-          "LargeTube": 1.0,
-          "Thrust": 1.0
+      "Thrust.LargeBlockSmallHydrogenThrustIndustrial": {
+        "data": {
+          "id": "Thrust.LargeBlockSmallHydrogenThrustIndustrial",
+          "name": "DisplayName_Block_HydrogenThrustIndustrial",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 60.0,
+            "MetalGrid": 40.0,
+            "LargeTube": 8.0
+          },
+          "has_physics": true,
+          "index": 396,
+          "hidden": true,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "ty": "Hydrogen",
+          "fuel_gas_id": "Hydrogen",
+          "force": 1080000.0,
+          "max_consumption": 1.25,
+          "min_consumption": 1e-9,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.SmallBlockSmallHydrogenThrustIndustrial": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallHydrogenThrustIndustrial",
+          "name": "DisplayName_Block_HydrogenThrustIndustrial",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 7.0,
+            "Construction": 15.0,
+            "MetalGrid": 4.0,
+            "LargeTube": 2.0
+          },
+          "has_physics": true,
+          "index": 398,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Hydrogen",
+          "fuel_gas_id": "Hydrogen",
+          "force": 98400.0,
+          "max_consumption": 0.125,
+          "min_consumption": 1e-9,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockLargeHydrogenThrustIndustrial": {
+        "data": {
+          "id": "Thrust.LargeBlockLargeHydrogenThrustIndustrial",
+          "name": "DisplayName_Block_LargeHydrogenThrustIndustrial",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 180.0,
+            "MetalGrid": 250.0,
+            "LargeTube": 40.0
+          },
+          "has_physics": true,
+          "index": 395,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Hydrogen",
+          "fuel_gas_id": "Hydrogen",
+          "force": 7200000.0,
+          "max_consumption": 7.5,
+          "min_consumption": 1e-9,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.SmallBlockLargeHydrogenThrustIndustrial": {
+        "data": {
+          "id": "Thrust.SmallBlockLargeHydrogenThrustIndustrial",
+          "name": "DisplayName_Block_LargeHydrogenThrustIndustrial",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 30.0,
+            "Construction": 30.0,
+            "MetalGrid": 22.0,
+            "LargeTube": 10.0
+          },
+          "has_physics": true,
+          "index": 397,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Hydrogen",
+          "fuel_gas_id": "Hydrogen",
+          "force": 480000.0,
+          "max_consumption": 0.6,
+          "min_consumption": 1e-9,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.SmallBlockSmallThrust": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallThrust",
+          "name": "DisplayName_Block_SmallThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 2.0,
+            "Construction": 2.0,
+            "LargeTube": 1.0,
+            "Thrust": 1.0
+          },
+          "has_physics": true,
+          "index": 688,
+          "hidden": false,
+          "rename": null
+        },
         "details": {
           "ty": "Ion",
           "fuel_gas_id": null,
@@ -185,17 +377,21 @@
         }
       },
       "Thrust.LargeBlockSmallThrust": {
-        "id": "Thrust.LargeBlockSmallThrust",
-        "index": 690,
-        "name": "DisplayName_Block_SmallThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 60.0,
-          "LargeTube": 8.0,
-          "Thrust": 80.0
+        "data": {
+          "id": "Thrust.LargeBlockSmallThrust",
+          "name": "DisplayName_Block_SmallThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 60.0,
+            "LargeTube": 8.0,
+            "Thrust": 80.0
+          },
+          "has_physics": true,
+          "index": 690,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Ion",
           "fuel_gas_id": null,
@@ -210,18 +406,22 @@
         }
       },
       "Thrust.LargeBlockLargeAtmosphericThrust": {
-        "id": "Thrust.LargeBlockLargeAtmosphericThrust",
-        "index": 696,
-        "name": "DisplayName_Block_LargeAtmoThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 230.0,
-          "Construction": 60.0,
-          "LargeTube": 50.0,
-          "MetalGrid": 40.0,
-          "Motor": 1100.0
+        "data": {
+          "id": "Thrust.LargeBlockLargeAtmosphericThrust",
+          "name": "DisplayName_Block_LargeAtmoThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 230.0,
+            "Construction": 60.0,
+            "LargeTube": 50.0,
+            "MetalGrid": 40.0,
+            "Motor": 1100.0
+          },
+          "has_physics": true,
+          "index": 696,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Atmospheric",
           "fuel_gas_id": null,
@@ -236,18 +436,22 @@
         }
       },
       "Thrust.SmallBlockLargeAtmosphericThrust": {
-        "id": "Thrust.SmallBlockLargeAtmosphericThrust",
-        "index": 698,
-        "name": "DisplayName_Block_LargeAtmoThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 20.0,
-          "Construction": 30.0,
-          "LargeTube": 4.0,
-          "MetalGrid": 8.0,
-          "Motor": 90.0
+        "data": {
+          "id": "Thrust.SmallBlockLargeAtmosphericThrust",
+          "name": "DisplayName_Block_LargeAtmoThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 20.0,
+            "Construction": 30.0,
+            "LargeTube": 4.0,
+            "MetalGrid": 8.0,
+            "Motor": 90.0
+          },
+          "has_physics": true,
+          "index": 698,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Atmospheric",
           "fuel_gas_id": null,
@@ -262,17 +466,21 @@
         }
       },
       "Thrust.LargeBlockLargeHydrogenThrust": {
-        "id": "Thrust.LargeBlockLargeHydrogenThrust",
-        "index": 692,
-        "name": "DisplayName_Block_LargeHydrogenThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 150.0,
-          "Construction": 180.0,
-          "MetalGrid": 250.0,
-          "LargeTube": 40.0
+        "data": {
+          "id": "Thrust.LargeBlockLargeHydrogenThrust",
+          "name": "DisplayName_Block_LargeHydrogenThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 180.0,
+            "MetalGrid": 250.0,
+            "LargeTube": 40.0
+          },
+          "has_physics": true,
+          "index": 692,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Hydrogen",
           "fuel_gas_id": "Hydrogen",
@@ -287,17 +495,21 @@
         }
       },
       "Thrust.SmallBlockLargeHydrogenThrust": {
-        "id": "Thrust.SmallBlockLargeHydrogenThrust",
-        "index": 694,
-        "name": "DisplayName_Block_LargeHydrogenThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 30.0,
-          "Construction": 30.0,
-          "MetalGrid": 22.0,
-          "LargeTube": 10.0
+        "data": {
+          "id": "Thrust.SmallBlockLargeHydrogenThrust",
+          "name": "DisplayName_Block_LargeHydrogenThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 30.0,
+            "Construction": 30.0,
+            "MetalGrid": 22.0,
+            "LargeTube": 10.0
+          },
+          "has_physics": true,
+          "index": 694,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Hydrogen",
           "fuel_gas_id": "Hydrogen",
@@ -312,17 +524,21 @@
         }
       },
       "Thrust.SmallBlockLargeThrust": {
-        "id": "Thrust.SmallBlockLargeThrust",
-        "index": 689,
-        "name": "DisplayName_Block_LargeThrust",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 5.0,
-          "Construction": 2.0,
-          "LargeTube": 5.0,
-          "Thrust": 12.0
+        "data": {
+          "id": "Thrust.SmallBlockLargeThrust",
+          "name": "DisplayName_Block_LargeThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 5.0,
+            "Construction": 2.0,
+            "LargeTube": 5.0,
+            "Thrust": 12.0
+          },
+          "has_physics": true,
+          "index": 689,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Ion",
           "fuel_gas_id": null,
@@ -337,17 +553,21 @@
         }
       },
       "Thrust.LargeBlockLargeThrust": {
-        "id": "Thrust.LargeBlockLargeThrust",
-        "index": 691,
-        "name": "DisplayName_Block_LargeThrust",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 150.0,
-          "Construction": 100.0,
-          "LargeTube": 40.0,
-          "Thrust": 960.0
+        "data": {
+          "id": "Thrust.LargeBlockLargeThrust",
+          "name": "DisplayName_Block_LargeThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 100.0,
+            "LargeTube": 40.0,
+            "Thrust": 960.0
+          },
+          "has_physics": true,
+          "index": 691,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ty": "Ion",
           "fuel_gas_id": null,
@@ -360,22 +580,378 @@
           "effectiveness_at_max_influence": 0.2,
           "needs_atmosphere_for_influence": false
         }
+      },
+      "Thrust.SmallBlockLargeModularThruster": {
+        "data": {
+          "id": "Thrust.SmallBlockLargeModularThruster",
+          "name": "DisplayName_Block_LargeModularThruster",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 5.0,
+            "Construction": 2.0,
+            "LargeTube": 5.0,
+            "Thrust": 12.0
+          },
+          "has_physics": true,
+          "index": 765,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 172800.0,
+          "max_consumption": 2.4,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockLargeModularThruster": {
+        "data": {
+          "id": "Thrust.LargeBlockLargeModularThruster",
+          "name": "DisplayName_Block_LargeModularThruster",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 100.0,
+            "LargeTube": 40.0,
+            "Thrust": 960.0
+          },
+          "has_physics": true,
+          "index": 767,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 4320000.0,
+          "max_consumption": 33.6,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockSmallAtmosphericThrustSciFi": {
+        "data": {
+          "id": "Thrust.LargeBlockSmallAtmosphericThrustSciFi",
+          "name": "DisplayName_Block_SmallAtmoThrustSciFi",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 35.0,
+            "Construction": 50.0,
+            "LargeTube": 8.0,
+            "MetalGrid": 10.0,
+            "Motor": 110.0
+          },
+          "has_physics": true,
+          "index": 597,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 648000.0,
+          "max_consumption": 2.4,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+      "Thrust.SmallBlockSmallAtmosphericThrustSciFi": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallAtmosphericThrustSciFi",
+          "name": "DisplayName_Block_SmallAtmoThrustSciFi",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 3.0,
+            "Construction": 22.0,
+            "LargeTube": 1.0,
+            "MetalGrid": 1.0,
+            "Motor": 18.0
+          },
+          "has_physics": true,
+          "index": 599,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 96000.0,
+          "max_consumption": 0.6,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+      "Thrust.SmallBlockSmallThrustSciFi": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallThrustSciFi",
+          "name": "DisplayName_Block_SmallThrustSciFi",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 2.0,
+            "Construction": 2.0,
+            "LargeTube": 1.0,
+            "Thrust": 1.0
+          },
+          "has_physics": true,
+          "index": 592,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 14400.0,
+          "max_consumption": 0.2,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockSmallThrustSciFi": {
+        "data": {
+          "id": "Thrust.LargeBlockSmallThrustSciFi",
+          "name": "DisplayName_Block_SmallThrustSciFi",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 60.0,
+            "LargeTube": 8.0,
+            "Thrust": 80.0
+          },
+          "has_physics": true,
+          "index": 594,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 345600.0,
+          "max_consumption": 3.36,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockLargeAtmosphericThrustSciFi": {
+        "data": {
+          "id": "Thrust.LargeBlockLargeAtmosphericThrustSciFi",
+          "name": "DisplayName_Block_LargeAtmoThrustSciFi",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 230.0,
+            "Construction": 60.0,
+            "LargeTube": 50.0,
+            "MetalGrid": 40.0,
+            "Motor": 1100.0
+          },
+          "has_physics": true,
+          "index": 596,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 6480000.0,
+          "max_consumption": 16.8,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+      "Thrust.SmallBlockLargeAtmosphericThrustSciFi": {
+        "data": {
+          "id": "Thrust.SmallBlockLargeAtmosphericThrustSciFi",
+          "name": "DisplayName_Block_LargeAtmoThrustSciFi",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 20.0,
+            "Construction": 30.0,
+            "LargeTube": 4.0,
+            "MetalGrid": 8.0,
+            "Motor": 90.0
+          },
+          "has_physics": true,
+          "index": 598,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 576000.0,
+          "max_consumption": 2.4,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+      "Thrust.SmallBlockLargeThrustSciFi": {
+        "data": {
+          "id": "Thrust.SmallBlockLargeThrustSciFi",
+          "name": "DisplayName_Block_LargeThrustSciFi",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 5.0,
+            "Construction": 2.0,
+            "LargeTube": 5.0,
+            "Thrust": 12.0
+          },
+          "has_physics": true,
+          "index": 593,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 172800.0,
+          "max_consumption": 2.4,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockLargeThrustSciFi": {
+        "data": {
+          "id": "Thrust.LargeBlockLargeThrustSciFi",
+          "name": "DisplayName_Block_LargeThrustSciFi",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 100.0,
+            "LargeTube": 40.0,
+            "Thrust": 960.0
+          },
+          "has_physics": true,
+          "index": 595,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 4320000.0,
+          "max_consumption": 33.6,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.SmallBlockSmallModularThruster": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallModularThruster",
+          "name": "DisplayName_Block_SmallModularThruster",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 2.0,
+            "Construction": 2.0,
+            "LargeTube": 1.0,
+            "Thrust": 1.0
+          },
+          "has_physics": true,
+          "index": 764,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 14400.0,
+          "max_consumption": 0.2,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockSmallModularThruster": {
+        "data": {
+          "id": "Thrust.LargeBlockSmallModularThruster",
+          "name": "DisplayName_Block_SmallModularThruster",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 60.0,
+            "LargeTube": 8.0,
+            "Thrust": 80.0
+          },
+          "has_physics": true,
+          "index": 766,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 345600.0,
+          "max_consumption": 3.36,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
       }
     },
     "wheel_suspensions": {
       "MotorSuspension.OffroadSuspension1x1mirrored": {
-        "id": "MotorSuspension.OffroadSuspension1x1mirrored",
-        "index": 530,
-        "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension1x1mirrored",
+          "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 530,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 20000.0,
           "operational_power_consumption": 0.5,
@@ -383,17 +959,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension1x1mirrored": {
-        "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored",
-        "index": 533,
-        "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored",
+          "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 533,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 120.0,
           "operational_power_consumption": 0.1,
@@ -401,18 +981,22 @@
         }
       },
       "MotorSuspension.OffroadSuspension1x1": {
-        "id": "MotorSuspension.OffroadSuspension1x1",
-        "index": 524,
-        "name": "DisplayName_Block_OffroadSuspension1x1",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension1x1",
+          "name": "DisplayName_Block_OffroadSuspension1x1",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 524,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 20000.0,
           "operational_power_consumption": 0.5,
@@ -420,17 +1004,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension1x1": {
-        "id": "MotorSuspension.OffroadSmallSuspension1x1",
-        "index": 527,
-        "name": "DisplayName_Block_OffroadSuspension1x1",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension1x1",
+          "name": "DisplayName_Block_OffroadSuspension1x1",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 527,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 120.0,
           "operational_power_consumption": 0.1,
@@ -438,18 +1026,22 @@
         }
       },
       "MotorSuspension.OffroadSuspension3x3mirrored": {
-        "id": "MotorSuspension.OffroadSuspension3x3mirrored",
-        "index": 528,
-        "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension3x3mirrored",
+          "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 528,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 60000.0,
           "operational_power_consumption": 1.0,
@@ -457,17 +1049,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension3x3mirrored": {
-        "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored",
-        "index": 531,
-        "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored",
+          "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 531,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 1920.0,
           "operational_power_consumption": 0.2,
@@ -475,18 +1071,22 @@
         }
       },
       "MotorSuspension.OffroadSuspension3x3": {
-        "id": "MotorSuspension.OffroadSuspension3x3",
-        "index": 522,
-        "name": "DisplayName_Block_OffroadSuspension3x3",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension3x3",
+          "name": "DisplayName_Block_OffroadSuspension3x3",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 522,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 60000.0,
           "operational_power_consumption": 1.0,
@@ -494,17 +1094,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension3x3": {
-        "id": "MotorSuspension.OffroadSmallSuspension3x3",
-        "index": 525,
-        "name": "DisplayName_Block_OffroadSuspension3x3",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension3x3",
+          "name": "DisplayName_Block_OffroadSuspension3x3",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 525,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 1920.0,
           "operational_power_consumption": 0.2,
@@ -512,18 +1116,22 @@
         }
       },
       "MotorSuspension.OffroadSuspension5x5mirrored": {
-        "id": "MotorSuspension.OffroadSuspension5x5mirrored",
-        "index": 529,
-        "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 70.0,
-          "Construction": 40.0,
-          "LargeTube": 20.0,
-          "SmallTube": 30.0,
-          "Motor": 20.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension5x5mirrored",
+          "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "index": 529,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 100000.0,
           "operational_power_consumption": 1.5,
@@ -531,17 +1139,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension5x5mirrored": {
-        "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored",
-        "index": 532,
-        "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 16.0,
-          "Construction": 12.0,
-          "SmallTube": 4.0,
-          "Motor": 2.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored",
+          "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "index": 532,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 4800.0,
           "operational_power_consumption": 0.3,
@@ -549,18 +1161,22 @@
         }
       },
       "MotorSuspension.OffroadSuspension5x5": {
-        "id": "MotorSuspension.OffroadSuspension5x5",
-        "index": 523,
-        "name": "DisplayName_Block_OffroadSuspension5x5",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 70.0,
-          "Construction": 40.0,
-          "LargeTube": 20.0,
-          "SmallTube": 30.0,
-          "Motor": 20.0
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension5x5",
+          "name": "DisplayName_Block_OffroadSuspension5x5",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "index": 523,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 100000.0,
           "operational_power_consumption": 1.5,
@@ -568,17 +1184,21 @@
         }
       },
       "MotorSuspension.OffroadSmallSuspension5x5": {
-        "id": "MotorSuspension.OffroadSmallSuspension5x5",
-        "index": 526,
-        "name": "DisplayName_Block_OffroadSuspension5x5",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 16.0,
-          "Construction": 12.0,
-          "SmallTube": 4.0,
-          "Motor": 2.0
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension5x5",
+          "name": "DisplayName_Block_OffroadSuspension5x5",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "index": 526,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 4800.0,
           "operational_power_consumption": 0.3,
@@ -586,18 +1206,22 @@
         }
       },
       "MotorSuspension.Suspension1x1mirrored": {
-        "id": "MotorSuspension.Suspension1x1mirrored",
-        "index": 798,
-        "name": "DisplayName_Block_Suspension1x1mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.Suspension1x1mirrored",
+          "name": "DisplayName_Block_Suspension1x1mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 798,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 20000.0,
           "operational_power_consumption": 0.5,
@@ -605,17 +1229,21 @@
         }
       },
       "MotorSuspension.SmallSuspension1x1mirrored": {
-        "id": "MotorSuspension.SmallSuspension1x1mirrored",
-        "index": 801,
-        "name": "DisplayName_Block_Suspension1x1mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension1x1mirrored",
+          "name": "DisplayName_Block_Suspension1x1mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 801,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 120.0,
           "operational_power_consumption": 0.1,
@@ -623,18 +1251,22 @@
         }
       },
       "MotorSuspension.Suspension1x1": {
-        "id": "MotorSuspension.Suspension1x1",
-        "index": 792,
-        "name": "DisplayName_Block_Suspension1x1",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.Suspension1x1",
+          "name": "DisplayName_Block_Suspension1x1",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 792,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 20000.0,
           "operational_power_consumption": 0.5,
@@ -642,17 +1274,21 @@
         }
       },
       "MotorSuspension.SmallSuspension1x1": {
-        "id": "MotorSuspension.SmallSuspension1x1",
-        "index": 795,
-        "name": "DisplayName_Block_Suspension1x1",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension1x1",
+          "name": "DisplayName_Block_Suspension1x1",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 795,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 120.0,
           "operational_power_consumption": 0.1,
@@ -660,18 +1296,22 @@
         }
       },
       "MotorSuspension.Suspension3x3mirrored": {
-        "id": "MotorSuspension.Suspension3x3mirrored",
-        "index": 796,
-        "name": "DisplayName_Block_Suspension3x3mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.Suspension3x3mirrored",
+          "name": "DisplayName_Block_Suspension3x3mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 796,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 60000.0,
           "operational_power_consumption": 1.0,
@@ -679,17 +1319,21 @@
         }
       },
       "MotorSuspension.SmallSuspension3x3mirrored": {
-        "id": "MotorSuspension.SmallSuspension3x3mirrored",
-        "index": 799,
-        "name": "DisplayName_Block_Suspension3x3mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension3x3mirrored",
+          "name": "DisplayName_Block_Suspension3x3mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 799,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 1920.0,
           "operational_power_consumption": 0.2,
@@ -697,18 +1341,22 @@
         }
       },
       "MotorSuspension.Suspension3x3": {
-        "id": "MotorSuspension.Suspension3x3",
-        "index": 790,
-        "name": "DisplayName_Block_Suspension3x3",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 25.0,
-          "Construction": 15.0,
-          "LargeTube": 6.0,
-          "SmallTube": 12.0,
-          "Motor": 6.0
+        "data": {
+          "id": "MotorSuspension.Suspension3x3",
+          "name": "DisplayName_Block_Suspension3x3",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "index": 790,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 60000.0,
           "operational_power_consumption": 1.0,
@@ -716,17 +1364,21 @@
         }
       },
       "MotorSuspension.SmallSuspension3x3": {
-        "id": "MotorSuspension.SmallSuspension3x3",
-        "index": 793,
-        "name": "DisplayName_Block_Suspension3x3",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 7.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension3x3",
+          "name": "DisplayName_Block_Suspension3x3",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "index": 793,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 1920.0,
           "operational_power_consumption": 0.2,
@@ -734,18 +1386,22 @@
         }
       },
       "MotorSuspension.Suspension5x5mirrored": {
-        "id": "MotorSuspension.Suspension5x5mirrored",
-        "index": 797,
-        "name": "DisplayName_Block_Suspension5x5mirrored",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 70.0,
-          "Construction": 40.0,
-          "LargeTube": 20.0,
-          "SmallTube": 30.0,
-          "Motor": 20.0
+        "data": {
+          "id": "MotorSuspension.Suspension5x5mirrored",
+          "name": "DisplayName_Block_Suspension5x5mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "index": 797,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 100000.0,
           "operational_power_consumption": 1.5,
@@ -753,17 +1409,21 @@
         }
       },
       "MotorSuspension.SmallSuspension5x5mirrored": {
-        "id": "MotorSuspension.SmallSuspension5x5mirrored",
-        "index": 800,
-        "name": "DisplayName_Block_Suspension5x5mirrored",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 16.0,
-          "Construction": 12.0,
-          "SmallTube": 4.0,
-          "Motor": 2.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension5x5mirrored",
+          "name": "DisplayName_Block_Suspension5x5mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "index": 800,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 4800.0,
           "operational_power_consumption": 0.3,
@@ -771,18 +1431,22 @@
         }
       },
       "MotorSuspension.Suspension5x5": {
-        "id": "MotorSuspension.Suspension5x5",
-        "index": 791,
-        "name": "DisplayName_Block_Suspension5x5",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 70.0,
-          "Construction": 40.0,
-          "LargeTube": 20.0,
-          "SmallTube": 30.0,
-          "Motor": 20.0
+        "data": {
+          "id": "MotorSuspension.Suspension5x5",
+          "name": "DisplayName_Block_Suspension5x5",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "index": 791,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 100000.0,
           "operational_power_consumption": 1.5,
@@ -790,17 +1454,21 @@
         }
       },
       "MotorSuspension.SmallSuspension5x5": {
-        "id": "MotorSuspension.SmallSuspension5x5",
-        "index": 794,
-        "name": "DisplayName_Block_Suspension5x5",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 16.0,
-          "Construction": 12.0,
-          "SmallTube": 4.0,
-          "Motor": 2.0
+        "data": {
+          "id": "MotorSuspension.SmallSuspension5x5",
+          "name": "DisplayName_Block_Suspension5x5",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "index": 794,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "force": 4800.0,
           "operational_power_consumption": 0.3,
@@ -810,20 +1478,24 @@
     },
     "hydrogen_engines": {
       "HydrogenEngine.LargeHydrogenEngine": {
-        "id": "HydrogenEngine.LargeHydrogenEngine",
-        "index": 332,
-        "name": "DisplayName_Block_Hydrogen_Engine",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 100.0,
-          "Construction": 70.0,
-          "LargeTube": 12.0,
-          "SmallTube": 20.0,
-          "Motor": 12.0,
-          "Computer": 4.0,
-          "PowerCell": 1.0
+        "data": {
+          "id": "HydrogenEngine.LargeHydrogenEngine",
+          "name": "DisplayName_Block_Hydrogen_Engine",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 100.0,
+            "Construction": 70.0,
+            "LargeTube": 12.0,
+            "SmallTube": 20.0,
+            "Motor": 12.0,
+            "Computer": 4.0,
+            "PowerCell": 1.0
+          },
+          "has_physics": true,
+          "index": 332,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "fuel_capacity": 100000.0,
           "max_power_generation": 5.0,
@@ -831,20 +1503,24 @@
         }
       },
       "HydrogenEngine.SmallHydrogenEngine": {
-        "id": "HydrogenEngine.SmallHydrogenEngine",
-        "index": 333,
-        "name": "DisplayName_Block_Hydrogen_Engine",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 30.0,
-          "Construction": 20.0,
-          "LargeTube": 4.0,
-          "SmallTube": 6.0,
-          "Motor": 4.0,
-          "Computer": 1.0,
-          "PowerCell": 1.0
+        "data": {
+          "id": "HydrogenEngine.SmallHydrogenEngine",
+          "name": "DisplayName_Block_Hydrogen_Engine",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 30.0,
+            "Construction": 20.0,
+            "LargeTube": 4.0,
+            "SmallTube": 6.0,
+            "Motor": 4.0,
+            "Computer": 1.0,
+            "PowerCell": 1.0
+          },
+          "has_physics": true,
+          "index": 333,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "fuel_capacity": 5000.0,
           "max_power_generation": 0.5,
@@ -854,101 +1530,218 @@
     },
     "reactors": {
       "Reactor.SmallBlockLargeGenerator": {
-        "id": "Reactor.SmallBlockLargeGenerator",
-        "index": 329,
-        "name": "DisplayName_Block_LargeReactor",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 60.0,
-          "Construction": 9.0,
-          "MetalGrid": 9.0,
-          "LargeTube": 3.0,
-          "Reactor": 95.0,
-          "Motor": 5.0,
-          "Computer": 25.0
+        "data": {
+          "id": "Reactor.SmallBlockLargeGenerator",
+          "name": "DisplayName_Block_LargeReactor",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 60.0,
+            "Construction": 9.0,
+            "MetalGrid": 9.0,
+            "LargeTube": 3.0,
+            "Reactor": 95.0,
+            "Motor": 5.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 329,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "max_power_generation": 14.75,
           "max_fuel_consumption": 0.004097222222222223
         }
       },
       "Reactor.LargeBlockLargeGenerator": {
-        "id": "Reactor.LargeBlockLargeGenerator",
-        "index": 331,
-        "name": "DisplayName_Block_LargeReactor",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 1000.0,
-          "Construction": 70.0,
-          "MetalGrid": 40.0,
-          "LargeTube": 40.0,
-          "Superconductor": 100.0,
-          "Reactor": 2000.0,
-          "Motor": 20.0,
-          "Computer": 75.0
+        "data": {
+          "id": "Reactor.LargeBlockLargeGenerator",
+          "name": "DisplayName_Block_LargeReactor",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 1000.0,
+            "Construction": 70.0,
+            "MetalGrid": 40.0,
+            "LargeTube": 40.0,
+            "Superconductor": 100.0,
+            "Reactor": 2000.0,
+            "Motor": 20.0,
+            "Computer": 75.0
+          },
+          "has_physics": true,
+          "index": 331,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "max_power_generation": 300.0,
           "max_fuel_consumption": 0.08333333333333333
         }
       },
-      "Reactor.SmallBlockSmallGenerator": {
-        "id": "Reactor.SmallBlockSmallGenerator",
-        "index": 328,
-        "name": "DisplayName_Block_SmallReactor",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 3.0,
-          "Construction": 10.0,
-          "MetalGrid": 2.0,
-          "LargeTube": 1.0,
-          "Reactor": 3.0,
-          "Motor": 1.0,
-          "Computer": 10.0
+      "Reactor.LargeBlockLargeGeneratorWarfare2": {
+        "data": {
+          "id": "Reactor.LargeBlockLargeGeneratorWarfare2",
+          "name": "DisplayName_Block_LargeReactorWarfare2",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 1000.0,
+            "Construction": 70.0,
+            "MetalGrid": 40.0,
+            "LargeTube": 40.0,
+            "Superconductor": 100.0,
+            "Reactor": 2000.0,
+            "Motor": 20.0,
+            "Computer": 75.0
+          },
+          "has_physics": true,
+          "index": 746,
+          "hidden": true,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "max_power_generation": 300.0,
+          "max_fuel_consumption": 0.08333333333333333
+        }
+      },
+      "Reactor.SmallBlockLargeGeneratorWarfare2": {
+        "data": {
+          "id": "Reactor.SmallBlockLargeGeneratorWarfare2",
+          "name": "DisplayName_Block_LargeReactorWarfare2",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 60.0,
+            "Construction": 9.0,
+            "MetalGrid": 9.0,
+            "LargeTube": 3.0,
+            "Reactor": 95.0,
+            "Motor": 5.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 748,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "max_power_generation": 14.75,
+          "max_fuel_consumption": 0.004097222222222223
+        }
+      },
+      "Reactor.SmallBlockSmallGenerator": {
+        "data": {
+          "id": "Reactor.SmallBlockSmallGenerator",
+          "name": "DisplayName_Block_SmallReactor",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 3.0,
+            "Construction": 10.0,
+            "MetalGrid": 2.0,
+            "LargeTube": 1.0,
+            "Reactor": 3.0,
+            "Motor": 1.0,
+            "Computer": 10.0
+          },
+          "has_physics": true,
+          "index": 328,
+          "hidden": false,
+          "rename": null
+        },
         "details": {
           "max_power_generation": 0.5,
           "max_fuel_consumption": 0.0001388888888888889
         }
       },
       "Reactor.LargeBlockSmallGenerator": {
-        "id": "Reactor.LargeBlockSmallGenerator",
-        "index": 330,
-        "name": "DisplayName_Block_SmallReactor",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 80.0,
-          "Construction": 40.0,
-          "MetalGrid": 4.0,
-          "LargeTube": 8.0,
-          "Reactor": 100.0,
-          "Motor": 6.0,
-          "Computer": 25.0
+        "data": {
+          "id": "Reactor.LargeBlockSmallGenerator",
+          "name": "DisplayName_Block_SmallReactor",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 80.0,
+            "Construction": 40.0,
+            "MetalGrid": 4.0,
+            "LargeTube": 8.0,
+            "Reactor": 100.0,
+            "Motor": 6.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 330,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "max_power_generation": 15.0,
           "max_fuel_consumption": 0.004166666666666667
+        }
+      },
+      "Reactor.LargeBlockSmallGeneratorWarfare2": {
+        "data": {
+          "id": "Reactor.LargeBlockSmallGeneratorWarfare2",
+          "name": "DisplayName_Block_SmallReactorWarfare2",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 80.0,
+            "Construction": 40.0,
+            "MetalGrid": 4.0,
+            "LargeTube": 8.0,
+            "Reactor": 100.0,
+            "Motor": 6.0,
+            "Computer": 25.0
+          },
+          "has_physics": true,
+          "index": 745,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "max_power_generation": 15.0,
+          "max_fuel_consumption": 0.004166666666666667
+        }
+      },
+      "Reactor.SmallBlockSmallGeneratorWarfare2": {
+        "data": {
+          "id": "Reactor.SmallBlockSmallGeneratorWarfare2",
+          "name": "DisplayName_Block_SmallReactorWarfare2",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 3.0,
+            "Construction": 10.0,
+            "MetalGrid": 2.0,
+            "LargeTube": 1.0,
+            "Reactor": 3.0,
+            "Motor": 1.0,
+            "Computer": 10.0
+          },
+          "has_physics": true,
+          "index": 747,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "max_power_generation": 0.5,
+          "max_fuel_consumption": 0.0001388888888888889
         }
       }
     },
     "generators": {
       "OxygenGenerator.": {
-        "id": "OxygenGenerator.",
-        "index": 507,
-        "name": "DisplayName_Block_OxygenGenerator",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 120.0,
-          "Construction": 5.0,
-          "LargeTube": 2.0,
-          "Motor": 4.0,
-          "Computer": 5.0
+        "data": {
+          "id": "OxygenGenerator.",
+          "name": "DisplayName_Block_OxygenGenerator",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 120.0,
+            "Construction": 5.0,
+            "LargeTube": 2.0,
+            "Motor": 4.0,
+            "Computer": 5.0
+          },
+          "has_physics": true,
+          "index": 507,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ice_consumption": 25.0,
           "inventory_volume_ice": 4000.0,
@@ -959,18 +1752,22 @@
         }
       },
       "OxygenGenerator.OxygenGeneratorSmall": {
-        "id": "OxygenGenerator.OxygenGeneratorSmall",
-        "index": 508,
-        "name": "DisplayName_Block_OxygenGenerator",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 8.0,
-          "Construction": 8.0,
-          "LargeTube": 2.0,
-          "Motor": 1.0,
-          "Computer": 3.0
+        "data": {
+          "id": "OxygenGenerator.OxygenGeneratorSmall",
+          "name": "DisplayName_Block_OxygenGenerator",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 8.0,
+            "LargeTube": 2.0,
+            "Motor": 1.0,
+            "Computer": 3.0
+          },
+          "has_physics": true,
+          "index": 508,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "ice_consumption": 5.0,
           "inventory_volume_ice": 1000.0,
@@ -983,18 +1780,22 @@
     },
     "hydrogen_tanks": {
       "OxygenTank.LargeHydrogenTank": {
-        "id": "OxygenTank.LargeHydrogenTank",
-        "index": 442,
-        "name": "DisplayName_Block_HydrogenTank",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 280.0,
-          "LargeTube": 80.0,
-          "SmallTube": 60.0,
-          "Computer": 8.0,
-          "Construction": 40.0
+        "data": {
+          "id": "OxygenTank.LargeHydrogenTank",
+          "name": "DisplayName_Block_HydrogenTank",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 280.0,
+            "LargeTube": 80.0,
+            "SmallTube": 60.0,
+            "Computer": 8.0,
+            "Construction": 40.0
+          },
+          "has_physics": true,
+          "index": 442,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 15000000.0,
           "operational_power_consumption": 0.001,
@@ -1002,37 +1803,68 @@
         }
       },
       "OxygenTank.SmallHydrogenTank": {
-        "id": "OxygenTank.SmallHydrogenTank",
-        "index": 444,
-        "name": "DisplayName_Block_HydrogenTank",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 40.0,
-          "LargeTube": 20.0,
-          "SmallTube": 30.0,
-          "Computer": 4.0,
-          "Construction": 20.0
+        "data": {
+          "id": "OxygenTank.SmallHydrogenTank",
+          "name": "DisplayName_Block_HydrogenTank",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Computer": 4.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 444,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 500000.0,
           "operational_power_consumption": 0.001,
           "idle_power_consumption": 1e-6
         }
       },
-      "OxygenTank.LargeHydrogenTankSmall": {
-        "id": "OxygenTank.LargeHydrogenTankSmall",
-        "index": 443,
-        "name": "DisplayName_Block_HydrogenTankSmall",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 80.0,
-          "LargeTube": 40.0,
-          "SmallTube": 60.0,
-          "Computer": 8.0,
-          "Construction": 40.0
+      "OxygenTank.LargeHydrogenTankIndustrial": {
+        "data": {
+          "id": "OxygenTank.LargeHydrogenTankIndustrial",
+          "name": "DisplayName_Block_HydrogenTankIndustrial",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 280.0,
+            "LargeTube": 80.0,
+            "SmallTube": 60.0,
+            "Computer": 8.0,
+            "Construction": 40.0
+          },
+          "has_physics": true,
+          "index": 369,
+          "hidden": true,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "capacity": 15000000.0,
+          "operational_power_consumption": 0.001,
+          "idle_power_consumption": 1e-6
+        }
+      },
+      "OxygenTank.LargeHydrogenTankSmall": {
+        "data": {
+          "id": "OxygenTank.LargeHydrogenTankSmall",
+          "name": "DisplayName_Block_HydrogenTankSmall",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 80.0,
+            "LargeTube": 40.0,
+            "SmallTube": 60.0,
+            "Computer": 8.0,
+            "Construction": 40.0
+          },
+          "has_physics": true,
+          "index": 443,
+          "hidden": false,
+          "rename": null
+        },
         "details": {
           "capacity": 1000000.0,
           "operational_power_consumption": 0.001,
@@ -1040,18 +1872,22 @@
         }
       },
       "OxygenTank.SmallHydrogenTankSmall": {
-        "id": "OxygenTank.SmallHydrogenTankSmall",
-        "index": 445,
-        "name": "DisplayName_Block_HydrogenTankSmall",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 3.0,
-          "LargeTube": 1.0,
-          "SmallTube": 2.0,
-          "Computer": 4.0,
-          "Construction": 2.0
+        "data": {
+          "id": "OxygenTank.SmallHydrogenTankSmall",
+          "name": "DisplayName_Block_HydrogenTankSmall",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 3.0,
+            "LargeTube": 1.0,
+            "SmallTube": 2.0,
+            "Computer": 4.0,
+            "Construction": 2.0
+          },
+          "has_physics": true,
+          "index": 445,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "capacity": 15000.0,
           "operational_power_consumption": 0.0002,
@@ -1060,149 +1896,306 @@
       }
     },
     "containers": {
-      "CargoContainer.SmallBlockLargeContainer": {
-        "id": "CargoContainer.SmallBlockLargeContainer",
-        "index": 450,
-        "name": "DisplayName_Block_LargeCargoContainer",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 75.0,
-          "Construction": 25.0,
-          "Computer": 6.0,
-          "Motor": 8.0,
-          "Display": 1.0
+      "CargoContainer.LargeBlockLockerRoom": {
+        "data": {
+          "id": "CargoContainer.LargeBlockLockerRoom",
+          "name": "DisplayName_Block_LockerRoom",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 30.0,
+            "Display": 4.0,
+            "BulletproofGlass": 10.0
+          },
+          "has_physics": true,
+          "index": 258,
+          "hidden": true,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "inventory_volume_any": 400.0,
+          "store_any": false
+        }
+      },
+      "CargoContainer.LargeBlockLockerRoomCorner": {
+        "data": {
+          "id": "CargoContainer.LargeBlockLockerRoomCorner",
+          "name": "DisplayName_Block_LockerRoomCorner",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 25.0,
+            "Construction": 30.0,
+            "Display": 4.0,
+            "BulletproofGlass": 10.0
+          },
+          "has_physics": true,
+          "index": 259,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "inventory_volume_any": 400.0,
+          "store_any": false
+        }
+      },
+      "CargoContainer.SmallBlockLargeContainer": {
+        "data": {
+          "id": "CargoContainer.SmallBlockLargeContainer",
+          "name": "DisplayName_Block_LargeCargoContainer",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 75.0,
+            "Construction": 25.0,
+            "Computer": 6.0,
+            "Motor": 8.0,
+            "Display": 1.0
+          },
+          "has_physics": true,
+          "index": 450,
+          "hidden": false,
+          "rename": null
+        },
         "details": {
           "inventory_volume_any": 15625.0,
           "store_any": true
         }
       },
       "CargoContainer.LargeBlockLargeContainer": {
-        "id": "CargoContainer.LargeBlockLargeContainer",
-        "index": 452,
-        "name": "DisplayName_Block_LargeCargoContainer",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 360.0,
-          "Construction": 80.0,
-          "MetalGrid": 24.0,
-          "SmallTube": 60.0,
-          "Motor": 20.0,
-          "Display": 1.0,
-          "Computer": 8.0
+        "data": {
+          "id": "CargoContainer.LargeBlockLargeContainer",
+          "name": "DisplayName_Block_LargeCargoContainer",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 360.0,
+            "Construction": 80.0,
+            "MetalGrid": 24.0,
+            "SmallTube": 60.0,
+            "Motor": 20.0,
+            "Display": 1.0,
+            "Computer": 8.0
+          },
+          "has_physics": true,
+          "index": 452,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 421875.0,
           "store_any": true
         }
       },
-      "CargoContainer.SmallBlockMediumContainer": {
-        "id": "CargoContainer.SmallBlockMediumContainer",
-        "index": 449,
-        "name": "DisplayName_Block_MediumCargoContainer",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 10.0,
-          "Computer": 4.0,
-          "Motor": 4.0,
-          "Display": 1.0
+      "CargoContainer.LargeBlockLargeIndustrialContainer": {
+        "data": {
+          "id": "CargoContainer.LargeBlockLargeIndustrialContainer",
+          "name": "DisplayName_Block_LargeIndustrialCargoContainer",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 360.0,
+            "Construction": 80.0,
+            "MetalGrid": 24.0,
+            "SmallTube": 60.0,
+            "Motor": 20.0,
+            "Display": 1.0,
+            "Computer": 8.0
+          },
+          "has_physics": true,
+          "index": 359,
+          "hidden": true,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "inventory_volume_any": 421875.0,
+          "store_any": true
+        }
+      },
+      "CargoContainer.LargeBlockLockers": {
+        "data": {
+          "id": "CargoContainer.LargeBlockLockers",
+          "name": "DisplayName_Block_Lockers",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Display": 3.0,
+            "Computer": 2.0
+          },
+          "has_physics": true,
+          "index": 263,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "inventory_volume_any": 1000.0,
+          "store_any": true
+        }
+      },
+      "CargoContainer.SmallBlockMediumContainer": {
+        "data": {
+          "id": "CargoContainer.SmallBlockMediumContainer",
+          "name": "DisplayName_Block_MediumCargoContainer",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 10.0,
+            "Computer": 4.0,
+            "Motor": 4.0,
+            "Display": 1.0
+          },
+          "has_physics": true,
+          "index": 449,
+          "hidden": false,
+          "rename": null
+        },
         "details": {
           "inventory_volume_any": 3375.0,
           "store_any": true
         }
       },
       "CargoContainer.SmallBlockSmallContainer": {
-        "id": "CargoContainer.SmallBlockSmallContainer",
-        "index": 448,
-        "name": "DisplayName_Block_SmallCargoContainer",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 3.0,
-          "Construction": 1.0,
-          "Computer": 1.0,
-          "Motor": 1.0,
-          "Display": 1.0
+        "data": {
+          "id": "CargoContainer.SmallBlockSmallContainer",
+          "name": "DisplayName_Block_SmallCargoContainer",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 3.0,
+            "Construction": 1.0,
+            "Computer": 1.0,
+            "Motor": 1.0,
+            "Display": 1.0
+          },
+          "has_physics": true,
+          "index": 448,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 125.0,
           "store_any": true
         }
       },
       "CargoContainer.LargeBlockSmallContainer": {
-        "id": "CargoContainer.LargeBlockSmallContainer",
-        "index": 451,
-        "name": "DisplayName_Block_SmallCargoContainer",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 40.0,
-          "Construction": 40.0,
-          "MetalGrid": 4.0,
-          "SmallTube": 20.0,
-          "Motor": 4.0,
-          "Display": 1.0,
-          "Computer": 2.0
+        "data": {
+          "id": "CargoContainer.LargeBlockSmallContainer",
+          "name": "DisplayName_Block_SmallCargoContainer",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 40.0,
+            "Construction": 40.0,
+            "MetalGrid": 4.0,
+            "SmallTube": 20.0,
+            "Motor": 4.0,
+            "Display": 1.0,
+            "Computer": 2.0
+          },
+          "has_physics": true,
+          "index": 451,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 15625.0,
           "store_any": true
+        }
+      },
+      "CargoContainer.LargeBlockWeaponRack": {
+        "data": {
+          "id": "CargoContainer.LargeBlockWeaponRack",
+          "name": "DisplayName_Block_WeaponRack",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 720,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "inventory_volume_any": 600.0,
+          "store_any": false
+        }
+      },
+      "CargoContainer.SmallBlockWeaponRack": {
+        "data": {
+          "id": "CargoContainer.SmallBlockWeaponRack",
+          "name": "DisplayName_Block_WeaponRack",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 3.0,
+            "Construction": 3.0
+          },
+          "has_physics": true,
+          "index": 721,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "inventory_volume_any": 60.0,
+          "store_any": false
         }
       }
     },
     "connectors": {
       "ShipConnector.Connector": {
-        "id": "ShipConnector.Connector",
-        "index": 458,
-        "name": "DisplayName_Block_Connector",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 150.0,
-          "Construction": 40.0,
-          "SmallTube": 12.0,
-          "Motor": 8.0,
-          "Computer": 20.0
+        "data": {
+          "id": "ShipConnector.Connector",
+          "name": "DisplayName_Block_Connector",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 150.0,
+            "Construction": 40.0,
+            "SmallTube": 12.0,
+            "Motor": 8.0,
+            "Computer": 20.0
+          },
+          "has_physics": true,
+          "index": 458,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 8000.0
         }
       },
       "ShipConnector.ConnectorMedium": {
-        "id": "ShipConnector.ConnectorMedium",
-        "index": 460,
-        "name": "DisplayName_Block_Connector",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 21.0,
-          "Construction": 12.0,
-          "SmallTube": 6.0,
-          "Motor": 6.0,
-          "Computer": 6.0
+        "data": {
+          "id": "ShipConnector.ConnectorMedium",
+          "name": "DisplayName_Block_Connector",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 21.0,
+            "Construction": 12.0,
+            "SmallTube": 6.0,
+            "Motor": 6.0,
+            "Computer": 6.0
+          },
+          "has_physics": true,
+          "index": 460,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 1152.0000000000005
         }
       },
       "ShipConnector.ConnectorSmall": {
-        "id": "ShipConnector.ConnectorSmall",
-        "index": 459,
-        "name": "DisplayName_Block_ConnectorSmall",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 7.0,
-          "Construction": 4.0,
-          "SmallTube": 2.0,
-          "Motor": 1.0,
-          "Computer": 4.0
+        "data": {
+          "id": "ShipConnector.ConnectorSmall",
+          "name": "DisplayName_Block_ConnectorSmall",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 7.0,
+            "Construction": 4.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0,
+            "Computer": 4.0
+          },
+          "has_physics": true,
+          "index": 459,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_any": 64.00000000000001
         }
@@ -1210,320 +2203,553 @@
     },
     "cockpits": {
       "Cockpit.LargeBlockBathroom": {
-        "id": "Cockpit.LargeBlockBathroom",
-        "index": 265,
-        "name": "DisplayName_Block_Bathroom",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 40.0,
-          "SmallTube": 8.0,
-          "Motor": 4.0,
-          "LargeTube": 2.0
+        "data": {
+          "id": "Cockpit.LargeBlockBathroom",
+          "name": "DisplayName_Block_Bathroom",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 40.0,
+            "SmallTube": 8.0,
+            "Motor": 4.0,
+            "LargeTube": 2.0
+          },
+          "has_physics": true,
+          "index": 265,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.BuggyCockpit": {
-        "id": "Cockpit.BuggyCockpit",
-        "index": 519,
-        "name": "DisplayName_Block_BuggyCockpit",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 25.0,
-          "Motor": 2.0,
-          "Computer": 20.0,
-          "Display": 4.0
+        "data": {
+          "id": "Cockpit.BuggyCockpit",
+          "name": "DisplayName_Block_BuggyCockpit",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 25.0,
+            "Motor": 2.0,
+            "Computer": 20.0,
+            "Display": 4.0
+          },
+          "has_physics": true,
+          "index": 519,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCockpitSeat": {
-        "id": "Cockpit.LargeBlockCockpitSeat",
-        "index": 241,
-        "name": "DisplayName_Block_Cockpit1",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 30.0,
-          "Construction": 20.0,
-          "Motor": 1.0,
-          "Display": 8.0,
-          "Computer": 100.0,
-          "BulletproofGlass": 60.0
+        "data": {
+          "id": "Cockpit.LargeBlockCockpitSeat",
+          "name": "DisplayName_Block_Cockpit1",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 30.0,
+            "Construction": 20.0,
+            "Motor": 1.0,
+            "Display": 8.0,
+            "Computer": 100.0,
+            "BulletproofGlass": 60.0
+          },
+          "has_physics": true,
+          "index": 241,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.SmallBlockCockpit": {
-        "id": "Cockpit.SmallBlockCockpit",
-        "index": 242,
-        "name": "DisplayName_Block_Cockpit1",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 10.0,
-          "Construction": 10.0,
-          "Motor": 1.0,
-          "Display": 5.0,
-          "Computer": 15.0,
-          "BulletproofGlass": 30.0
+        "data": {
+          "id": "Cockpit.SmallBlockCockpit",
+          "name": "DisplayName_Block_Cockpit1",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 10.0,
+            "Construction": 10.0,
+            "Motor": 1.0,
+            "Display": 5.0,
+            "Computer": 15.0,
+            "BulletproofGlass": 30.0
+          },
+          "has_physics": true,
+          "index": 242,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.OpenCockpitSmall": {
+        "data": {
+          "id": "Cockpit.OpenCockpitSmall",
+          "name": "DisplayName_Block_OpenCockpitSmall",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Motor": 1.0,
+            "Computer": 15.0,
+            "Display": 2.0
+          },
+          "has_physics": true,
+          "index": 248,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.OpenCockpitLarge": {
+        "data": {
+          "id": "Cockpit.OpenCockpitLarge",
+          "name": "DisplayName_Block_OpenCockpitLarge",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 30.0,
+            "Motor": 2.0,
+            "Computer": 100.0,
+            "Display": 6.0
+          },
+          "has_physics": true,
+          "index": 249,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.LargeBlockCockpit": {
+        "data": {
+          "id": "Cockpit.LargeBlockCockpit",
+          "name": "DisplayName_Block_Cockpit2",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Motor": 2.0,
+            "Computer": 100.0,
+            "Display": 10.0
+          },
+          "has_physics": true,
+          "index": 240,
+          "hidden": true,
+          "rename": null
+        },
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCouchCorner": {
-        "id": "Cockpit.LargeBlockCouchCorner",
-        "index": 262,
-        "name": "DisplayName_Block_CouchCorner",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 35.0,
-          "Construction": 35.0
+        "data": {
+          "id": "Cockpit.LargeBlockCouchCorner",
+          "name": "DisplayName_Block_CouchCorner",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 35.0,
+            "Construction": 35.0
+          },
+          "has_physics": true,
+          "index": 262,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockCouch": {
-        "id": "Cockpit.LargeBlockCouch",
-        "index": 261,
-        "name": "DisplayName_Block_Couch",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 30.0
+        "data": {
+          "id": "Cockpit.LargeBlockCouch",
+          "name": "DisplayName_Block_Couch",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 30.0
+          },
+          "has_physics": true,
+          "index": 261,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDesk": {
-        "id": "Cockpit.LargeBlockDesk",
-        "index": 250,
-        "name": "DisplayName_Block_Desk",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 30.0
+        "data": {
+          "id": "Cockpit.LargeBlockDesk",
+          "name": "DisplayName_Block_Desk",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 30.0
+          },
+          "has_physics": true,
+          "index": 250,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDeskCorner": {
-        "id": "Cockpit.LargeBlockDeskCorner",
-        "index": 251,
-        "name": "DisplayName_Block_DeskCorner",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 20.0,
-          "Construction": 20.0
+        "data": {
+          "id": "Cockpit.LargeBlockDeskCorner",
+          "name": "DisplayName_Block_DeskCorner",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 251,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockDeskCornerInv": {
-        "id": "Cockpit.LargeBlockDeskCornerInv",
-        "index": 252,
-        "name": "DisplayName_Block_DeskCornerInv",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 60.0,
-          "Construction": 60.0
+        "data": {
+          "id": "Cockpit.LargeBlockDeskCornerInv",
+          "name": "DisplayName_Block_DeskCornerInv",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 60.0,
+            "Construction": 60.0
+          },
+          "has_physics": true,
+          "index": 252,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.DBSmallBlockFighterCockpit": {
-        "id": "Cockpit.DBSmallBlockFighterCockpit",
-        "index": 243,
-        "name": "DisplayName_Block_FighterCockpit",
-        "size": "Small",
-        "components": {
-          "Construction": 20.0,
-          "Motor": 1.0,
-          "SteelPlate": 20.0,
-          "MetalGrid": 10.0,
-          "InteriorPlate": 15.0,
-          "Display": 4.0,
-          "Computer": 20.0,
-          "BulletproofGlass": 40.0
+        "data": {
+          "id": "Cockpit.DBSmallBlockFighterCockpit",
+          "name": "DisplayName_Block_FighterCockpit",
+          "size": "Small",
+          "components": {
+            "Construction": 20.0,
+            "Motor": 1.0,
+            "SteelPlate": 20.0,
+            "MetalGrid": 10.0,
+            "InteriorPlate": 15.0,
+            "Display": 4.0,
+            "Computer": 20.0,
+            "BulletproofGlass": 40.0
+          },
+          "has_physics": true,
+          "index": 243,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.CockpitOpen": {
-        "id": "Cockpit.CockpitOpen",
-        "index": 244,
-        "name": "DisplayName_Block_Cockpit3",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 20.0,
-          "Construction": 20.0,
-          "Motor": 2.0,
-          "Computer": 100.0,
-          "Display": 4.0
+        "data": {
+          "id": "Cockpit.CockpitOpen",
+          "name": "DisplayName_Block_Cockpit3",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Motor": 2.0,
+            "Computer": 100.0,
+            "Display": 4.0
+          },
+          "has_physics": true,
+          "index": 244,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.SmallBlockStandingCockpit": {
-        "id": "Cockpit.SmallBlockStandingCockpit",
-        "index": 762,
-        "name": "DisplayName_Block_CockpitStandingBridge",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 20.0,
-          "Construction": 20.0,
-          "Motor": 1.0,
-          "Computer": 20.0,
-          "Display": 2.0
+        "data": {
+          "id": "Cockpit.SmallBlockStandingCockpit",
+          "name": "DisplayName_Block_CockpitStandingBridge",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Motor": 1.0,
+            "Computer": 20.0,
+            "Display": 2.0
+          },
+          "has_physics": true,
+          "index": 762,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockStandingCockpit": {
-        "id": "Cockpit.LargeBlockStandingCockpit",
-        "index": 763,
-        "name": "DisplayName_Block_CockpitStandingBridge",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 20.0,
-          "Construction": 20.0,
-          "Motor": 1.0,
-          "Computer": 20.0,
-          "Display": 2.0
+        "data": {
+          "id": "Cockpit.LargeBlockStandingCockpit",
+          "name": "DisplayName_Block_CockpitStandingBridge",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0,
+            "Motor": 1.0,
+            "Computer": 20.0,
+            "Display": 2.0
+          },
+          "has_physics": true,
+          "index": 763,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.SmallBlockCockpitIndustrial": {
-        "id": "Cockpit.SmallBlockCockpitIndustrial",
-        "index": 268,
-        "name": "DisplayName_Block_CockpitIndustrial",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 10.0,
-          "Construction": 20.0,
-          "MetalGrid": 10.0,
-          "Motor": 2.0,
-          "Display": 6.0,
-          "Computer": 20.0,
-          "BulletproofGlass": 60.0,
-          "SmallTube": 10.0
+        "data": {
+          "id": "Cockpit.SmallBlockCockpitIndustrial",
+          "name": "DisplayName_Block_CockpitIndustrial",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 10.0,
+            "Construction": 20.0,
+            "MetalGrid": 10.0,
+            "Motor": 2.0,
+            "Display": 6.0,
+            "Computer": 20.0,
+            "BulletproofGlass": 60.0,
+            "SmallTube": 10.0
+          },
+          "has_physics": true,
+          "index": 268,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockCockpitIndustrial": {
-        "id": "Cockpit.LargeBlockCockpitIndustrial",
-        "index": 269,
-        "name": "DisplayName_Block_CockpitIndustrial",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 20.0,
-          "Construction": 30.0,
-          "MetalGrid": 15.0,
-          "Motor": 2.0,
-          "Display": 10.0,
-          "Computer": 60.0,
-          "BulletproofGlass": 80.0,
-          "SmallTube": 10.0
+        "data": {
+          "id": "Cockpit.LargeBlockCockpitIndustrial",
+          "name": "DisplayName_Block_CockpitIndustrial",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 20.0,
+            "Construction": 30.0,
+            "MetalGrid": 15.0,
+            "Motor": 2.0,
+            "Display": 10.0,
+            "Computer": 60.0,
+            "BulletproofGlass": 80.0,
+            "SmallTube": 10.0
+          },
+          "has_physics": true,
+          "index": 269,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.PassengerBench": {
+        "data": {
+          "id": "Cockpit.PassengerBench",
+          "name": "DisplayName_Block_PassengerBench",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 742,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.PassengerSeatLarge": {
+        "data": {
+          "id": "Cockpit.PassengerSeatLarge",
+          "name": "DisplayName_Block_PassengerSeat",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 413,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.PassengerSeatSmall": {
+        "data": {
+          "id": "Cockpit.PassengerSeatSmall",
+          "name": "DisplayName_Block_PassengerSeat",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 414,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.PassengerSeatSmallNew": {
+        "data": {
+          "id": "Cockpit.PassengerSeatSmallNew",
+          "name": "DisplayName_Block_PassengerSeat",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 415,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "has_inventory": true,
+          "inventory_volume_any": 1000.0
+        }
+      },
+      "Cockpit.PassengerSeatSmallOffset": {
+        "data": {
+          "id": "Cockpit.PassengerSeatSmallOffset",
+          "name": "DisplayName_Block_PassengerSeatOffset",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 20.0,
+            "Construction": 20.0
+          },
+          "has_physics": true,
+          "index": 416,
+          "hidden": true,
+          "rename": null
+        },
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.RoverCockpit": {
-        "id": "Cockpit.RoverCockpit",
-        "index": 245,
-        "name": "DisplayName_Block_RoverCockpit",
-        "size": "Small",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 25.0,
-          "Motor": 2.0,
-          "Computer": 20.0,
-          "Display": 4.0
+        "data": {
+          "id": "Cockpit.RoverCockpit",
+          "name": "DisplayName_Block_RoverCockpit",
+          "size": "Small",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 25.0,
+            "Motor": 2.0,
+            "Computer": 20.0,
+            "Display": 4.0
+          },
+          "has_physics": true,
+          "index": 245,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": true,
           "inventory_volume_any": 1000.0
         }
       },
       "Cockpit.LargeBlockBathroomOpen": {
-        "id": "Cockpit.LargeBlockBathroomOpen",
-        "index": 264,
-        "name": "DisplayName_Block_BathroomOpen",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 30.0,
-          "Construction": 30.0,
-          "SmallTube": 8.0,
-          "Motor": 4.0,
-          "LargeTube": 2.0
+        "data": {
+          "id": "Cockpit.LargeBlockBathroomOpen",
+          "name": "DisplayName_Block_BathroomOpen",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 30.0,
+            "Construction": 30.0,
+            "SmallTube": 8.0,
+            "Motor": 4.0,
+            "LargeTube": 2.0
+          },
+          "has_physics": true,
+          "index": 264,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
         }
       },
       "Cockpit.LargeBlockToilet": {
-        "id": "Cockpit.LargeBlockToilet",
-        "index": 266,
-        "name": "DisplayName_Block_Toilet",
-        "size": "Large",
-        "components": {
-          "InteriorPlate": 10.0,
-          "Construction": 15.0,
-          "SmallTube": 2.0,
-          "Motor": 2.0,
-          "LargeTube": 1.0
+        "data": {
+          "id": "Cockpit.LargeBlockToilet",
+          "name": "DisplayName_Block_Toilet",
+          "size": "Large",
+          "components": {
+            "InteriorPlate": 10.0,
+            "Construction": 15.0,
+            "SmallTube": 2.0,
+            "Motor": 2.0,
+            "LargeTube": 1.0
+          },
+          "has_physics": true,
+          "index": 266,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "has_inventory": false,
           "inventory_volume_any": 0.0
@@ -1532,18 +2758,22 @@
     },
     "drills": {
       "Drill.SmallBlockDrill": {
-        "id": "Drill.SmallBlockDrill",
-        "index": 700,
-        "name": "DisplayName_Block_Drill",
-        "size": "Small",
-        "components": {
-          "SteelPlate": 32.0,
-          "Construction": 30.0,
-          "LargeTube": 4.0,
-          "Motor": 1.0,
-          "Computer": 1.0
+        "data": {
+          "id": "Drill.SmallBlockDrill",
+          "name": "DisplayName_Block_Drill",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 32.0,
+            "Construction": 30.0,
+            "LargeTube": 4.0,
+            "Motor": 1.0,
+            "Computer": 1.0
+          },
+          "has_physics": true,
+          "index": 700,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_ore": 3375.0,
           "operational_power_consumption": 0.002,
@@ -1551,18 +2781,22 @@
         }
       },
       "Drill.LargeBlockDrill": {
-        "id": "Drill.LargeBlockDrill",
-        "index": 701,
-        "name": "DisplayName_Block_Drill",
-        "size": "Large",
-        "components": {
-          "SteelPlate": 300.0,
-          "Construction": 40.0,
-          "LargeTube": 12.0,
-          "Motor": 5.0,
-          "Computer": 5.0
+        "data": {
+          "id": "Drill.LargeBlockDrill",
+          "name": "DisplayName_Block_Drill",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 300.0,
+            "Construction": 40.0,
+            "LargeTube": 12.0,
+            "Motor": 5.0,
+            "Computer": 5.0
+          },
+          "has_physics": true,
+          "index": 701,
+          "hidden": false,
+          "rename": null
         },
-        "has_physics": true,
         "details": {
           "inventory_volume_ore": 23437.5,
           "operational_power_consumption": 0.002,

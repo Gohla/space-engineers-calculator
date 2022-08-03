@@ -16,7 +16,7 @@ pub trait NodeExt<'a, 'input: 'a> {
   fn child_elem(&self, tag: &'static str) -> Option<Node>;
   fn children_elems(&self, tag: &'static str) -> ElemChildren;
   fn parse_child_elem<T: FromStr>(&self, tag: &'static str) -> Result<Option<T>, T::Err>;
-  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a>>>(&self, name: N) -> Result<Option<T>, T::Err>;
+  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<Option<T>, T::Err>;
 }
 
 impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
@@ -44,7 +44,7 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
     Ok(None)
   }
 
-  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a>>>(&self, name: N) -> Result<Option<T>, T::Err> {
+  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<Option<T>, T::Err> {
     if let Some(attribute) = self.attribute(name) {
       return attribute.trim().parse().map(|v| Some(v))
     }
