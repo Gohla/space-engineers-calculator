@@ -1,4 +1,5 @@
 use linked_hash_map::LinkedHashMap;
+use regex::Regex;
 use roxmltree::Node;
 
 use crate::data::blocks::*;
@@ -26,7 +27,7 @@ impl Blocks {
   }
 
   pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P, localization: &Localization) -> Result<Self, Error> {
-    let hide_block_names = HashSet::from([
+    let hide_block_names = HashSet::from_iter([
       // Small grid storage
       "Weapon Rack",
       "Control Seat",
@@ -42,24 +43,22 @@ impl Blocks {
       // Small and large grid storage
       "Passenger Seat",
       // Small and large grid thrusters
-      "Industrial Large Hydrogen Thruster",
-      "Industrial Hydrogen Thruster",
-      "Sci-Fi Ion Thruster",
-      "Sci-Fi Large Ion Thruster",
-      "Sci-Fi Atmospheric Thruster",
-      "Sci-Fi Large Atmospheric Thruster",
-      "Warfare Ion Thruster",
-      "Large Warfare Ion Thruster",
-      "Small Warfare Reactor",
-      "Large Warfare Reactor",
       "Warfare Battery",
       "Industrial Hydrogen Tank",
+    ]);
+    let hide_block_regexes = Vec::from_iter([
+      // Small and large grid thrusters
+      "Industrial .+ Thruster",
+      "Sci-Fi .+ Thruster",
+      ".*Warfare .+ Thruster",
+      ".+ Warfare Reactor",
       // Small and large grid wheel suspensions
-      "Offroad"
-    ]);
-    let rename_blocks = HashMap::from([
-      ("", ""),
-    ]);
+      "Offroad Wheel Suspension .+",
+      "Wheel Suspension .+ Right",
+    ].into_iter().map(|s| Regex::new(s).unwrap()));
+    let rename_blocks = Vec::from_iter([
+      ("Wheel Suspension (.+) Left", "Wheel Suspension $1"),
+    ].into_iter().map(|(r, rp)| (Regex::new(r).unwrap(), rp)));
 
     let entity_components_file_path = entity_components_file_path.as_ref();
     let entity_components_string = read_string_from_file(entity_components_file_path)
@@ -106,7 +105,7 @@ impl Blocks {
         .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?
         .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?;
       for def in definitions_node.children_elems("Definition") {
-        let data = BlockData::from_def(&def, index, localization, &hide_block_names, &rename_blocks);
+        let data = BlockData::from_def(&def, index, localization, &hide_block_names, &hide_block_regexes, &rename_blocks);
         fn add_block<T>(details: T, data: BlockData, vec: &mut Vec<Block<T>>) {
           let block = Block::new(data, details);
           vec.push(block);
@@ -192,7 +191,14 @@ impl Blocks {
 // Block definition
 
 impl BlockData {
-  pub fn from_def(def: &Node, index: u64, localization: &Localization, hide_block_names: &HashSet<&str>, rename_blocks: &HashMap<&str, &str>) -> Self {
+  pub fn from_def(
+    def: &Node,
+    index: u64,
+    localization: &Localization,
+    hide_block_names: &HashSet<&str>,
+    hide_block_regexes: &[Regex],
+    rename_blocks: &[(Regex, &str)]
+  ) -> Self {
     let id_node = def.child_elem("Id").unwrap();
     let type_id: String = id_node.parse_child_elem("TypeId").unwrap().unwrap();
     let subtype_id = id_node.parse_child_elem("SubtypeId").unwrap().unwrap_or(String::new());
@@ -208,10 +214,29 @@ impl BlockData {
     let has_physics = def.parse_child_elem("HasPhysics").unwrap().unwrap_or(true);
 
     let localized_name = localization.get(&name).unwrap_or(&name).as_str();
-    let hidden = hide_block_names.contains(localized_name);
-    let rename = rename_blocks.get(localized_name).map(|str| str.to_string());
+    let hidden = Self::is_hidden(localized_name, hide_block_names, hide_block_regexes);
+    let rename = Self::rename(localized_name, rename_blocks);
 
     BlockData { id, name, size, components, has_physics, index, hidden, rename }
+  }
+
+  fn is_hidden(name: &str, hide_block_names: &HashSet<&str>, hide_block_regexes: &[Regex]) -> bool {
+    if hide_block_names.contains(name) { return true; }
+    for regex in hide_block_regexes {
+      if regex.is_match(name) {
+        return true;
+      }
+    }
+    false
+  }
+
+  fn rename(name: &str, rename_blocks: &[(Regex, &str)]) -> Option<String> {
+    for (regex, replacement) in rename_blocks {
+      if regex.is_match(name) {
+        return Some(regex.replace_all(name, *replacement).to_string())
+      }
+    }
+    None
   }
 }
 
