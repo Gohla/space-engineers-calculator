@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 use linked_hash_map::LinkedHashMap;
-use regex::Regex;
+use regex::{Regex, RegexSet};
 use roxmltree::{Document, Node};
 use thiserror::Error;
 use walkdir::WalkDir;
@@ -52,7 +52,7 @@ impl Blocks {
       "Warfare Battery",
       "Industrial Hydrogen Tank",
     ]);
-    let hide_block_regexes = Vec::from_iter([
+    let hide_block_regexes = RegexSet::new(&[
       // Small and large grid thrusters
       "Industrial .+ Thruster",
       "Sci-Fi .+ Thruster",
@@ -61,7 +61,7 @@ impl Blocks {
       // Small and large grid wheel suspensions
       "Offroad Wheel Suspension .+",
       "Wheel Suspension .+ Right",
-    ].into_iter().map(|s| Regex::new(s).unwrap()));
+    ]).unwrap();
     let rename_blocks = Vec::from_iter([
       ("Wheel Suspension (.+) Left", "Wheel Suspension $1"),
     ].into_iter().map(|(r, rp)| (Regex::new(r).unwrap(), rp)));
@@ -202,7 +202,7 @@ impl BlockData {
     index: u64,
     localization: &Localization,
     hide_block_names: &HashSet<&str>,
-    hide_block_regexes: &[Regex],
+    hide_block_regexes: &RegexSet,
     rename_blocks: &[(Regex, &str)]
   ) -> Self {
     let id_node = def.child_elem("Id").unwrap();
@@ -226,14 +226,9 @@ impl BlockData {
     BlockData { id, name, size, components, has_physics, index, hidden, rename }
   }
 
-  fn is_hidden(name: &str, hide_block_names: &HashSet<&str>, hide_block_regexes: &[Regex]) -> bool {
+  fn is_hidden(name: &str, hide_block_names: &HashSet<&str>, hide_block_regexes: &RegexSet) -> bool {
     if hide_block_names.contains(name) { return true; }
-    for regex in hide_block_regexes {
-      if regex.is_match(name) {
-        return true;
-      }
-    }
-    false
+    return hide_block_regexes.is_match(name);
   }
 
   fn rename(name: &str, rename_blocks: &[(Regex, &str)]) -> Option<String> {
