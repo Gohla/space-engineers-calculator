@@ -130,14 +130,15 @@ pub type CountPerDirection = PerDirection<u64>;
 pub enum BatteryMode {
   #[default] Auto,
   Recharge,
-  Discharge
+  Discharge,
+  Off,
 }
 
 impl BatteryMode {
   #[inline]
   pub fn items() -> impl IntoIterator<Item=Self> {
     use BatteryMode::*;
-    const ITEMS: [BatteryMode; 3] = [Auto, Recharge, Discharge];
+    const ITEMS: [BatteryMode; 4] = [Auto, Recharge, Discharge, Off];
     ITEMS.into_iter()
   }
 
@@ -161,6 +162,7 @@ impl Display for BatteryMode {
       Auto => f.write_str("Auto"),
       Recharge => f.write_str("Recharge"),
       Discharge => f.write_str("Discharge"),
+      Off => f.write_str("Off"),
     }
   }
 }

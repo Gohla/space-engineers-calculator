@@ -22,9 +22,9 @@ impl App {
           ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
           ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
           ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-          ui.checkbox_suffix_row("Engine Enabled", "", &mut self.calculator.engine_enabled, self.calculator_default.engine_enabled);
+          ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.engine_enabled, self.calculator_default.engine_enabled);
           ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::items(), self.calculator_default.battery_mode);
-          ui.checkbox_suffix_row("Charge Jump Drive", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
+          ui.checkbox_suffix_row("Charge Jump Drives", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
           changed |= ui.changed
         });
         ui.grid("Options Grid 2", |ui| {
