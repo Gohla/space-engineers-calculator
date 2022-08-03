@@ -58,12 +58,21 @@ impl App {
         changed |= ui.changed
       });
       ui.horizontal(|ui| {
-        ui.open_header_with_grid("Storage", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-          for data in self.data.blocks.storage_blocks(self.grid_size) {
-            ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
-          }
-          changed |= ui.changed
+        ui.vertical(|ui| {
+          ui.open_header_with_grid("Storage", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for data in self.data.blocks.storage_blocks(self.grid_size) {
+              ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
+            }
+            changed |= ui.changed
+          });
+          ui.open_header_with_grid("Wheel Suspensions", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for data in self.data.blocks.wheel_suspension_blocks(self.grid_size) {
+              ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
+            }
+            changed |= ui.changed
+          });
         });
         ui.vertical(|ui| {
           ui.open_header_with_grid("Power", |ui| {
@@ -80,28 +89,21 @@ impl App {
             }
             changed |= ui.changed
           });
+          ui.open_header_with_grid("Ship Tools", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for data in self.data.blocks.ship_tool_blocks(self.grid_size) {
+              ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
+            }
+            changed |= ui.changed
+          });
+          ui.open_header_with_grid("Other", |ui| {
+            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+            for data in self.data.blocks.jump_drive_blocks(self.grid_size) {
+              ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
+            }
+            changed |= ui.changed
+          });
         });
-      });
-      ui.open_header_with_grid("Ship Tools", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for data in self.data.blocks.ship_tool_blocks(self.grid_size) {
-          ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
-        }
-        changed |= ui.changed
-      });
-      ui.open_header_with_grid("Wheel Suspensions", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for data in self.data.blocks.wheel_suspension_blocks(self.grid_size) {
-          ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
-        }
-        changed |= ui.changed
-      });
-      ui.open_header_with_grid("Other", |ui| {
-        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-        for data in self.data.blocks.jump_drive_blocks(self.grid_size) {
-          ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
-        }
-        changed |= ui.changed
       });
     });
     changed
