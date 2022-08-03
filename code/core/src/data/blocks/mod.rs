@@ -1,21 +1,15 @@
-use std::backtrace::Backtrace;
 use std::cmp::Ordering;
-use std::collections::HashSet;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
-use std::path::{Path, PathBuf};
 
 use linked_hash_map::LinkedHashMap;
-use roxmltree::Document;
 use serde::{Deserialize, Serialize};
-use thiserror::Error;
-use walkdir::WalkDir;
 
 use super::components::Components;
 use super::gas_properties::GasProperties;
 use super::localization::Localization;
-use super::xml::read_string_from_file;
 
+#[cfg(feature = "extract")]
 pub mod extract;
 
 /// Grid size.
