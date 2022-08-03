@@ -126,19 +126,78 @@ pub type CountPerDirection = PerDirection<u64>;
 
 // Calculator
 
+#[derive(Default, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
+pub enum BatteryMode {
+  #[default] Auto,
+  Recharge,
+  Discharge
+}
+
+impl BatteryMode {
+  #[inline]
+  pub fn into_iter() -> impl IntoIterator<Item=BatteryMode> {
+    use BatteryMode::*;
+    const ITEMS: [BatteryMode; 3] = [Auto, Recharge, Discharge];
+    ITEMS.into_iter()
+  }
+
+  #[inline]
+  pub fn is_charging(&self) -> bool {
+    use BatteryMode::*;
+    match self { Auto => true, Recharge => true, _ => false }
+  }
+
+  #[inline]
+  pub fn is_discharging(&self) -> bool {
+    use BatteryMode::*;
+    match self { Auto => true, Discharge => true, _ => false }
+  }
+}
+
+impl Display for BatteryMode {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    use BatteryMode::*;
+    match self {
+      Auto => f.write_str("Auto"),
+      Recharge => f.write_str("Recharge"),
+      Discharge => f.write_str("Discharge"),
+    }
+  }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct GridCalculator {
+  /// Gravity multiplier 0-* (g)
   pub gravity_multiplier: f64,
+  /// Container multiplier 0-*
   pub container_multiplier: f64,
+  /// Planetary influence 0-1
   pub planetary_influence: f64,
+  /// Battery mode
+  pub battery_mode: BatteryMode,
+  /// Engines enabled?
+  pub engine_enabled: bool,
+  /// Are jump drives charging?
+  pub jump_drive_charging: bool,
+  /// Thruster power 0-100%
+  pub thruster_power: f64,
+  /// Wheel power 0-100%
   pub wheel_power: f64,
+  /// Additional mass (kg)
   pub additional_mass: f64,
+  /// Ice only fill 0-100%
   pub ice_only_fill: f64,
+  /// Ore only fill 0-100%
   pub ore_only_fill: f64,
+  /// Any fill with ice 0-100%
   pub any_fill_with_ice: f64,
+  /// Any fill with ore 0-100%
   pub any_fill_with_ore: f64,
+  /// Any fill with steel plates 0-100%
   pub any_fill_with_steel_plates: f64,
+  /// Block counts
   pub blocks: HashMap<BlockId, u64>,
+  /// Block counts per direction.
   pub directional_blocks: HashMap<BlockId, CountPerDirection>,
 }
 
@@ -148,6 +207,10 @@ impl Default for GridCalculator {
       gravity_multiplier: 1.0,
       container_multiplier: 1.0,
       planetary_influence: 1.0,
+      battery_mode: Default::default(),
+      engine_enabled: true,
+      jump_drive_charging: true,
+      thruster_power: 100.0,
       wheel_power: 100.0,
       ice_only_fill: 100.0,
       ore_only_fill: 100.0,
@@ -183,7 +246,7 @@ impl GridCalculator {
     let mut power_consumption_idle = 0.0;
     let mut power_consumption_misc = 0.0;
     let mut power_consumption_generator = 0.0;
-    let power_consumption_jump_drive = 0.0;
+    let mut power_consumption_jump_drive = 0.0;
     let mut power_consumption_wheel_suspension = 0.0;
     let mut power_consumption_thruster: PerDirection<f64> = PerDirection::default();
     let mut power_consumption_battery = 0.0;
@@ -231,40 +294,41 @@ impl GridCalculator {
         }
       }
     }
-    // Thrusters.
-    for (id, count_per_direction) in self.directional_blocks.iter() {
-      for (direction, count) in count_per_direction.iter_with_direction() {
-        if let Some(block) = data.blocks.thrusters.get(id) {
-          let count = *count as f64;
-          let details = &block.details;
-          c.total_mass_empty += block.mass(&data.components) * count;
-          // Clamp planetary influence value.
-          let planetary_influence = self.planetary_influence.clamp(details.min_planetary_influence, details.max_planetary_influence);
-          // Slope-intercept form equation: y = mx + b
-          // Calculate m: m = (y2 - y1) / (x2 - x1)
-          let m = (details.effectiveness_at_min_influence - details.effectiveness_at_max_influence) / (details.min_planetary_influence - details.max_planetary_influence);
-          // Calculate b: b = y + -mx (choose x,y on the line)
-          let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
-          // Calculate y: y = mx + b
-          let effectiveness = m * planetary_influence + b;
-          c.thruster_acceleration[direction].force += details.force * effectiveness * count;
-          match details.ty {
-            ThrusterType::Hydrogen => {
-              hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-              let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-              hydrogen_consumption_thruster[direction] += max_consumption;
-            },
-            _ => {
-              power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-              let max_consumption = details.actual_max_consumption(&data.gas_properties) * count;
-              power_consumption_thruster[direction] += max_consumption;
-            },
+    { // Thrusters
+      let power_ratio = self.thruster_power / 100.0;
+      for (id, count_per_direction) in self.directional_blocks.iter() {
+        for (direction, count) in count_per_direction.iter_with_direction() {
+          if let Some(block) = data.blocks.thrusters.get(id) {
+            let count = *count as f64;
+            let details = &block.details;
+            c.total_mass_empty += block.mass(&data.components) * count;
+            // Clamp planetary influence value.
+            let planetary_influence = self.planetary_influence.clamp(details.min_planetary_influence, details.max_planetary_influence);
+            // Slope-intercept form equation: y = mx + b
+            // Calculate m: m = (y2 - y1) / (x2 - x1)
+            let m = (details.effectiveness_at_min_influence - details.effectiveness_at_max_influence) / (details.min_planetary_influence - details.max_planetary_influence);
+            // Calculate b: b = y + -mx (choose x,y on the line)
+            let b = details.effectiveness_at_max_influence + (-1.0 * m * details.max_planetary_influence);
+            // Calculate y: y = mx + b
+            let effectiveness = m * planetary_influence + b;
+            c.thruster_acceleration[direction].force += details.force * power_ratio * effectiveness * count;
+            match details.ty {
+              ThrusterType::Hydrogen => {
+                hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
+                let max_consumption = details.actual_max_consumption(&data.gas_properties) * power_ratio * count; // TODO: should this be multiplied with `effectiveness`?
+                hydrogen_consumption_thruster[direction] += max_consumption;
+              },
+              _ => {
+                power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
+                let max_consumption = details.actual_max_consumption(&data.gas_properties) * power_ratio * count; // TODO: should this be multiplied with `effectiveness`?
+                power_consumption_thruster[direction] += max_consumption;
+              },
+            }
           }
         }
       }
     }
-    // Wheel suspensions
-    {
+    { // Wheel suspensions
       let power_ratio = self.wheel_power / 100.0;
       for (id, count) in self.blocks.iter() {
         if let Some(block) = data.blocks.wheel_suspensions.get(id) {
@@ -283,8 +347,11 @@ impl GridCalculator {
         let count = *count as f64;
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        c.power_generation += details.max_power_generation * count;
-        hydrogen_consumption_engine += details.max_fuel_consumption * count;
+        if self.engine_enabled {
+          c.power_generation += details.max_power_generation * count;
+          hydrogen_consumption_engine += details.max_fuel_consumption * count;
+          c.hydrogen_engine_enabled = true;
+        }
         c.hydrogen_capacity_engine += details.fuel_capacity * count;
       }
     }
@@ -305,9 +372,25 @@ impl GridCalculator {
         let count = *count as f64;
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        c.power_generation += details.output * count;
-        power_consumption_battery += details.input * count;
+        if self.battery_mode.is_discharging() {
+          c.power_generation += details.output * count;
+          c.power_battery_discharging = true;
+        }
+        if self.battery_mode.is_charging() {
+          power_consumption_battery += details.input * count;
+        }
         c.power_capacity_battery += details.capacity * count;
+      }
+    }
+    // Jump drives
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.jump_drives.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        if self.jump_drive_charging {
+          power_consumption_jump_drive += details.input * count;
+        }
       }
     }
     // Hydrogen Generators.
@@ -440,6 +523,7 @@ pub struct GridCalculated {
 
   pub power_generation: f64,
   pub power_capacity_battery: f64,
+  pub power_battery_discharging: bool,
   pub power_idle: PowerCalculated,
   pub power_misc: PowerCalculated,
   pub power_upto_generator: PowerCalculated,
@@ -453,6 +537,7 @@ pub struct GridCalculated {
   pub hydrogen_generation: f64,
   pub hydrogen_capacity_tank: f64,
   pub hydrogen_capacity_engine: f64,
+  pub hydrogen_engine_enabled: bool,
   pub hydrogen_idle: HydrogenCalculated,
   pub hydrogen_engine: HydrogenCalculated,
   pub hydrogen_upto_up_down_thruster: HydrogenCalculated,
@@ -482,9 +567,9 @@ pub struct PowerCalculated {
 }
 
 impl PowerCalculated {
-  fn new(consumption: f64, generation: f64, capacity_battery: f64, conversion_rate: f64) -> Self {
+  fn new(consumption: f64, generation: f64, capacity_battery: f64, battery_discharging: bool, conversion_rate: f64) -> Self {
     let balance = generation - consumption;
-    let duration_battery = (consumption != 0.0 && capacity_battery != 0.0).then(|| (capacity_battery / consumption) * conversion_rate);
+    let duration_battery = (consumption != 0.0 && capacity_battery != 0.0 && battery_discharging).then(|| (capacity_battery / consumption) * conversion_rate);
     PowerCalculated { consumption, balance, duration_battery }
   }
 }
@@ -498,27 +583,27 @@ pub struct HydrogenCalculated {
 }
 
 impl HydrogenCalculated {
-  fn new(consumption: f64, generation: f64, capacity_tanks: f64, capacity_engines: Option<f64>, conversion_rate: f64) -> Self {
+  fn new(consumption: f64, generation: f64, capacity_tanks: f64, capacity_engines: Option<f64>, engine_enabled: bool, conversion_rate: f64) -> Self {
     let balance = generation - consumption;
     let has_consumption = consumption != 0.0;
     let duration_tank = (has_consumption && capacity_tanks != 0.0).then(|| (capacity_tanks / consumption) * conversion_rate);
     let has_capacity_engines = capacity_engines.map_or(false, |c| c != 0.0);
-    let duration_engine = (has_consumption && has_capacity_engines).then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
+    let duration_engine = (has_consumption && has_capacity_engines && engine_enabled).then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
     HydrogenCalculated { consumption, balance, duration_tank, duration_engine }
   }
 }
 
 impl GridCalculated {
   fn power_resource(&self, consumption: f64) -> PowerCalculated {
-    PowerCalculated::new(consumption, self.power_generation, self.power_capacity_battery, 60.0 /* MWh to mins */)
+    PowerCalculated::new(consumption, self.power_generation, self.power_capacity_battery, self.power_battery_discharging, 60.0 /* MWh to mins */)
   }
 
   fn hydrogen_resource(&self, consumption: f64) -> HydrogenCalculated {
-    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, Some(self.hydrogen_capacity_engine), 1.0 / 60.0 /* L/s to mins */)
+    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, Some(self.hydrogen_capacity_engine), self.hydrogen_engine_enabled, 1.0 / 60.0 /* L/s to mins */)
   }
 
   fn hydrogen_tank_only_resource(&self, consumption: f64) -> HydrogenCalculated {
-    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, None, 1.0 / 60.0 /* L/s to mins */)
+    HydrogenCalculated::new(consumption, self.hydrogen_generation, self.hydrogen_capacity_tank, None, self.hydrogen_engine_enabled, 1.0 / 60.0 /* L/s to mins */)
   }
 }
 

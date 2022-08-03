@@ -165,6 +165,13 @@ pub struct Battery {
   pub output: f64,
 }
 
+/// Battery.
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+pub struct JumpDrive {
+  /// Maximum power input (MW)
+  pub input: f64,
+}
+
 /// Type of thruster
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug, Serialize, Deserialize)]
 pub enum ThrusterType {
@@ -319,6 +326,7 @@ pub struct Drill {
 #[serde(default)]
 pub struct Blocks {
   pub batteries: LinkedHashMap<BlockId, Block<Battery>>,
+  pub jump_drives: LinkedHashMap<BlockId, Block<JumpDrive>>,
   pub thrusters: LinkedHashMap<BlockId, Block<Thruster>>,
   pub wheel_suspensions: LinkedHashMap<BlockId, Block<WheelSuspension>>,
   pub hydrogen_engines: LinkedHashMap<BlockId, Block<HydrogenEngine>>,
@@ -359,6 +367,10 @@ impl Blocks {
 
   pub fn wheel_suspension_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
     self.wheel_suspensions.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
+  }
+
+  pub fn jump_drive_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
+    self.jump_drives.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
   }
 }
 

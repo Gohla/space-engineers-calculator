@@ -6,7 +6,7 @@ use egui::emath::Numeric;
 use thousands::SeparatorPolicy;
 
 use secalc_core::data::blocks::GridSize;
-use secalc_core::grid::CountPerDirection;
+use secalc_core::grid::{BatteryMode, CountPerDirection};
 
 use crate::App;
 use crate::widget::UiExtensions;
@@ -17,16 +17,20 @@ impl App {
     ui.open_header("Options", |ui| {
       ui.horizontal_top(|ui| {
         ui.grid("Options Grid 1", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 110.0);
           ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
           ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
           ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
           ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-          ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
+          ui.checkbox_suffix_row("Engine Enabled", "", &mut self.calculator.engine_enabled, self.calculator_default.engine_enabled);
+          ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::into_iter(), self.calculator_default.battery_mode);
+          ui.checkbox_suffix_row("Charge Jump Drive", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
           changed |= ui.changed
         });
         ui.grid("Options Grid 2", |ui| {
           let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
+          ui.edit_percentage_row("Thruster Power", &mut self.calculator.thruster_power, self.calculator_default.thruster_power);
+          ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
           ui.edit_percentage_row("Ice-only Fill", &mut self.calculator.ice_only_fill, self.calculator_default.ice_only_fill);
           ui.edit_percentage_row("Ore-only Fill", &mut self.calculator.ore_only_fill, self.calculator_default.ore_only_fill);
           ui.edit_percentage_row("Any-fill with Ice", &mut self.calculator.any_fill_with_ice, self.calculator_default.any_fill_with_ice);
@@ -92,6 +96,13 @@ impl App {
         }
         changed |= ui.changed
       });
+      ui.open_header_with_grid("Other", |ui| {
+        let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
+        for data in self.data.blocks.jump_drive_blocks(self.grid_size) {
+          ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
+        }
+        changed |= ui.changed
+      });
     });
     changed
   }
@@ -130,6 +141,42 @@ impl<'ui> CalculatorUi<'ui> {
 
   fn edit_count_row(&mut self, label: impl Into<WidgetText>, value: &mut u64) {
     self.edit_row(label, None::<&str>, value, 0.01, 0..=u64::MAX, 0)
+  }
+
+
+  fn checkbox_row(&mut self, label: impl Into<WidgetText>, suffix: Option<impl Into<WidgetText>>, value: &mut bool, reset_value: bool) {
+    self.ui.label(label);
+    self.changed |= self.checkbox(value, "").changed();
+    if let Some(suffix) = suffix {
+      self.ui.label(suffix);
+    }
+    self.reset_button_with(value, reset_value);
+    self.ui.end_row();
+  }
+
+  fn checkbox_suffix_row(&mut self, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut bool, reset_value: bool) {
+    self.checkbox_row(label, Some(suffix), value, reset_value)
+  }
+
+  fn combobox_row<T: PartialEq + Display + Copy>(&mut self, label: impl Into<WidgetText>, id_source: impl std::hash::Hash, suffix: Option<impl Into<WidgetText>>, value: &mut T, values: impl IntoIterator<Item=T>, reset_value: T) {
+    self.ui.label(label);
+    self.changed |= ComboBox::from_id_source(id_source)
+      .width(self.edit_size - 8.0)
+      .selected_text(format!("{}", value))
+      .show_ui(self.ui, |ui| {
+        for v in values {
+          self.changed |= ui.selectable_value(value, v, format!("{}", v)).changed();
+        }
+      }).response.changed();
+    if let Some(suffix) = suffix {
+      self.ui.label(suffix);
+    }
+    self.reset_button_with(value, reset_value);
+    self.ui.end_row();
+  }
+
+  fn combobox_suffix_row<T: PartialEq + Display + Copy>(&mut self, label: impl Into<WidgetText>, id_source: impl std::hash::Hash, suffix: impl Into<WidgetText>, value: &mut T, values: impl IntoIterator<Item=T>, reset_value: T) {
+    self.combobox_row(label, id_source, Some(suffix), value, values, reset_value)
   }
 
 

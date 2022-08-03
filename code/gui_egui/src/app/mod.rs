@@ -256,6 +256,7 @@ impl eframe::App for App {
     let mut show_settings_window = self.show_settings_window;
     Window::new("Settings")
       .open(&mut show_settings_window)
+      .auto_sized()
       .show(ctx, |ui| { self.show_settings(ui, ctx) });
     self.show_settings_window = show_settings_window;
     Window::new("GUI Settings")

@@ -11,189 +11,6 @@ use walkdir::WalkDir;
 use crate::data::blocks::*;
 use crate::data::xml::{NodeExt, read_string_from_file};
 
-// All block definitions
-
-#[derive(Error, Debug)]
-pub enum Error {
-  #[error("Could not read CubeBlocks file '{file}'")]
-  ReadCubeBlocksFile { file: PathBuf, source: std::io::Error },
-  #[error("Could not XML parse CubeBlocks file '{file}'")]
-  ParseCubeBlocksFile { file: PathBuf, source: roxmltree::Error },
-  #[error("Could not read EntityComponents file '{file}'")]
-  ReadEntityComponentsFile { file: PathBuf, source: std::io::Error },
-  #[error("Could not XML parse EntityComponents file '{file}'")]
-  ParseEntityComponentsFile { file: PathBuf, source: roxmltree::Error },
-  #[error("Unexpected XML structure")]
-  XmlStructure(Backtrace),
-}
-
-impl Blocks {
-  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P, localization: &Localization) -> Result<Self, Error> {
-    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"), localization)
-  }
-
-  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P, localization: &Localization) -> Result<Self, Error> {
-    let hide_block_names = HashSet::from_iter([
-      // Small grid storage
-      "Weapon Rack",
-      "Control Seat",
-      "Passenger Seat Offset",
-      "Passenger Bench",
-      // Large grid storage
-      "Armory",
-      "Armory Lockers",
-      "Lockers",
-      "Large Industrial Cargo Container",
-      "Weapon Rack",
-      "Control Station",
-      // Small and large grid storage
-      "Passenger Seat",
-      // Small and large grid thrusters
-      "Warfare Battery",
-      "Industrial Hydrogen Tank",
-    ]);
-    let hide_block_regexes = RegexSet::new(&[
-      // Small and large grid thrusters
-      "Industrial .+ Thruster",
-      "Sci-Fi .+ Thruster",
-      ".*Warfare .+ Thruster",
-      ".+ Warfare Reactor",
-      // Small and large grid wheel suspensions
-      "Offroad Wheel Suspension .+",
-      "Wheel Suspension .+ Right",
-    ]).unwrap();
-    let rename_blocks = Vec::from_iter([
-      ("Wheel Suspension (.+) Left", "Wheel Suspension $1"),
-    ].into_iter().map(|(r, rp)| (Regex::new(r).unwrap(), rp)));
-
-    let entity_components_file_path = entity_components_file_path.as_ref();
-    let entity_components_string = read_string_from_file(entity_components_file_path)
-      .map_err(|source| Error::ReadEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
-    let entity_components_doc = Document::parse(&entity_components_string)
-      .map_err(|source| Error::ParseEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
-    let entity_components_root_node = entity_components_doc.root().first_element_child()
-      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
-    let entity_components_node = entity_components_root_node.child_elem("EntityComponents")
-      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
-
-    let mut batteries: Vec<Block<Battery>> = Vec::new();
-    let mut thrusters: Vec<Block<Thruster>> = Vec::new();
-    let mut wheel_suspensions: Vec<Block<WheelSuspension>> = Vec::new();
-    let mut hydrogen_engines: Vec<Block<HydrogenEngine>> = Vec::new();
-    let mut reactors: Vec<Block<Reactor>> = Vec::new();
-    let mut generators: Vec<Block<Generator>> = Vec::new();
-    let mut hydrogen_tanks: Vec<Block<HydrogenTank>> = Vec::new();
-    let mut containers: Vec<Block<Container>> = Vec::new();
-    let mut connectors: Vec<Block<Connector>> = Vec::new();
-    let mut cockpits: Vec<Block<Cockpit>> = Vec::new();
-    let mut drills: Vec<Block<Drill>> = Vec::new();
-
-    let mut index = 0;
-    let cube_blocks_file_paths = WalkDir::new(cube_blocks_search_dir)
-      .into_iter()
-      .filter_map(|de| {
-        if let Ok(de) = de {
-          let path = de.into_path();
-          if !path.extension().map_or(false, |e| e == "sbc") { return None; }
-          if !path.file_name().map_or(false, |n| n.to_string_lossy().contains("CubeBlocks")) { return None; }
-          Some(path)
-        } else {
-          None
-        }
-      });
-    for cube_blocks_file_path in cube_blocks_file_paths {
-      let cube_blocks_file_path = &cube_blocks_file_path;
-      let cube_blocks_string = read_string_from_file(cube_blocks_file_path)
-        .map_err(|source| Error::ReadCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
-      let cube_blocks_doc = Document::parse(&cube_blocks_string)
-        .map_err(|source| Error::ParseCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
-      let definitions_node = cube_blocks_doc.root()
-        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?
-        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?;
-      for def in definitions_node.children_elems("Definition") {
-        let data = BlockData::from_def(&def, index, localization, &hide_block_names, &hide_block_regexes, &rename_blocks);
-        fn add_block<T>(details: T, data: BlockData, vec: &mut Vec<Block<T>>) {
-          let block = Block::new(data, details);
-          vec.push(block);
-        }
-        if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
-          match ty {
-            "MyObjectBuilder_BatteryBlockDefinition" => {
-              add_block(Battery::from_def(&def), data, &mut batteries);
-            }
-            "MyObjectBuilder_ThrustDefinition" => {
-              add_block(Thruster::from_def(&def), data, &mut thrusters);
-            }
-            "MyObjectBuilder_MotorSuspensionDefinition" => {
-              add_block(WheelSuspension::from_def(&def), data, &mut wheel_suspensions);
-            }
-            "MyObjectBuilder_HydrogenEngineDefinition" => {
-              add_block(HydrogenEngine::from_def(&def), data, &mut hydrogen_engines);
-            }
-            "MyObjectBuilder_ReactorDefinition" => {
-              add_block(Reactor::from_def(&def), data, &mut reactors);
-            }
-            "MyObjectBuilder_OxygenGeneratorDefinition" => {
-              add_block(Generator::from_def(&def), data, &mut generators);
-            }
-            "MyObjectBuilder_GasTankDefinition" => {
-              if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
-              add_block(HydrogenTank::from_def(&def), data, &mut hydrogen_tanks);
-            }
-            "MyObjectBuilder_CargoContainerDefinition" => {
-              add_block(Container::from_def(&def, &entity_components_node), data, &mut containers);
-            }
-            "MyObjectBuilder_ShipConnectorDefinition" => {
-              add_block(Connector::from_def(&def, &data), data, &mut connectors);
-            }
-            "MyObjectBuilder_CockpitDefinition" => {
-              add_block(Cockpit::from_def(&def), data, &mut cockpits);
-            }
-            "MyObjectBuilder_ShipDrillDefinition" => {
-              add_block(Drill::from_def(&def, &data), data, &mut drills);
-            }
-            _ => {}
-          }
-        }
-        index += 1;
-      }
-    }
-
-    fn sort_block_vec<T>(vec: &mut Vec<Block<T>>, localization: &Localization) {
-      vec.sort_by_key(|b| b.name(localization).to_string());
-    }
-    sort_block_vec(&mut batteries, localization);
-    sort_block_vec(&mut thrusters, localization);
-    sort_block_vec(&mut wheel_suspensions, localization);
-    sort_block_vec(&mut hydrogen_engines, localization);
-    sort_block_vec(&mut reactors, localization);
-    sort_block_vec(&mut generators, localization);
-    sort_block_vec(&mut hydrogen_tanks, localization);
-    sort_block_vec(&mut containers, localization);
-    sort_block_vec(&mut connectors, localization);
-    sort_block_vec(&mut cockpits, localization);
-    sort_block_vec(&mut drills, localization);
-    fn create_map<T>(vec: Vec<Block<T>>) -> LinkedHashMap<BlockId, Block<T>> {
-      LinkedHashMap::from_iter(vec.into_iter().map(|b| (b.data.id.clone(), b)))
-    }
-    let blocks = Blocks {
-      batteries: create_map(batteries),
-      thrusters: create_map(thrusters),
-      wheel_suspensions: create_map(wheel_suspensions),
-      hydrogen_engines: create_map(hydrogen_engines),
-      reactors: create_map(reactors),
-      generators: create_map(generators),
-      hydrogen_tanks: create_map(hydrogen_tanks),
-      containers: create_map(containers),
-      connectors: create_map(connectors),
-      cockpits: create_map(cockpits),
-      drills: create_map(drills),
-    };
-    Ok(blocks)
-  }
-}
-
-
 // Block definition
 
 impl BlockData {
@@ -266,6 +83,13 @@ impl Battery {
     let input: f64 = def.parse_child_elem("RequiredPowerInput").unwrap().unwrap();
     let output: f64 = def.parse_child_elem("MaxPowerOutput").unwrap().unwrap();
     Battery { capacity, input, output }
+  }
+}
+
+impl JumpDrive {
+  pub fn from_def(def: &Node) -> Self {
+    let input: f64 = def.parse_child_elem("RequiredPowerInput").unwrap().unwrap();
+    JumpDrive { input }
   }
 }
 
@@ -425,5 +249,194 @@ impl Drill {
       operational_power_consumption,
       idle_power_consumption,
     }
+  }
+}
+
+
+// All block definitions
+
+#[derive(Error, Debug)]
+pub enum Error {
+  #[error("Could not read CubeBlocks file '{file}'")]
+  ReadCubeBlocksFile { file: PathBuf, source: std::io::Error },
+  #[error("Could not XML parse CubeBlocks file '{file}'")]
+  ParseCubeBlocksFile { file: PathBuf, source: roxmltree::Error },
+  #[error("Could not read EntityComponents file '{file}'")]
+  ReadEntityComponentsFile { file: PathBuf, source: std::io::Error },
+  #[error("Could not XML parse EntityComponents file '{file}'")]
+  ParseEntityComponentsFile { file: PathBuf, source: roxmltree::Error },
+  #[error("Unexpected XML structure")]
+  XmlStructure(Backtrace),
+}
+
+impl Blocks {
+  pub fn from_se_dir<P: AsRef<Path>>(se_dir_path: P, localization: &Localization) -> Result<Self, Error> {
+    Self::from_sbc_files(se_dir_path.as_ref().join("Content/Data/"), se_dir_path.as_ref().join("Content/Data/EntityComponents.sbc"), localization)
+  }
+
+  pub fn from_sbc_files<P: AsRef<Path>>(cube_blocks_search_dir: P, entity_components_file_path: P, localization: &Localization) -> Result<Self, Error> {
+    let hide_block_names = HashSet::from_iter([
+      // Small grid storage
+      "Weapon Rack",
+      "Control Seat",
+      "Passenger Seat Offset",
+      "Passenger Bench",
+      // Large grid storage
+      "Armory",
+      "Armory Lockers",
+      "Lockers",
+      "Large Industrial Cargo Container",
+      "Weapon Rack",
+      "Control Station",
+      // Small and large grid storage
+      "Passenger Seat",
+      // Small and large grid thrusters
+      "Warfare Battery",
+      "Industrial Hydrogen Tank",
+    ]);
+    let hide_block_regexes = RegexSet::new(&[
+      // Small and large grid thrusters
+      "Industrial .+ Thruster",
+      "Sci-Fi .+ Thruster",
+      ".*Warfare .+ Thruster",
+      ".+ Warfare Reactor",
+      // Small and large grid wheel suspensions
+      "Offroad Wheel Suspension .+",
+      "Wheel Suspension .+ Right",
+    ]).unwrap();
+    let rename_blocks = Vec::from_iter([
+      ("Wheel Suspension (.+) Left", "Wheel Suspension $1"),
+    ].into_iter().map(|(r, rp)| (Regex::new(r).unwrap(), rp)));
+
+    let entity_components_file_path = entity_components_file_path.as_ref();
+    let entity_components_string = read_string_from_file(entity_components_file_path)
+      .map_err(|source| Error::ReadEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
+    let entity_components_doc = Document::parse(&entity_components_string)
+      .map_err(|source| Error::ParseEntityComponentsFile { file: entity_components_file_path.to_path_buf(), source })?;
+    let entity_components_root_node = entity_components_doc.root().first_element_child()
+      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
+    let entity_components_node = entity_components_root_node.child_elem("EntityComponents")
+      .ok_or(Error::XmlStructure(Backtrace::capture()))?;
+
+    let mut batteries: Vec<Block<Battery>> = Vec::new();
+    let mut jump_drives: Vec<Block<JumpDrive>> = Vec::new();
+    let mut thrusters: Vec<Block<Thruster>> = Vec::new();
+    let mut wheel_suspensions: Vec<Block<WheelSuspension>> = Vec::new();
+    let mut hydrogen_engines: Vec<Block<HydrogenEngine>> = Vec::new();
+    let mut reactors: Vec<Block<Reactor>> = Vec::new();
+    let mut generators: Vec<Block<Generator>> = Vec::new();
+    let mut hydrogen_tanks: Vec<Block<HydrogenTank>> = Vec::new();
+    let mut containers: Vec<Block<Container>> = Vec::new();
+    let mut connectors: Vec<Block<Connector>> = Vec::new();
+    let mut cockpits: Vec<Block<Cockpit>> = Vec::new();
+    let mut drills: Vec<Block<Drill>> = Vec::new();
+
+    let mut index = 0;
+    let cube_blocks_file_paths = WalkDir::new(cube_blocks_search_dir)
+      .into_iter()
+      .filter_map(|de| {
+        if let Ok(de) = de {
+          let path = de.into_path();
+          if !path.extension().map_or(false, |e| e == "sbc") { return None; }
+          if !path.file_name().map_or(false, |n| n.to_string_lossy().contains("CubeBlocks")) { return None; }
+          Some(path)
+        } else {
+          None
+        }
+      });
+    for cube_blocks_file_path in cube_blocks_file_paths {
+      let cube_blocks_file_path = &cube_blocks_file_path;
+      let cube_blocks_string = read_string_from_file(cube_blocks_file_path)
+        .map_err(|source| Error::ReadCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
+      let cube_blocks_doc = Document::parse(&cube_blocks_string)
+        .map_err(|source| Error::ParseCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
+      let definitions_node = cube_blocks_doc.root()
+        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?
+        .first_element_child().ok_or(Error::XmlStructure(Backtrace::capture()))?;
+      for def in definitions_node.children_elems("Definition") {
+        let data = BlockData::from_def(&def, index, localization, &hide_block_names, &hide_block_regexes, &rename_blocks);
+        fn add_block<T>(details: T, data: BlockData, vec: &mut Vec<Block<T>>) {
+          let block = Block::new(data, details);
+          vec.push(block);
+        }
+        if let Some(ty) = def.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
+          match ty {
+            "MyObjectBuilder_BatteryBlockDefinition" => {
+              add_block(Battery::from_def(&def), data, &mut batteries);
+            }
+            "MyObjectBuilder_JumpDriveDefinition" => {
+              add_block(JumpDrive::from_def(&def), data, &mut jump_drives);
+            }
+            "MyObjectBuilder_ThrustDefinition" => {
+              add_block(Thruster::from_def(&def), data, &mut thrusters);
+            }
+            "MyObjectBuilder_MotorSuspensionDefinition" => {
+              add_block(WheelSuspension::from_def(&def), data, &mut wheel_suspensions);
+            }
+            "MyObjectBuilder_HydrogenEngineDefinition" => {
+              add_block(HydrogenEngine::from_def(&def), data, &mut hydrogen_engines);
+            }
+            "MyObjectBuilder_ReactorDefinition" => {
+              add_block(Reactor::from_def(&def), data, &mut reactors);
+            }
+            "MyObjectBuilder_OxygenGeneratorDefinition" => {
+              add_block(Generator::from_def(&def), data, &mut generators);
+            }
+            "MyObjectBuilder_GasTankDefinition" => {
+              if def.child_elem("StoredGasId").unwrap().parse_child_elem::<String>("SubtypeId").unwrap().unwrap() != "Hydrogen".to_owned() { continue }
+              add_block(HydrogenTank::from_def(&def), data, &mut hydrogen_tanks);
+            }
+            "MyObjectBuilder_CargoContainerDefinition" => {
+              add_block(Container::from_def(&def, &entity_components_node), data, &mut containers);
+            }
+            "MyObjectBuilder_ShipConnectorDefinition" => {
+              add_block(Connector::from_def(&def, &data), data, &mut connectors);
+            }
+            "MyObjectBuilder_CockpitDefinition" => {
+              add_block(Cockpit::from_def(&def), data, &mut cockpits);
+            }
+            "MyObjectBuilder_ShipDrillDefinition" => {
+              add_block(Drill::from_def(&def, &data), data, &mut drills);
+            }
+            _ => {}
+          }
+        }
+        index += 1;
+      }
+    }
+
+    fn sort_block_vec<T>(vec: &mut Vec<Block<T>>, localization: &Localization) {
+      vec.sort_by_key(|b| b.name(localization).to_string());
+    }
+    sort_block_vec(&mut batteries, localization);
+    sort_block_vec(&mut jump_drives, localization);
+    sort_block_vec(&mut thrusters, localization);
+    sort_block_vec(&mut wheel_suspensions, localization);
+    sort_block_vec(&mut hydrogen_engines, localization);
+    sort_block_vec(&mut reactors, localization);
+    sort_block_vec(&mut generators, localization);
+    sort_block_vec(&mut hydrogen_tanks, localization);
+    sort_block_vec(&mut containers, localization);
+    sort_block_vec(&mut connectors, localization);
+    sort_block_vec(&mut cockpits, localization);
+    sort_block_vec(&mut drills, localization);
+    fn create_map<T>(vec: Vec<Block<T>>) -> LinkedHashMap<BlockId, Block<T>> {
+      LinkedHashMap::from_iter(vec.into_iter().map(|b| (b.data.id.clone(), b)))
+    }
+    let blocks = Blocks {
+      batteries: create_map(batteries),
+      jump_drives: create_map(jump_drives),
+      thrusters: create_map(thrusters),
+      wheel_suspensions: create_map(wheel_suspensions),
+      hydrogen_engines: create_map(hydrogen_engines),
+      reactors: create_map(reactors),
+      generators: create_map(generators),
+      hydrogen_tanks: create_map(hydrogen_tanks),
+      containers: create_map(containers),
+      connectors: create_map(connectors),
+      cockpits: create_map(cockpits),
+      drills: create_map(drills),
+    };
+    Ok(blocks)
   }
 }

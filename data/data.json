@@ -112,6 +112,32 @@
         }
       }
     },
+    "jump_drives": {
+      "JumpDrive.LargeJumpDrive": {
+        "data": {
+          "id": "JumpDrive.LargeJumpDrive",
+          "name": "DisplayName_Block_JumpDrive",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 60.0,
+            "MetalGrid": 50.0,
+            "GravityGenerator": 20.0,
+            "Detector": 20.0,
+            "PowerCell": 120.0,
+            "Superconductor": 1000.0,
+            "Computer": 300.0,
+            "Construction": 40.0
+          },
+          "has_physics": true,
+          "index": 712,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "input": 32.0
+        }
+      }
+    },
     "thrusters": {
       "Thrust.LargeBlockSmallAtmosphericThrust": {
         "data": {
