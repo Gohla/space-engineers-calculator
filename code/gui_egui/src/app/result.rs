@@ -52,8 +52,8 @@ impl App {
       ui.label("No grav.");
       ui.label("");
       ui.end_row();
-      for direction in Direction::iter() {
-        ui.acceleration_row(*direction, &self.calculated.thruster_acceleration, ctx);
+      for direction in Direction::items() {
+        ui.acceleration_row(direction, &self.calculated.thruster_acceleration, ctx);
       }
     });
     ui.open_header_with_grid("Wheel Force", |ui| {

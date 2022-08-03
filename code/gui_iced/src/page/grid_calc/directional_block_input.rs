@@ -42,7 +42,7 @@ impl DirectionalBlockInput {
         let id = block.id.clone();
         let label = block.name(&data.localization).to_owned();
         let (_, inner_map) = map.entry(id).or_insert((label, InnerMap::default()));
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           let default_count = default_calculator.directional_blocks.get(direction).map_or(0, |map| map.get(&block.id).map_or(0, |c| *c));
           let loaded_count = loaded_calculator.directional_blocks.get(direction).map_or(0, |map| map.get(&block.id).map_or(0, |c| *c));
           let data_bind = DataBind::new(default_count, format!("{}", default_count), input_width, "#", format!("{}", loaded_count));
@@ -94,7 +94,7 @@ impl DirectionalBlockInput {
         .align_items(Alignment::Center)
         .push(empty().width(label_width))
         ;
-      for direction in Direction::iter() {
+      for direction in Direction::items() {
         first_row = first_row.push(lbl(format!("{:?}", direction)).width(direction_label_width))
       }
       col().push(first_row)

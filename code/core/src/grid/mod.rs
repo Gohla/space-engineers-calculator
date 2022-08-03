@@ -11,9 +11,9 @@ use crate::data::Data;
 
 // Direction
 
-#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
+#[derive(Default, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Serialize, Deserialize, Debug)]
 pub enum Direction {
-  Up,
+  #[default] Up,
   Down,
   Front,
   Back,
@@ -23,10 +23,10 @@ pub enum Direction {
 
 impl Direction {
   #[inline]
-  pub fn iter() -> impl Iterator<Item=&'static Direction> {
+  pub fn items() -> impl IntoIterator<Item=Self> {
     use Direction::*;
-    const DIRECTIONS: [Direction; 6] = [Up, Down, Front, Back, Left, Right];
-    DIRECTIONS.iter()
+    const ITEMS: [Direction; 6] = [Up, Down, Front, Back, Left, Right];
+    ITEMS.into_iter()
   }
 
   #[inline]
@@ -102,7 +102,7 @@ impl<T> PerDirection<T> {
 
   #[inline]
   pub fn iter_with_direction(&self) -> impl Iterator<Item=(Direction, &T)> {
-    Direction::iter().map(|d| (*d, &self[*d]))
+    Direction::items().into_iter().map(|d| (d, &self[d]))
   }
 }
 
@@ -135,7 +135,7 @@ pub enum BatteryMode {
 
 impl BatteryMode {
   #[inline]
-  pub fn into_iter() -> impl IntoIterator<Item=BatteryMode> {
+  pub fn items() -> impl IntoIterator<Item=Self> {
     use BatteryMode::*;
     const ITEMS: [BatteryMode; 3] = [Auto, Recharge, Discharge];
     ITEMS.into_iter()
@@ -165,7 +165,8 @@ impl Display for BatteryMode {
   }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[serde(default)]
 pub struct GridCalculator {
   /// Gravity multiplier 0-* (g)
   pub gravity_multiplier: f64,

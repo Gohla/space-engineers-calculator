@@ -312,7 +312,7 @@ impl Page {
           .push(empty())
           .push(empty())
           ;
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           column = column.push(val(format!("{:?}", direction)));
         }
         column
@@ -322,7 +322,7 @@ impl Page {
           .push(lbl("Filled").horizontal_alignment(alignment::Horizontal::Center))
           .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_gravity)))
           }
@@ -334,7 +334,7 @@ impl Page {
           .push(empty())
           .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_filled_no_gravity)))
           }
@@ -346,7 +346,7 @@ impl Page {
           .push(lbl("Empty").horizontal_alignment(alignment::Horizontal::Center))
           .push(lbl("Gravity").horizontal_alignment(alignment::Horizontal::Center))
           ;
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_gravity)))
           }
@@ -358,7 +358,7 @@ impl Page {
           .push(empty())
           .push(lbl("No grav.").horizontal_alignment(alignment::Horizontal::Center))
           ;
-        for direction in Direction::iter() {
+        for direction in Direction::items() {
           if let Some(acceleration) = result.thruster_acceleration.get(direction) {
             column = column.push(val(format!("{:.2}", acceleration.acceleration_empty_no_gravity)))
           }
