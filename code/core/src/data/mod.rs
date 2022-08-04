@@ -56,26 +56,39 @@ impl Data {
 // Extraction
 
 #[cfg(feature = "extract")]
-impl Data {
-  pub fn extract_from_se_dir<P: AsRef<std::path::Path>>(se_dir_path: P) -> Result<Self, ExtractError> {
-    let se_dir_path = se_dir_path.as_ref();
-    let localization = Localization::from_se_dir(se_dir_path)?;
-    let blocks = Blocks::from_se_dir(se_dir_path, &localization)?;
-    let components = Components::from_se_dir(se_dir_path)?;
-    let gas_properties = GasProperties::from_se_dir(se_dir_path)?;
-    Ok(Self { blocks, components, gas_properties, localization })
-  }
-}
+pub mod extract {
+  use std::path::Path;
 
-#[cfg(feature = "extract")]
-#[derive(Error, Debug)]
-pub enum ExtractError {
-  #[error("Could not read blocks")]
-  ReadBlocks(#[from] blocks::extract::Error),
-  #[error("Could not read components")]
-  ReadComponents(#[from] components::extract::Error),
-  #[error("Could not read gas properties")]
-  ReadGasProperties(#[from] gas_properties::extract::Error),
-  #[error("Could not read localization")]
-  ReadLocalization(#[from] localization::extract::Error),
+  use thiserror::Error;
+
+  use crate::data::{blocks, components, Data, gas_properties, localization};
+  use crate::data::blocks::Blocks;
+  use crate::data::components::Components;
+  use crate::data::gas_properties::GasProperties;
+  use crate::data::localization::Localization;
+
+  impl Data {
+    pub fn extract_from_se_dir(
+      se_dir_path: impl AsRef<Path>
+    ) -> Result<Self, ExtractError> {
+      let se_dir_path = se_dir_path.as_ref();
+      let localization = Localization::from_se_dir(se_dir_path)?;
+      let blocks = Blocks::from_se_dir(se_dir_path, &localization)?;
+      let components = Components::from_se_dir(se_dir_path)?;
+      let gas_properties = GasProperties::from_se_dir(se_dir_path)?;
+      Ok(Self { blocks, components, gas_properties, localization })
+    }
+  }
+
+  #[derive(Error, Debug)]
+  pub enum ExtractError {
+    #[error("Could not read blocks")]
+    ReadBlocks(#[from] blocks::extract::Error),
+    #[error("Could not read components")]
+    ReadComponents(#[from] components::extract::Error),
+    #[error("Could not read gas properties")]
+    ReadGasProperties(#[from] gas_properties::extract::Error),
+    #[error("Could not read localization")]
+    ReadLocalization(#[from] localization::extract::Error),
+  }
 }
