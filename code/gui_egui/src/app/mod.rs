@@ -1,5 +1,7 @@
+use std::collections::HashMap;
+
 use eframe::epaint::Rgba;
-use egui::{Align, Align2, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals, Window};
+use egui::{Align, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals, Window};
 use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
 use thousands::SeparatorPolicy;
@@ -11,6 +13,7 @@ use secalc_core::grid::{GridCalculated, GridCalculator};
 mod calculator;
 mod result;
 mod settings;
+mod save_load;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -22,6 +25,11 @@ pub struct App {
   #[serde(skip)] style_default: Style,
 
   #[serde(skip)] enable_gui: bool,
+  #[serde(skip)] show_load_window: bool,
+  #[serde(skip)] show_load_confirm_window: bool,
+  #[serde(skip)] show_delete_confirm_window: Option<String>,
+  #[serde(skip)] show_save_as_window: Option<String>,
+  #[serde(skip)] show_save_as_confirm_window: Option<String>,
   #[serde(skip)] show_reset_confirm_window: bool,
 
   #[serde(skip)] show_settings_window: bool,
@@ -35,6 +43,10 @@ pub struct App {
 
   calculator: GridCalculator,
   grid_size: GridSize,
+
+  saved_calculators: HashMap<String, GridCalculator>,
+  current_calculator: Option<String>,
+  current_calculator_saved: bool,
 }
 
 impl App {
@@ -114,6 +126,11 @@ impl Default for App {
       style_default: Style::default(),
 
       enable_gui: true,
+      show_load_window: false,
+      show_load_confirm_window: false,
+      show_delete_confirm_window: None,
+      show_save_as_window: None,
+      show_save_as_confirm_window: None,
       show_reset_confirm_window: false,
       increase_contrast: false,
 
@@ -127,6 +144,10 @@ impl Default for App {
 
       calculator: GridCalculator::default(),
       grid_size: GridSize::default(),
+
+      saved_calculators: Default::default(),
+      current_calculator: None,
+      current_calculator_saved: false
     }
   }
 }
@@ -147,11 +168,39 @@ impl eframe::App for App {
                 menu::bar(ui, |ui| {
                   ui.menu_button("Grid", |ui| {
                     if ui.button("Save").clicked() {
+                      if let Some(name) = &self.current_calculator {
+                        self.saved_calculators.insert(name.clone(), self.calculator.clone());
+                        self.current_calculator_saved = true;
+                      } else {
+                        self.enable_gui = false;
+                        self.show_save_as_window = Some(String::new());
+                      }
                       if let Some(storage) = frame.storage_mut() {
                         self.save(storage);
                       }
                       ui.close_menu();
                     }
+                    if ui.button("Save As").clicked() {
+                      self.enable_gui = false;
+                      let name = if let Some(name) = &self.current_calculator {
+                        name.clone()
+                      } else {
+                        String::new()
+                      };
+                      self.show_save_as_window = Some(name);
+                      ui.close_menu();
+                    }
+                    if ui.button("Load").clicked() {
+                      if !self.current_calculator_saved {
+                        self.enable_gui = false;
+                        self.show_load_confirm_window = true;
+                      } else {
+                        self.enable_gui = false;
+                        self.show_load_window = true;
+                      }
+                      ui.close_menu();
+                    }
+                    ui.separator();
                     if ui.button("Reset").clicked() {
                       self.enable_gui = false;
                       self.show_reset_confirm_window = true;
@@ -162,17 +211,18 @@ impl eframe::App for App {
                     if ui.checkbox(&mut self.show_settings_window, "Settings").clicked() {
                       ui.close_menu();
                     }
-                  });
-                  ui.menu_button("Debug", |ui| {
-                    if ui.checkbox(&mut self.show_debug_gui_settings_window, "GUI Settings").clicked() {
-                      ui.close_menu();
-                    }
-                    if ui.checkbox(&mut self.show_debug_gui_inspection_window, "GUI Inspections").clicked() {
-                      ui.close_menu();
-                    }
-                    if ui.checkbox(&mut self.show_debug_gui_memory_window, "GUI Memory").clicked() {
-                      ui.close_menu();
-                    }
+                    ui.separator();
+                    ui.menu_button("Debug", |ui| {
+                      if ui.checkbox(&mut self.show_debug_gui_settings_window, "GUI Settings").clicked() {
+                        ui.close_menu();
+                      }
+                      if ui.checkbox(&mut self.show_debug_gui_inspection_window, "GUI Inspections").clicked() {
+                        ui.close_menu();
+                      }
+                      if ui.checkbox(&mut self.show_debug_gui_memory_window, "GUI Memory").clicked() {
+                        ui.close_menu();
+                      }
+                    });
                   });
                   ui.with_layout(Layout::right_to_left(), |ui| {
                     if self.dark_mode {
@@ -209,6 +259,7 @@ impl eframe::App for App {
                       .show(ui, |ui| {
                         if self.show_calculator(ui) {
                           self.calculate();
+                          self.current_calculator_saved = false;
                         }
                       });
                   });
@@ -230,27 +281,12 @@ impl eframe::App for App {
     });
 
     // Modal windows
-    if self.show_reset_confirm_window {
-      Window::new("Confirm Reset")
-        .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
-        .collapsible(false)
-        .auto_sized()
-        .show(ctx, |ui| {
-          ui.label("Are you sure you want to reset all grid data (left-side panel) to their defaults? Any unsaved data will be lost.");
-          ui.horizontal(|ui| {
-            if ui.button("Reset").clicked() {
-              self.enable_gui = true;
-              self.show_reset_confirm_window = false;
-              self.calculator = self.calculator_default.clone();
-              self.calculate();
-            }
-            if ui.button("Cancel").clicked() {
-              self.enable_gui = true;
-              self.show_reset_confirm_window = false;
-            }
-          });
-        });
-    }
+    self.show_load_window(ctx, frame);
+    self.show_load_confirm_window(ctx);
+    self.show_delete_confirm_window(ctx);
+    self.show_save_as_window(ctx, frame);
+    self.show_save_as_confirm_window(ctx, frame);
+    self.show_reset_confirm_window(ctx);
 
     // Non-modal windows
     let mut show_settings_window = self.show_settings_window;

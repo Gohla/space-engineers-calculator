@@ -1,10 +1,12 @@
-use egui::{CollapsingHeader, CollapsingResponse, Grid, InnerResponse, Ui};
+use egui::{Button, CollapsingHeader, CollapsingResponse, Color32, Grid, InnerResponse, Response, Stroke, Ui, WidgetText};
 
 pub trait UiExtensions {
   fn open_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
   fn open_header<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<R>;
 
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R>;
+
+  fn danger_button(&mut self, text: impl Into<WidgetText>) -> Response;
 }
 
 impl UiExtensions for Ui {
@@ -20,5 +22,9 @@ impl UiExtensions for Ui {
 
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R> {
     Grid::new(id_source).striped(true).min_col_width(1.0).show(self, add_contents)
+  }
+
+  fn danger_button(&mut self, text: impl Into<WidgetText>) -> Response {
+    self.add(Button::new(text).stroke(Stroke::new(0.5, Color32::RED)))
   }
 }
