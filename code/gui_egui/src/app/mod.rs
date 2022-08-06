@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use eframe::epaint::Rgba;
-use egui::{Align, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals, Window};
+use egui::{Align, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals};
 use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
 use thousands::SeparatorPolicy;
@@ -37,6 +37,7 @@ pub struct App {
   #[serde(skip)] show_debug_gui_inspection_window: bool,
   #[serde(skip)] show_debug_gui_memory_window: bool,
 
+  enabled_mod_ids: HashSet<u64>,
   dark_mode: bool,
   font_size_modifier: i32,
   increase_contrast: bool,
@@ -132,15 +133,16 @@ impl Default for App {
       show_save_as_window: None,
       show_save_as_confirm_window: None,
       show_reset_confirm_window: false,
-      increase_contrast: false,
 
       show_settings_window: false,
       show_debug_gui_settings_window: false,
       show_debug_gui_inspection_window: false,
       show_debug_gui_memory_window: false,
 
+      enabled_mod_ids: Default::default(),
       dark_mode: false,
       font_size_modifier: 0,
+      increase_contrast: false,
 
       calculator: GridCalculator::default(),
       grid_size: GridSize::default(),
@@ -279,31 +281,9 @@ impl eframe::App for App {
           });
       });
     });
-
-    // Modal windows
-    self.show_load_window(ctx, frame);
-    self.show_load_confirm_window(ctx);
-    self.show_delete_confirm_window(ctx);
-    self.show_save_as_window(ctx, frame);
-    self.show_save_as_confirm_window(ctx, frame);
-    self.show_reset_confirm_window(ctx);
-
-    // Non-modal windows
-    let mut show_settings_window = self.show_settings_window;
-    Window::new("Settings")
-      .open(&mut show_settings_window)
-      .auto_sized()
-      .show(ctx, |ui| { self.show_settings(ui, ctx) });
-    self.show_settings_window = show_settings_window;
-    Window::new("GUI Settings")
-      .open(&mut self.show_debug_gui_settings_window)
-      .show(ctx, |ui| { ctx.settings_ui(ui) });
-    Window::new("GUI Inspection")
-      .open(&mut self.show_debug_gui_inspection_window)
-      .show(ctx, |ui| { ctx.inspection_ui(ui) });
-    Window::new("GUI Memory")
-      .open(&mut self.show_debug_gui_memory_window)
-      .show(ctx, |ui| { ctx.memory_ui(ui) });
+    // Windows
+    self.show_save_load_reset_windows(ctx, frame);
+    self.show_settings_windows(ctx);
   }
 
   fn save(&mut self, storage: &mut dyn eframe::Storage) {

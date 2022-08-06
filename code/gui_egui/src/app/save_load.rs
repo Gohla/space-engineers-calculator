@@ -6,7 +6,16 @@ use crate::App;
 use crate::widget::UiExtensions;
 
 impl App {
-  pub fn show_load_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+  pub fn show_save_load_reset_windows(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+    self.show_load_window(ctx, frame);
+    self.show_load_confirm_window(ctx);
+    self.show_delete_confirm_window(ctx);
+    self.show_save_as_window(ctx, frame);
+    self.show_save_as_confirm_window(ctx, frame);
+    self.show_reset_confirm_window(ctx);
+  }
+  
+  fn show_load_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
     if self.show_load_window {
       Window::new("Load")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -70,7 +79,7 @@ impl App {
     }
   }
 
-  pub fn show_load_confirm_window(&mut self, ctx: &Context) {
+  fn show_load_confirm_window(&mut self, ctx: &Context) {
     if self.show_load_confirm_window {
       Window::new("Confirm Load")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -93,7 +102,7 @@ impl App {
     }
   }
 
-  pub fn show_delete_confirm_window(&mut self, ctx: &Context) {
+  fn show_delete_confirm_window(&mut self, ctx: &Context) {
     if self.show_delete_confirm_window.is_some() {
       Window::new("Confirm Delete")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -125,7 +134,7 @@ impl App {
     }
   }
 
-  pub fn show_save_as_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+  fn show_save_as_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
     if self.show_save_as_window.is_some() {
       Window::new("Save As")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -167,7 +176,7 @@ impl App {
     }
   }
 
-  pub fn show_save_as_confirm_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+  fn show_save_as_confirm_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
     if self.show_save_as_confirm_window.is_some() {
       Window::new("Confirm Save")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])
@@ -200,7 +209,7 @@ impl App {
     }
   }
 
-  pub fn show_reset_confirm_window(&mut self, ctx: &Context) {
+  fn show_reset_confirm_window(&mut self, ctx: &Context) {
     if self.show_reset_confirm_window {
       Window::new("Confirm Reset")
         .anchor(Align2::CENTER_CENTER, [0.0, 0.0])

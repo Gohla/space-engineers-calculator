@@ -19,6 +19,9 @@ impl Mods {
 
   #[inline]
   pub fn get(&self, id: &u64) -> Option<&Mod> { self.mods.get(id) }
+
+  #[inline]
+  pub fn iter(&self) -> impl Iterator<Item=&Mod> { self.mods.values() }
 }
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]

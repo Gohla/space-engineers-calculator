@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 
@@ -341,38 +342,42 @@ pub struct Blocks {
 }
 
 impl Blocks {
-  pub fn thruster_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.thrusters.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
+  #[inline]
+  pub fn thruster_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.thrusters.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
   }
-
-  pub fn storage_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.containers.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
-      .chain(self.connectors.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data))
-      .chain(self.cockpits.values().filter(move |b| filter(b, grid_size) && b.has_inventory).map(|b| &b.data))
+  #[inline]
+  pub fn storage_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.containers.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
+      .chain(self.connectors.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
+      .chain(self.cockpits.values().filter(move |b| filter(b, grid_size, enabled_mod_ids) && b.has_inventory).map(|b| &b.data))
   }
-
-  pub fn power_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.hydrogen_engines.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
-      .chain(self.reactors.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data))
-      .chain(self.batteries.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data))
+  #[inline]
+  pub fn power_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.hydrogen_engines.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
+      .chain(self.reactors.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
+      .chain(self.batteries.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
   }
-
-  pub fn hydrogen_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.generators.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
-      .chain(self.hydrogen_tanks.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data))
+  #[inline]
+  pub fn hydrogen_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.generators.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
+      .chain(self.hydrogen_tanks.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
   }
-
-  pub fn ship_tool_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.drills.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
+  #[inline]
+  pub fn ship_tool_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.drills.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
   }
-
-  pub fn wheel_suspension_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.wheel_suspensions.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
+  #[inline]
+  pub fn wheel_suspension_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.wheel_suspensions.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
   }
-
-  pub fn jump_drive_blocks(&self, grid_size: GridSize) -> impl Iterator<Item=&BlockData> {
-    self.jump_drives.values().filter(move |b| filter(b, grid_size)).map(|b| &b.data)
+  #[inline]
+  pub fn jump_drive_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.jump_drives.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
   }
 }
 
-fn filter<T>(b: &Block<T>, grid_size: GridSize) -> bool { !b.data.hidden && b.data.size == grid_size }
+#[inline]
+fn filter<T>(b: &Block<T>, grid_size: GridSize, enabled_mod_ids: &HashSet<u64>) -> bool {
+  !b.data.hidden && b.data.size == grid_size && b.data.mod_id.map(|i| enabled_mod_ids.contains(&i)).unwrap_or(true)
+}
