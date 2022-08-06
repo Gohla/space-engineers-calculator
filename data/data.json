@@ -5524,9 +5524,9 @@
           "output": 4.0
         }
       },
-      "BatteryBlock.Mafoo_Large_GiantBattery": {
+      "BatteryBlock.Mafoo_Large_GiantBattery@2275681005": {
         "data": {
-          "id": "BatteryBlock.Mafoo_Large_GiantBattery",
+          "id": "BatteryBlock.Mafoo_Large_GiantBattery@2275681005",
           "name": "Giant Battery",
           "size": "Large",
           "components": {
@@ -5547,9 +5547,9 @@
           "output": 230.0
         }
       },
-      "BatteryBlock.Mafoo_Small_GiantBattery": {
+      "BatteryBlock.Mafoo_Small_GiantBattery@2275681005": {
         "data": {
-          "id": "BatteryBlock.Mafoo_Small_GiantBattery",
+          "id": "BatteryBlock.Mafoo_Small_GiantBattery@2275681005",
           "name": "Giant Battery",
           "size": "Small",
           "components": {
@@ -5570,9 +5570,9 @@
           "output": 60.0
         }
       },
-      "BatteryBlock.LargeBlockGiantBatteryBlock": {
+      "BatteryBlock.LargeBlockGiantBatteryBlock@2275681005": {
         "data": {
-          "id": "BatteryBlock.LargeBlockGiantBatteryBlock",
+          "id": "BatteryBlock.LargeBlockGiantBatteryBlock@2275681005",
           "name": "Giant Battery",
           "size": "Large",
           "components": {
@@ -5593,9 +5593,9 @@
           "output": 230.0
         }
       },
-      "BatteryBlock.SmallBlockGiantBatteryBlock": {
+      "BatteryBlock.SmallBlockGiantBatteryBlock@2275681005": {
         "data": {
-          "id": "BatteryBlock.SmallBlockGiantBatteryBlock",
+          "id": "BatteryBlock.SmallBlockGiantBatteryBlock@2275681005",
           "name": "Giant Battery",
           "size": "Small",
           "components": {
@@ -5616,9 +5616,9 @@
           "output": 60.0
         }
       },
-      "BatteryBlock.Mafoo_Large_LargeBattery": {
+      "BatteryBlock.Mafoo_Large_LargeBattery@2275681005": {
         "data": {
-          "id": "BatteryBlock.Mafoo_Large_LargeBattery",
+          "id": "BatteryBlock.Mafoo_Large_LargeBattery@2275681005",
           "name": "Large Battery",
           "size": "Large",
           "components": {
@@ -5639,9 +5639,9 @@
           "output": 110.0
         }
       },
-      "BatteryBlock.Mafoo_Small_LargeBattery": {
+      "BatteryBlock.Mafoo_Small_LargeBattery@2275681005": {
         "data": {
-          "id": "BatteryBlock.Mafoo_Small_LargeBattery",
+          "id": "BatteryBlock.Mafoo_Small_LargeBattery@2275681005",
           "name": "Large Battery",
           "size": "Small",
           "components": {
@@ -5662,9 +5662,9 @@
           "output": 6.0
         }
       },
-      "BatteryBlock.LargeBlockLargeBatteryBlock": {
+      "BatteryBlock.LargeBlockLargeBatteryBlock@2275681005": {
         "data": {
-          "id": "BatteryBlock.LargeBlockLargeBatteryBlock",
+          "id": "BatteryBlock.LargeBlockLargeBatteryBlock@2275681005",
           "name": "Large Battery",
           "size": "Large",
           "components": {
@@ -5685,9 +5685,9 @@
           "output": 110.0
         }
       },
-      "BatteryBlock.SmallBlockLargeBatteryBlock": {
+      "BatteryBlock.SmallBlockLargeBatteryBlock@2275681005": {
         "data": {
-          "id": "BatteryBlock.SmallBlockLargeBatteryBlock",
+          "id": "BatteryBlock.SmallBlockLargeBatteryBlock@2275681005",
           "name": "Large Battery",
           "size": "Small",
           "components": {
@@ -5804,9 +5804,9 @@
           "input": 32.0
         }
       },
-      "JumpDrive.AQD_SG_Jumpdrive": {
+      "JumpDrive.AQD_SG_Jumpdrive@2678657382": {
         "data": {
-          "id": "JumpDrive.AQD_SG_Jumpdrive",
+          "id": "JumpDrive.AQD_SG_Jumpdrive@2678657382",
           "name": "DisplayName_Block_JumpDrive",
           "size": "Small",
           "components": {
@@ -6375,9 +6375,9 @@
           "needs_atmosphere_for_influence": false
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_15x_Large": {
+      "Thrust.propeller_2_blade_forward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_15x_Large",
+          "id": "Thrust.propeller_2_blade_forward_silver_15x_Large@1463667637",
           "name": "Prop_L_2blade_silver_forw",
           "size": "Large",
           "components": {
@@ -6406,9 +6406,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_15x_Large": {
+      "Thrust.propeller_2_blade_forward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_15x_Large",
+          "id": "Thrust.propeller_2_blade_forward_black_15x_Large@1463667637",
           "name": "Prop_L_2blade_black_forw",
           "size": "Large",
           "components": {
@@ -6437,9 +6437,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_15x_Large": {
+      "Thrust.propeller_2_blade_backward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_15x_Large",
+          "id": "Thrust.propeller_2_blade_backward_silver_15x_Large@1463667637",
           "name": "Prop_L_2blade_silver_backw",
           "size": "Large",
           "components": {
@@ -6468,9 +6468,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_15x_Large": {
+      "Thrust.propeller_2_blade_backward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_15x_Large",
+          "id": "Thrust.propeller_2_blade_backward_black_15x_Large@1463667637",
           "name": "Prop_L_2blade_black_backw",
           "size": "Large",
           "components": {
@@ -6499,9 +6499,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_15x_Small": {
+      "Thrust.propeller_2_blade_forward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_15x_Small",
+          "id": "Thrust.propeller_2_blade_forward_silver_15x_Small@1463667637",
           "name": "Prop_L_2blade_silver_forw",
           "size": "Small",
           "components": {
@@ -6530,9 +6530,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_15x_Small": {
+      "Thrust.propeller_2_blade_forward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_15x_Small",
+          "id": "Thrust.propeller_2_blade_forward_black_15x_Small@1463667637",
           "name": "Prop_L_2blade_black_forw",
           "size": "Small",
           "components": {
@@ -6561,9 +6561,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_15x_Small": {
+      "Thrust.propeller_2_blade_backward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_15x_Small",
+          "id": "Thrust.propeller_2_blade_backward_silver_15x_Small@1463667637",
           "name": "Prop_L_2blade_silver_backw",
           "size": "Small",
           "components": {
@@ -6592,9 +6592,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_15x_Small": {
+      "Thrust.propeller_2_blade_backward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_15x_Small",
+          "id": "Thrust.propeller_2_blade_backward_black_15x_Small@1463667637",
           "name": "Prop_L_2blade_black_backw",
           "size": "Small",
           "components": {
@@ -6623,9 +6623,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_15x_1x_Large": {
+      "Thrust.propeller_2_blade_forward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_2_blade_forward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_2blade_silver_forw",
           "size": "Large",
           "components": {
@@ -6654,9 +6654,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_15x_1x_Large": {
+      "Thrust.propeller_2_blade_forward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_15x_1x_Large",
+          "id": "Thrust.propeller_2_blade_forward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_2blade_black_forw",
           "size": "Large",
           "components": {
@@ -6685,9 +6685,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_15x_1x_Large": {
+      "Thrust.propeller_2_blade_backward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_2_blade_backward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_2blade_silver_backw",
           "size": "Large",
           "components": {
@@ -6716,9 +6716,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_15x_1x_Large": {
+      "Thrust.propeller_2_blade_backward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_15x_1x_Large",
+          "id": "Thrust.propeller_2_blade_backward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_2blade_black_backw",
           "size": "Large",
           "components": {
@@ -6747,9 +6747,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_15x_1x_Small": {
+      "Thrust.propeller_2_blade_forward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_2_blade_forward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_2blade_silver_forw",
           "size": "Small",
           "components": {
@@ -6778,9 +6778,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_15x_1x_Small": {
+      "Thrust.propeller_2_blade_forward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_15x_1x_Small",
+          "id": "Thrust.propeller_2_blade_forward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_2blade_black_forw",
           "size": "Small",
           "components": {
@@ -6809,9 +6809,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_15x_1x_Small": {
+      "Thrust.propeller_2_blade_backward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_2_blade_backward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_2blade_silver_backw",
           "size": "Small",
           "components": {
@@ -6840,9 +6840,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_15x_1x_Small": {
+      "Thrust.propeller_2_blade_backward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_15x_1x_Small",
+          "id": "Thrust.propeller_2_blade_backward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_2blade_black_backw",
           "size": "Small",
           "components": {
@@ -6871,9 +6871,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_15x_Large": {
+      "Thrust.propeller_3_blade_forward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_15x_Large",
+          "id": "Thrust.propeller_3_blade_forward_silver_15x_Large@1463667637",
           "name": "Prop_L_3blade_silver_forw",
           "size": "Large",
           "components": {
@@ -6902,9 +6902,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_15x_Large": {
+      "Thrust.propeller_3_blade_forward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_15x_Large",
+          "id": "Thrust.propeller_3_blade_forward_black_15x_Large@1463667637",
           "name": "Prop_L_3blade_black_forw",
           "size": "Large",
           "components": {
@@ -6933,9 +6933,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_15x_Large": {
+      "Thrust.propeller_3_blade_backward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_15x_Large",
+          "id": "Thrust.propeller_3_blade_backward_silver_15x_Large@1463667637",
           "name": "Prop_L_3blade_silver_backw",
           "size": "Large",
           "components": {
@@ -6964,9 +6964,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_15x_Large": {
+      "Thrust.propeller_3_blade_backward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_15x_Large",
+          "id": "Thrust.propeller_3_blade_backward_black_15x_Large@1463667637",
           "name": "Prop_L_3blade_black_backw",
           "size": "Large",
           "components": {
@@ -6995,9 +6995,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_15x_Small": {
+      "Thrust.propeller_3_blade_forward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_15x_Small",
+          "id": "Thrust.propeller_3_blade_forward_silver_15x_Small@1463667637",
           "name": "Prop_L_3blade_silver_forw",
           "size": "Small",
           "components": {
@@ -7026,9 +7026,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_15x_Small": {
+      "Thrust.propeller_3_blade_forward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_15x_Small",
+          "id": "Thrust.propeller_3_blade_forward_black_15x_Small@1463667637",
           "name": "Prop_L_3blade_black_forw",
           "size": "Small",
           "components": {
@@ -7057,9 +7057,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_15x_Small": {
+      "Thrust.propeller_3_blade_backward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_15x_Small",
+          "id": "Thrust.propeller_3_blade_backward_silver_15x_Small@1463667637",
           "name": "Prop_L_3blade_silver_backw",
           "size": "Small",
           "components": {
@@ -7088,9 +7088,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_15x_Small": {
+      "Thrust.propeller_3_blade_backward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_15x_Small",
+          "id": "Thrust.propeller_3_blade_backward_black_15x_Small@1463667637",
           "name": "Prop_L_3blade_black_backw",
           "size": "Small",
           "components": {
@@ -7119,9 +7119,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_15x_1x_Large": {
+      "Thrust.propeller_3_blade_forward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_3_blade_forward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_3blade_silver_forw",
           "size": "Large",
           "components": {
@@ -7150,9 +7150,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_15x_1x_Large": {
+      "Thrust.propeller_3_blade_forward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_15x_1x_Large",
+          "id": "Thrust.propeller_3_blade_forward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_3blade_black_forw",
           "size": "Large",
           "components": {
@@ -7181,9 +7181,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_15x_1x_Large": {
+      "Thrust.propeller_3_blade_backward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_3_blade_backward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_3blade_silver_backw",
           "size": "Large",
           "components": {
@@ -7212,9 +7212,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_15x_1x_Large": {
+      "Thrust.propeller_3_blade_backward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_15x_1x_Large",
+          "id": "Thrust.propeller_3_blade_backward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_3blade_black_backw",
           "size": "Large",
           "components": {
@@ -7243,9 +7243,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_15x_1x_Small": {
+      "Thrust.propeller_3_blade_forward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_3_blade_forward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_3blade_silver_forw",
           "size": "Small",
           "components": {
@@ -7274,9 +7274,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_15x_1x_Small": {
+      "Thrust.propeller_3_blade_forward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_15x_1x_Small",
+          "id": "Thrust.propeller_3_blade_forward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_3blade_black_forw",
           "size": "Small",
           "components": {
@@ -7305,9 +7305,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_15x_1x_Small": {
+      "Thrust.propeller_3_blade_backward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_3_blade_backward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_3blade_silver_backw",
           "size": "Small",
           "components": {
@@ -7336,9 +7336,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_15x_1x_Small": {
+      "Thrust.propeller_3_blade_backward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_15x_1x_Small",
+          "id": "Thrust.propeller_3_blade_backward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_3blade_black_backw",
           "size": "Small",
           "components": {
@@ -7367,9 +7367,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_15x_Large": {
+      "Thrust.propeller_4_blade_forward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_15x_Large",
+          "id": "Thrust.propeller_4_blade_forward_silver_15x_Large@1463667637",
           "name": "Prop_L_4blade_silver_forw",
           "size": "Large",
           "components": {
@@ -7398,9 +7398,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_15x_Large": {
+      "Thrust.propeller_4_blade_forward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_15x_Large",
+          "id": "Thrust.propeller_4_blade_forward_black_15x_Large@1463667637",
           "name": "Prop_L_4blade_black_forw",
           "size": "Large",
           "components": {
@@ -7429,9 +7429,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_15x_Large": {
+      "Thrust.propeller_4_blade_backward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_15x_Large",
+          "id": "Thrust.propeller_4_blade_backward_silver_15x_Large@1463667637",
           "name": "Prop_L_4blade_silver_backw",
           "size": "Large",
           "components": {
@@ -7460,9 +7460,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_15x_Large": {
+      "Thrust.propeller_4_blade_backward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_15x_Large",
+          "id": "Thrust.propeller_4_blade_backward_black_15x_Large@1463667637",
           "name": "Prop_L_4blade_black_backw",
           "size": "Large",
           "components": {
@@ -7491,9 +7491,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_15x_Small": {
+      "Thrust.propeller_4_blade_forward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_15x_Small",
+          "id": "Thrust.propeller_4_blade_forward_silver_15x_Small@1463667637",
           "name": "Prop_L_4blade_silver_forw",
           "size": "Small",
           "components": {
@@ -7522,9 +7522,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_15x_Small": {
+      "Thrust.propeller_4_blade_forward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_15x_Small",
+          "id": "Thrust.propeller_4_blade_forward_black_15x_Small@1463667637",
           "name": "Prop_L_4blade_black_forw",
           "size": "Small",
           "components": {
@@ -7553,9 +7553,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_15x_Small": {
+      "Thrust.propeller_4_blade_backward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_15x_Small",
+          "id": "Thrust.propeller_4_blade_backward_silver_15x_Small@1463667637",
           "name": "Prop_L_4blade_silver_backw",
           "size": "Small",
           "components": {
@@ -7584,9 +7584,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_15x_Small": {
+      "Thrust.propeller_4_blade_backward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_15x_Small",
+          "id": "Thrust.propeller_4_blade_backward_black_15x_Small@1463667637",
           "name": "Prop_L_4blade_black_backw",
           "size": "Small",
           "components": {
@@ -7615,9 +7615,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_15x_1x_Large": {
+      "Thrust.propeller_4_blade_forward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_4_blade_forward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_4blade_silver_forw",
           "size": "Large",
           "components": {
@@ -7646,9 +7646,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_15x_1x_Large": {
+      "Thrust.propeller_4_blade_forward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_15x_1x_Large",
+          "id": "Thrust.propeller_4_blade_forward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_4blade_black_forw",
           "size": "Large",
           "components": {
@@ -7677,9 +7677,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_15x_1x_Large": {
+      "Thrust.propeller_4_blade_backward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_4_blade_backward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_4blade_silver_backw",
           "size": "Large",
           "components": {
@@ -7708,9 +7708,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_15x_1x_Large": {
+      "Thrust.propeller_4_blade_backward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_15x_1x_Large",
+          "id": "Thrust.propeller_4_blade_backward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_4blade_black_backw",
           "size": "Large",
           "components": {
@@ -7739,9 +7739,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_15x_1x_Small": {
+      "Thrust.propeller_4_blade_forward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_4_blade_forward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_4blade_silver_forw",
           "size": "Small",
           "components": {
@@ -7770,9 +7770,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_15x_1x_Small": {
+      "Thrust.propeller_4_blade_forward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_15x_1x_Small",
+          "id": "Thrust.propeller_4_blade_forward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_4blade_black_forw",
           "size": "Small",
           "components": {
@@ -7801,9 +7801,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_15x_1x_Small": {
+      "Thrust.propeller_4_blade_backward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_4_blade_backward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_4blade_silver_backw",
           "size": "Small",
           "components": {
@@ -7832,9 +7832,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_15x_1x_Small": {
+      "Thrust.propeller_4_blade_backward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_15x_1x_Small",
+          "id": "Thrust.propeller_4_blade_backward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_4blade_black_backw",
           "size": "Small",
           "components": {
@@ -7863,9 +7863,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_15x_Large": {
+      "Thrust.propeller_8_blade_forward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_15x_Large",
+          "id": "Thrust.propeller_8_blade_forward_silver_15x_Large@1463667637",
           "name": "Prop_L_8blade_silver_forw",
           "size": "Large",
           "components": {
@@ -7894,9 +7894,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_15x_Large": {
+      "Thrust.propeller_8_blade_forward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_15x_Large",
+          "id": "Thrust.propeller_8_blade_forward_black_15x_Large@1463667637",
           "name": "Prop_L_8blade_black_forw",
           "size": "Large",
           "components": {
@@ -7925,9 +7925,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_15x_Large": {
+      "Thrust.propeller_8_blade_backward_silver_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_15x_Large",
+          "id": "Thrust.propeller_8_blade_backward_silver_15x_Large@1463667637",
           "name": "Prop_L_8blade_silver_backw",
           "size": "Large",
           "components": {
@@ -7956,9 +7956,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_15x_Large": {
+      "Thrust.propeller_8_blade_backward_black_15x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_15x_Large",
+          "id": "Thrust.propeller_8_blade_backward_black_15x_Large@1463667637",
           "name": "Prop_L_8blade_black_backw",
           "size": "Large",
           "components": {
@@ -7987,9 +7987,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_15x_Small": {
+      "Thrust.propeller_8_blade_forward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_15x_Small",
+          "id": "Thrust.propeller_8_blade_forward_silver_15x_Small@1463667637",
           "name": "Prop_L_8blade_silver_forw",
           "size": "Small",
           "components": {
@@ -8018,9 +8018,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_15x_Small": {
+      "Thrust.propeller_8_blade_forward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_15x_Small",
+          "id": "Thrust.propeller_8_blade_forward_black_15x_Small@1463667637",
           "name": "Prop_L_8blade_black_forw",
           "size": "Small",
           "components": {
@@ -8049,9 +8049,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_15x_Small": {
+      "Thrust.propeller_8_blade_backward_silver_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_15x_Small",
+          "id": "Thrust.propeller_8_blade_backward_silver_15x_Small@1463667637",
           "name": "Prop_L_8blade_silver_backw",
           "size": "Small",
           "components": {
@@ -8080,9 +8080,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_15x_Small": {
+      "Thrust.propeller_8_blade_backward_black_15x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_15x_Small",
+          "id": "Thrust.propeller_8_blade_backward_black_15x_Small@1463667637",
           "name": "Prop_L_8blade_black_backw",
           "size": "Small",
           "components": {
@@ -8111,9 +8111,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_15x_1x_Large": {
+      "Thrust.propeller_8_blade_forward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_8_blade_forward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_8blade_silver_forw",
           "size": "Large",
           "components": {
@@ -8142,9 +8142,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_15x_1x_Large": {
+      "Thrust.propeller_8_blade_forward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_15x_1x_Large",
+          "id": "Thrust.propeller_8_blade_forward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_8blade_black_forw",
           "size": "Large",
           "components": {
@@ -8173,9 +8173,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_15x_1x_Large": {
+      "Thrust.propeller_8_blade_backward_silver_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_15x_1x_Large",
+          "id": "Thrust.propeller_8_blade_backward_silver_15x_1x_Large@1463667637",
           "name": "Prop_L_8blade_silver_backw",
           "size": "Large",
           "components": {
@@ -8204,9 +8204,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_15x_1x_Large": {
+      "Thrust.propeller_8_blade_backward_black_15x_1x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_15x_1x_Large",
+          "id": "Thrust.propeller_8_blade_backward_black_15x_1x_Large@1463667637",
           "name": "Prop_L_8blade_black_backw",
           "size": "Large",
           "components": {
@@ -8235,9 +8235,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_15x_1x_Small": {
+      "Thrust.propeller_8_blade_forward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_8_blade_forward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_8blade_silver_forw",
           "size": "Small",
           "components": {
@@ -8266,9 +8266,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_15x_1x_Small": {
+      "Thrust.propeller_8_blade_forward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_15x_1x_Small",
+          "id": "Thrust.propeller_8_blade_forward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_8blade_black_forw",
           "size": "Small",
           "components": {
@@ -8297,9 +8297,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_15x_1x_Small": {
+      "Thrust.propeller_8_blade_backward_silver_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_15x_1x_Small",
+          "id": "Thrust.propeller_8_blade_backward_silver_15x_1x_Small@1463667637",
           "name": "Prop_L_8blade_silver_backw",
           "size": "Small",
           "components": {
@@ -8328,9 +8328,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_15x_1x_Small": {
+      "Thrust.propeller_8_blade_backward_black_15x_1x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_15x_1x_Small",
+          "id": "Thrust.propeller_8_blade_backward_black_15x_1x_Small@1463667637",
           "name": "Prop_L_8blade_black_backw",
           "size": "Small",
           "components": {
@@ -8359,9 +8359,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_10x_Large": {
+      "Thrust.propeller_2_blade_forward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_10x_Large",
+          "id": "Thrust.propeller_2_blade_forward_silver_10x_Large@1463667637",
           "name": "Prop_S_2blade_silver_forw",
           "size": "Large",
           "components": {
@@ -8390,9 +8390,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_10x_Large": {
+      "Thrust.propeller_2_blade_forward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_10x_Large",
+          "id": "Thrust.propeller_2_blade_forward_black_10x_Large@1463667637",
           "name": "Prop_S_2blade_black_forw",
           "size": "Large",
           "components": {
@@ -8421,9 +8421,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_10x_Large": {
+      "Thrust.propeller_2_blade_backward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_10x_Large",
+          "id": "Thrust.propeller_2_blade_backward_silver_10x_Large@1463667637",
           "name": "Prop_S_2blade_silver_backw",
           "size": "Large",
           "components": {
@@ -8452,9 +8452,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_10x_Large": {
+      "Thrust.propeller_2_blade_backward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_10x_Large",
+          "id": "Thrust.propeller_2_blade_backward_black_10x_Large@1463667637",
           "name": "Prop_S_2blade_black_backw",
           "size": "Large",
           "components": {
@@ -8483,9 +8483,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_10x_Small": {
+      "Thrust.propeller_2_blade_forward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_10x_Small",
+          "id": "Thrust.propeller_2_blade_forward_silver_10x_Small@1463667637",
           "name": "Prop_S_2blade_silver_forw",
           "size": "Small",
           "components": {
@@ -8514,9 +8514,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_10x_Small": {
+      "Thrust.propeller_2_blade_forward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_10x_Small",
+          "id": "Thrust.propeller_2_blade_forward_black_10x_Small@1463667637",
           "name": "Prop_S_2blade_black_forw",
           "size": "Small",
           "components": {
@@ -8545,9 +8545,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_10x_Small": {
+      "Thrust.propeller_2_blade_backward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_10x_Small",
+          "id": "Thrust.propeller_2_blade_backward_silver_10x_Small@1463667637",
           "name": "Prop_S_2blade_silver_backw",
           "size": "Small",
           "components": {
@@ -8576,9 +8576,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_10x_Small": {
+      "Thrust.propeller_2_blade_backward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_10x_Small",
+          "id": "Thrust.propeller_2_blade_backward_black_10x_Small@1463667637",
           "name": "Prop_S_2blade_black_backw",
           "size": "Small",
           "components": {
@@ -8607,9 +8607,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_Large": {
+      "Thrust.propeller_2_blade_forward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_Large",
+          "id": "Thrust.propeller_2_blade_forward_silver_Large@1463667637",
           "name": "Prop_S_2blade_silver_forw",
           "size": "Large",
           "components": {
@@ -8638,9 +8638,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_Large": {
+      "Thrust.propeller_2_blade_forward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_Large",
+          "id": "Thrust.propeller_2_blade_forward_black_Large@1463667637",
           "name": "Prop_S_2blade_black_forw",
           "size": "Large",
           "components": {
@@ -8669,9 +8669,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_Large": {
+      "Thrust.propeller_2_blade_backward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_Large",
+          "id": "Thrust.propeller_2_blade_backward_silver_Large@1463667637",
           "name": "Prop_S_2blade_silver_backw",
           "size": "Large",
           "components": {
@@ -8700,9 +8700,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_Large": {
+      "Thrust.propeller_2_blade_backward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_Large",
+          "id": "Thrust.propeller_2_blade_backward_black_Large@1463667637",
           "name": "Prop_S_2blade_black_backw",
           "size": "Large",
           "components": {
@@ -8731,9 +8731,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_silver_Small": {
+      "Thrust.propeller_2_blade_forward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_silver_Small",
+          "id": "Thrust.propeller_2_blade_forward_silver_Small@1463667637",
           "name": "Prop_S_2blade_silver_forw",
           "size": "Small",
           "components": {
@@ -8762,9 +8762,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_forward_black_Small": {
+      "Thrust.propeller_2_blade_forward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_forward_black_Small",
+          "id": "Thrust.propeller_2_blade_forward_black_Small@1463667637",
           "name": "Prop_S_2blade_black_forw",
           "size": "Small",
           "components": {
@@ -8793,9 +8793,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_silver_Small": {
+      "Thrust.propeller_2_blade_backward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_silver_Small",
+          "id": "Thrust.propeller_2_blade_backward_silver_Small@1463667637",
           "name": "Prop_S_2blade_silver_backw",
           "size": "Small",
           "components": {
@@ -8824,9 +8824,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_2_blade_backward_black_Small": {
+      "Thrust.propeller_2_blade_backward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_2_blade_backward_black_Small",
+          "id": "Thrust.propeller_2_blade_backward_black_Small@1463667637",
           "name": "Prop_S_2blade_black_backw",
           "size": "Small",
           "components": {
@@ -8855,9 +8855,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_10x_Large": {
+      "Thrust.propeller_3_blade_forward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_10x_Large",
+          "id": "Thrust.propeller_3_blade_forward_silver_10x_Large@1463667637",
           "name": "Prop_S_3blade_silver_forw",
           "size": "Large",
           "components": {
@@ -8886,9 +8886,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_10x_Large": {
+      "Thrust.propeller_3_blade_forward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_10x_Large",
+          "id": "Thrust.propeller_3_blade_forward_black_10x_Large@1463667637",
           "name": "Prop_S_3blade_black_forw",
           "size": "Large",
           "components": {
@@ -8917,9 +8917,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_10x_Large": {
+      "Thrust.propeller_3_blade_backward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_10x_Large",
+          "id": "Thrust.propeller_3_blade_backward_silver_10x_Large@1463667637",
           "name": "Prop_S_3blade_silver_backw",
           "size": "Large",
           "components": {
@@ -8948,9 +8948,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_10x_Large": {
+      "Thrust.propeller_3_blade_backward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_10x_Large",
+          "id": "Thrust.propeller_3_blade_backward_black_10x_Large@1463667637",
           "name": "Prop_S_3blade_black_backw",
           "size": "Large",
           "components": {
@@ -8979,9 +8979,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_10x_Small": {
+      "Thrust.propeller_3_blade_forward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_10x_Small",
+          "id": "Thrust.propeller_3_blade_forward_silver_10x_Small@1463667637",
           "name": "Prop_S_3blade_silver_forw",
           "size": "Small",
           "components": {
@@ -9010,9 +9010,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_10x_Small": {
+      "Thrust.propeller_3_blade_forward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_10x_Small",
+          "id": "Thrust.propeller_3_blade_forward_black_10x_Small@1463667637",
           "name": "Prop_S_3blade_black_forw",
           "size": "Small",
           "components": {
@@ -9041,9 +9041,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_10x_Small": {
+      "Thrust.propeller_3_blade_backward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_10x_Small",
+          "id": "Thrust.propeller_3_blade_backward_silver_10x_Small@1463667637",
           "name": "Prop_S_3blade_silver_backw",
           "size": "Small",
           "components": {
@@ -9072,9 +9072,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_10x_Small": {
+      "Thrust.propeller_3_blade_backward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_10x_Small",
+          "id": "Thrust.propeller_3_blade_backward_black_10x_Small@1463667637",
           "name": "Prop_S_3blade_black_backw",
           "size": "Small",
           "components": {
@@ -9103,9 +9103,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_Large": {
+      "Thrust.propeller_3_blade_forward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_Large",
+          "id": "Thrust.propeller_3_blade_forward_silver_Large@1463667637",
           "name": "Prop_S_3blade_silver_forw",
           "size": "Large",
           "components": {
@@ -9134,9 +9134,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_Large": {
+      "Thrust.propeller_3_blade_forward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_Large",
+          "id": "Thrust.propeller_3_blade_forward_black_Large@1463667637",
           "name": "Prop_S_3blade_black_forw",
           "size": "Large",
           "components": {
@@ -9165,9 +9165,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_Large": {
+      "Thrust.propeller_3_blade_backward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_Large",
+          "id": "Thrust.propeller_3_blade_backward_silver_Large@1463667637",
           "name": "Prop_S_3blade_silver_backw",
           "size": "Large",
           "components": {
@@ -9196,9 +9196,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_Large": {
+      "Thrust.propeller_3_blade_backward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_Large",
+          "id": "Thrust.propeller_3_blade_backward_black_Large@1463667637",
           "name": "Prop_S_3blade_black_backw",
           "size": "Large",
           "components": {
@@ -9227,9 +9227,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_silver_Small": {
+      "Thrust.propeller_3_blade_forward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_silver_Small",
+          "id": "Thrust.propeller_3_blade_forward_silver_Small@1463667637",
           "name": "Prop_S_3blade_silver_forw",
           "size": "Small",
           "components": {
@@ -9258,9 +9258,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_forward_black_Small": {
+      "Thrust.propeller_3_blade_forward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_forward_black_Small",
+          "id": "Thrust.propeller_3_blade_forward_black_Small@1463667637",
           "name": "Prop_S_3blade_black_forw",
           "size": "Small",
           "components": {
@@ -9289,9 +9289,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_silver_Small": {
+      "Thrust.propeller_3_blade_backward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_silver_Small",
+          "id": "Thrust.propeller_3_blade_backward_silver_Small@1463667637",
           "name": "Prop_S_3blade_silver_backw",
           "size": "Small",
           "components": {
@@ -9320,9 +9320,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_3_blade_backward_black_Small": {
+      "Thrust.propeller_3_blade_backward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_3_blade_backward_black_Small",
+          "id": "Thrust.propeller_3_blade_backward_black_Small@1463667637",
           "name": "Prop_S_3blade_black_backw",
           "size": "Small",
           "components": {
@@ -9351,9 +9351,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_10x_Large": {
+      "Thrust.propeller_4_blade_forward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_10x_Large",
+          "id": "Thrust.propeller_4_blade_forward_silver_10x_Large@1463667637",
           "name": "Prop_S_4blade_silver_forw",
           "size": "Large",
           "components": {
@@ -9382,9 +9382,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_10x_Large": {
+      "Thrust.propeller_4_blade_forward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_10x_Large",
+          "id": "Thrust.propeller_4_blade_forward_black_10x_Large@1463667637",
           "name": "Prop_S_4blade_black_forw",
           "size": "Large",
           "components": {
@@ -9413,9 +9413,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_10x_Large": {
+      "Thrust.propeller_4_blade_backward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_10x_Large",
+          "id": "Thrust.propeller_4_blade_backward_silver_10x_Large@1463667637",
           "name": "Prop_S_4blade_silver_backw",
           "size": "Large",
           "components": {
@@ -9444,9 +9444,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_10x_Large": {
+      "Thrust.propeller_4_blade_backward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_10x_Large",
+          "id": "Thrust.propeller_4_blade_backward_black_10x_Large@1463667637",
           "name": "Prop_S_4blade_black_backw",
           "size": "Large",
           "components": {
@@ -9475,9 +9475,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_10x_Small": {
+      "Thrust.propeller_4_blade_forward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_10x_Small",
+          "id": "Thrust.propeller_4_blade_forward_silver_10x_Small@1463667637",
           "name": "Prop_S_4blade_silver_forw",
           "size": "Small",
           "components": {
@@ -9506,9 +9506,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_10x_Small": {
+      "Thrust.propeller_4_blade_forward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_10x_Small",
+          "id": "Thrust.propeller_4_blade_forward_black_10x_Small@1463667637",
           "name": "Prop_S_4blade_black_forw",
           "size": "Small",
           "components": {
@@ -9537,9 +9537,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_10x_Small": {
+      "Thrust.propeller_4_blade_backward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_10x_Small",
+          "id": "Thrust.propeller_4_blade_backward_silver_10x_Small@1463667637",
           "name": "Prop_S_4blade_silver_backw",
           "size": "Small",
           "components": {
@@ -9568,9 +9568,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_10x_Small": {
+      "Thrust.propeller_4_blade_backward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_10x_Small",
+          "id": "Thrust.propeller_4_blade_backward_black_10x_Small@1463667637",
           "name": "Prop_S_4blade_black_backw",
           "size": "Small",
           "components": {
@@ -9599,9 +9599,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_Large": {
+      "Thrust.propeller_4_blade_forward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_Large",
+          "id": "Thrust.propeller_4_blade_forward_silver_Large@1463667637",
           "name": "Prop_S_4blade_silver_forw",
           "size": "Large",
           "components": {
@@ -9630,9 +9630,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_Large": {
+      "Thrust.propeller_4_blade_forward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_Large",
+          "id": "Thrust.propeller_4_blade_forward_black_Large@1463667637",
           "name": "Prop_S_4blade_black_forw",
           "size": "Large",
           "components": {
@@ -9661,9 +9661,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_Large": {
+      "Thrust.propeller_4_blade_backward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_Large",
+          "id": "Thrust.propeller_4_blade_backward_silver_Large@1463667637",
           "name": "Prop_S_4blade_silver_backw",
           "size": "Large",
           "components": {
@@ -9692,9 +9692,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_Large": {
+      "Thrust.propeller_4_blade_backward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_Large",
+          "id": "Thrust.propeller_4_blade_backward_black_Large@1463667637",
           "name": "Prop_S_4blade_black_backw",
           "size": "Large",
           "components": {
@@ -9723,9 +9723,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_silver_Small": {
+      "Thrust.propeller_4_blade_forward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_silver_Small",
+          "id": "Thrust.propeller_4_blade_forward_silver_Small@1463667637",
           "name": "Prop_S_4blade_silver_forw",
           "size": "Small",
           "components": {
@@ -9754,9 +9754,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_forward_black_Small": {
+      "Thrust.propeller_4_blade_forward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_forward_black_Small",
+          "id": "Thrust.propeller_4_blade_forward_black_Small@1463667637",
           "name": "Prop_S_4blade_black_forw",
           "size": "Small",
           "components": {
@@ -9785,9 +9785,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_silver_Small": {
+      "Thrust.propeller_4_blade_backward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_silver_Small",
+          "id": "Thrust.propeller_4_blade_backward_silver_Small@1463667637",
           "name": "Prop_S_4blade_silver_backw",
           "size": "Small",
           "components": {
@@ -9816,9 +9816,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_4_blade_backward_black_Small": {
+      "Thrust.propeller_4_blade_backward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_4_blade_backward_black_Small",
+          "id": "Thrust.propeller_4_blade_backward_black_Small@1463667637",
           "name": "Prop_S_4blade_black_backw",
           "size": "Small",
           "components": {
@@ -9847,9 +9847,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_10x_Large": {
+      "Thrust.propeller_8_blade_forward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_10x_Large",
+          "id": "Thrust.propeller_8_blade_forward_silver_10x_Large@1463667637",
           "name": "Prop_S_8blade_silver_forw",
           "size": "Large",
           "components": {
@@ -9878,9 +9878,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_10x_Large": {
+      "Thrust.propeller_8_blade_forward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_10x_Large",
+          "id": "Thrust.propeller_8_blade_forward_black_10x_Large@1463667637",
           "name": "Prop_S_8blade_black_forw",
           "size": "Large",
           "components": {
@@ -9909,9 +9909,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_10x_Large": {
+      "Thrust.propeller_8_blade_backward_silver_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_10x_Large",
+          "id": "Thrust.propeller_8_blade_backward_silver_10x_Large@1463667637",
           "name": "Prop_S_8blade_silver_backw",
           "size": "Large",
           "components": {
@@ -9940,9 +9940,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_10x_Large": {
+      "Thrust.propeller_8_blade_backward_black_10x_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_10x_Large",
+          "id": "Thrust.propeller_8_blade_backward_black_10x_Large@1463667637",
           "name": "Prop_S_8blade_black_backw",
           "size": "Large",
           "components": {
@@ -9971,9 +9971,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_10x_Small": {
+      "Thrust.propeller_8_blade_forward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_10x_Small",
+          "id": "Thrust.propeller_8_blade_forward_silver_10x_Small@1463667637",
           "name": "Prop_S_8blade_silver_forw",
           "size": "Small",
           "components": {
@@ -10002,9 +10002,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_10x_Small": {
+      "Thrust.propeller_8_blade_forward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_10x_Small",
+          "id": "Thrust.propeller_8_blade_forward_black_10x_Small@1463667637",
           "name": "Prop_S_8blade_black_forw",
           "size": "Small",
           "components": {
@@ -10033,9 +10033,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_10x_Small": {
+      "Thrust.propeller_8_blade_backward_silver_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_10x_Small",
+          "id": "Thrust.propeller_8_blade_backward_silver_10x_Small@1463667637",
           "name": "Prop_S_8blade_silver_backw",
           "size": "Small",
           "components": {
@@ -10064,9 +10064,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_10x_Small": {
+      "Thrust.propeller_8_blade_backward_black_10x_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_10x_Small",
+          "id": "Thrust.propeller_8_blade_backward_black_10x_Small@1463667637",
           "name": "Prop_S_8blade_black_backw",
           "size": "Small",
           "components": {
@@ -10095,9 +10095,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_Large": {
+      "Thrust.propeller_8_blade_forward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_Large",
+          "id": "Thrust.propeller_8_blade_forward_silver_Large@1463667637",
           "name": "Prop_S_8blade_silver_forw",
           "size": "Large",
           "components": {
@@ -10126,9 +10126,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_Large": {
+      "Thrust.propeller_8_blade_forward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_Large",
+          "id": "Thrust.propeller_8_blade_forward_black_Large@1463667637",
           "name": "Prop_S_8blade_black_forw",
           "size": "Large",
           "components": {
@@ -10157,9 +10157,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_Large": {
+      "Thrust.propeller_8_blade_backward_silver_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_Large",
+          "id": "Thrust.propeller_8_blade_backward_silver_Large@1463667637",
           "name": "Prop_S_8blade_silver_backw",
           "size": "Large",
           "components": {
@@ -10188,9 +10188,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_Large": {
+      "Thrust.propeller_8_blade_backward_black_Large@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_Large",
+          "id": "Thrust.propeller_8_blade_backward_black_Large@1463667637",
           "name": "Prop_S_8blade_black_backw",
           "size": "Large",
           "components": {
@@ -10219,9 +10219,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_silver_Small": {
+      "Thrust.propeller_8_blade_forward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_silver_Small",
+          "id": "Thrust.propeller_8_blade_forward_silver_Small@1463667637",
           "name": "Prop_S_8blade_silver_forw",
           "size": "Small",
           "components": {
@@ -10250,9 +10250,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_forward_black_Small": {
+      "Thrust.propeller_8_blade_forward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_forward_black_Small",
+          "id": "Thrust.propeller_8_blade_forward_black_Small@1463667637",
           "name": "Prop_S_8blade_black_forw",
           "size": "Small",
           "components": {
@@ -10281,9 +10281,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_silver_Small": {
+      "Thrust.propeller_8_blade_backward_silver_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_silver_Small",
+          "id": "Thrust.propeller_8_blade_backward_silver_Small@1463667637",
           "name": "Prop_S_8blade_silver_backw",
           "size": "Small",
           "components": {
@@ -10312,9 +10312,9 @@
           "needs_atmosphere_for_influence": true
         }
       },
-      "Thrust.propeller_8_blade_backward_black_Small": {
+      "Thrust.propeller_8_blade_backward_black_Small@1463667637": {
         "data": {
-          "id": "Thrust.propeller_8_blade_backward_black_Small",
+          "id": "Thrust.propeller_8_blade_backward_black_Small@1463667637",
           "name": "Prop_S_8blade_black_backw",
           "size": "Small",
           "components": {
@@ -10649,9 +10649,9 @@
       }
     },
     "wheel_suspensions": {
-      "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -10673,9 +10673,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -10696,9 +10696,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_1x1_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -10720,9 +10720,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_1x1_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -10743,9 +10743,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_1x1_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_1x1_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_1x1_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_1x1_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -10767,9 +10767,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_1x1_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_1x1_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_1x1_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_1x1_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -10790,9 +10790,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_1x1_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_1x1_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_1x1_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_1x1_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -10814,9 +10814,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_1x1_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_1x1_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_1x1_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_1x1_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_1x1_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -10884,9 +10884,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -10908,9 +10908,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -10931,9 +10931,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_2x2_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -10955,9 +10955,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_2x2_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -10978,9 +10978,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_2x2_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_2x2_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_2x2_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_2x2_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11002,9 +11002,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_2x2_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_2x2_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_2x2_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_2x2_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11025,9 +11025,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_2x2_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_2x2_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_2x2_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_2x2_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11049,9 +11049,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_2x2_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_2x2_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_2x2_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_2x2_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_2x2_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11072,9 +11072,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11096,9 +11096,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11119,9 +11119,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_3x3_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11143,9 +11143,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_3x3_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11166,9 +11166,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_3x3_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_3x3_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_3x3_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_3x3_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11190,9 +11190,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_3x3_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_3x3_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_3x3_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_3x3_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11213,9 +11213,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_3x3_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_3x3_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_3x3_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_3x3_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11237,9 +11237,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_3x3_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_3x3_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_3x3_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_3x3_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_3x3_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11307,9 +11307,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11331,9 +11331,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11354,9 +11354,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_4x4_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11378,9 +11378,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_4x4_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11401,9 +11401,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_4x4_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_4x4_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_4x4_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_4x4_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11425,9 +11425,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_4x4_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_4x4_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_4x4_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_4x4_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11448,9 +11448,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_4x4_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_4x4_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_4x4_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_4x4_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11472,9 +11472,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_4x4_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_4x4_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_4x4_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_4x4_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_4x4_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11495,9 +11495,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11519,9 +11519,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11542,9 +11542,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_5x5_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11566,9 +11566,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_5x5_Offroad_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11589,9 +11589,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_5x5_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_5x5_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_5x5_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_5x5_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11613,9 +11613,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_5x5_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_5x5_Lifted_Suspension_Right@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_5x5_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_5x5_Lifted_Suspension_Right@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11636,9 +11636,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_5x5_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_5x5_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.LG_5x5_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_5x5_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11660,9 +11660,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_5x5_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_5x5_Lifted_Suspension_Left@2727185097": {
         "data": {
-          "id": "MotorSuspension.SG_5x5_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_5x5_Lifted_Suspension_Left@2727185097",
           "name": "{LOC:DisplayName_5x5_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11696,8 +11696,8 @@
             "Motor": 20.0
           },
           "has_physics": true,
-          "mod_id": 2466033777,
-          "index": 20,
+          "mod_id": null,
+          "index": 791,
           "hidden": false,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11719,8 +11719,8 @@
             "Motor": 2.0
           },
           "has_physics": true,
-          "mod_id": 2466033777,
-          "index": 21,
+          "mod_id": null,
+          "index": 794,
           "hidden": false,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11730,9 +11730,56 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.Suspension5x5@2466033777": {
         "data": {
-          "id": "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.Suspension5x5@2466033777",
+          "name": "DisplayName_Block_Suspension5x5",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "mod_id": 2466033777,
+          "index": 20,
+          "hidden": true,
+          "rename": "5x5 Wheel Suspension"
+        },
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension5x5@2466033777": {
+        "data": {
+          "id": "MotorSuspension.SmallSuspension5x5@2466033777",
+          "name": "DisplayName_Block_Suspension5x5",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "mod_id": 2466033777,
+          "index": 21,
+          "hidden": true,
+          "rename": "5x5 Wheel Suspension"
+        },
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Left@2745706747": {
+        "data": {
+          "id": "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11754,9 +11801,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11777,9 +11824,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.LG_7x7_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11801,9 +11848,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.SG_7x7_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11824,9 +11871,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_7x7_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_7x7_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_7x7_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_7x7_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -11848,9 +11895,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_7x7_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_7x7_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_7x7_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_7x7_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -11871,9 +11918,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_7x7_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_7x7_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_7x7_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_7x7_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -11895,9 +11942,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_7x7_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_7x7_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_7x7_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_7x7_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_7x7_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -11918,9 +11965,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.Suspension7x7": {
+      "MotorSuspension.Suspension7x7@2466033777": {
         "data": {
-          "id": "MotorSuspension.Suspension7x7",
+          "id": "MotorSuspension.Suspension7x7@2466033777",
           "name": "DisplayName_Wheel_Suspension_7x7_Right",
           "size": "Large",
           "components": {
@@ -11942,9 +11989,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SmallSuspension7x7": {
+      "MotorSuspension.SmallSuspension7x7@2466033777": {
         "data": {
-          "id": "MotorSuspension.SmallSuspension7x7",
+          "id": "MotorSuspension.SmallSuspension7x7@2466033777",
           "name": "DisplayName_Wheel_Suspension_7x7_Right",
           "size": "Small",
           "components": {
@@ -11965,9 +12012,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSuspension7x7": {
+      "MotorSuspension.OffroadSuspension7x7@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSuspension7x7",
+          "id": "MotorSuspension.OffroadSuspension7x7@2466033777",
           "name": "DisplayName_Wheel_Offroad_Suspension_7x7_Right",
           "size": "Large",
           "components": {
@@ -11989,9 +12036,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension7x7": {
+      "MotorSuspension.OffroadSmallSuspension7x7@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension7x7",
+          "id": "MotorSuspension.OffroadSmallSuspension7x7@2466033777",
           "name": "DisplayName_Wheel_Offroad_Suspension_7x7_Right",
           "size": "Small",
           "components": {
@@ -12012,9 +12059,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12036,9 +12083,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12059,9 +12106,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.LG_9x9_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12083,9 +12130,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.SG_9x9_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12106,9 +12153,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_9x9_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_9x9_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_9x9_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_9x9_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12130,9 +12177,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_9x9_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_9x9_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_9x9_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_9x9_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12153,9 +12200,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_9x9_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_9x9_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_9x9_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_9x9_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12177,9 +12224,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_9x9_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_9x9_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_9x9_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_9x9_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_9x9_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12200,9 +12247,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12224,9 +12271,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12247,9 +12294,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.LG_11x11_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12271,9 +12318,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.SG_11x11_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12294,9 +12341,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_11x11_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_11x11_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_11x11_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_11x11_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12318,9 +12365,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_11x11_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_11x11_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_11x11_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_11x11_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12341,9 +12388,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_11x11_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_11x11_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_11x11_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_11x11_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12365,9 +12412,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_11x11_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_11x11_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_11x11_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_11x11_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_11x11_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12388,9 +12435,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12412,9 +12459,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12435,9 +12482,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.LG_13x13_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12459,9 +12506,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.SG_13x13_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12482,9 +12529,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_13x13_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_13x13_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_13x13_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_13x13_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12506,9 +12553,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_13x13_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_13x13_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_13x13_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_13x13_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12529,9 +12576,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_13x13_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_13x13_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_13x13_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_13x13_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12553,9 +12600,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_13x13_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_13x13_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_13x13_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_13x13_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_13x13_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12576,9 +12623,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Offroad_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12600,9 +12647,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Left": {
+      "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Left",
+          "id": "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Offroad_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12623,9 +12670,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.LG_15x15_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Offroad_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12647,9 +12694,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Right": {
+      "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Right",
+          "id": "MotorSuspension.SG_15x15_Lifted_Offroad_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Offroad_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12670,9 +12717,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_15x15_Lifted_Suspension_Right": {
+      "MotorSuspension.LG_15x15_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_15x15_Lifted_Suspension_Right",
+          "id": "MotorSuspension.LG_15x15_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Suspension_Right}",
           "size": "Large",
           "components": {
@@ -12694,9 +12741,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_15x15_Lifted_Suspension_Right": {
+      "MotorSuspension.SG_15x15_Lifted_Suspension_Right@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_15x15_Lifted_Suspension_Right",
+          "id": "MotorSuspension.SG_15x15_Lifted_Suspension_Right@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Suspension_Right}",
           "size": "Small",
           "components": {
@@ -12717,9 +12764,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.LG_15x15_Lifted_Suspension_Left": {
+      "MotorSuspension.LG_15x15_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.LG_15x15_Lifted_Suspension_Left",
+          "id": "MotorSuspension.LG_15x15_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Suspension_Left}",
           "size": "Large",
           "components": {
@@ -12741,9 +12788,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SG_15x15_Lifted_Suspension_Left": {
+      "MotorSuspension.SG_15x15_Lifted_Suspension_Left@2745706747": {
         "data": {
-          "id": "MotorSuspension.SG_15x15_Lifted_Suspension_Left",
+          "id": "MotorSuspension.SG_15x15_Lifted_Suspension_Left@2745706747",
           "name": "{LOC:DisplayName_15x15_Lifted_Suspension_Left}",
           "size": "Small",
           "components": {
@@ -12770,6 +12817,53 @@
           "name": "DisplayName_Block_OffroadSuspension1x1",
           "size": "Large",
           "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 524,
+          "hidden": true,
+          "rename": "Offroad 1x1 Wheel Suspension"
+        },
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension1x1": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension1x1",
+          "name": "DisplayName_Block_OffroadSuspension1x1",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 527,
+          "hidden": true,
+          "rename": "Offroad 1x1 Wheel Suspension"
+        },
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension1x1@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension1x1@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension1x1",
+          "size": "Large",
+          "components": {
             "SteelPlate": 30.0,
             "Construction": 20.0,
             "LargeTube": 8.0,
@@ -12788,9 +12882,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension1x1": {
+      "MotorSuspension.OffroadSmallSuspension1x1@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension1x1",
+          "id": "MotorSuspension.OffroadSmallSuspension1x1@2466033777",
           "name": "DisplayName_Block_OffroadSuspension1x1",
           "size": "Small",
           "components": {
@@ -12817,6 +12911,53 @@
           "name": "DisplayName_Block_OffroadSuspension3x3",
           "size": "Large",
           "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 522,
+          "hidden": true,
+          "rename": "Offroad 3x3 Wheel Suspension"
+        },
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension3x3": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension3x3",
+          "name": "DisplayName_Block_OffroadSuspension3x3",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 525,
+          "hidden": true,
+          "rename": "Offroad 3x3 Wheel Suspension"
+        },
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension3x3@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension3x3@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension3x3",
+          "size": "Large",
+          "components": {
             "SteelPlate": 30.0,
             "Construction": 20.0,
             "LargeTube": 8.0,
@@ -12835,9 +12976,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension3x3": {
+      "MotorSuspension.OffroadSmallSuspension3x3@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension3x3",
+          "id": "MotorSuspension.OffroadSmallSuspension3x3@2466033777",
           "name": "DisplayName_Block_OffroadSuspension3x3",
           "size": "Small",
           "components": {
@@ -12864,6 +13005,53 @@
           "name": "DisplayName_Block_OffroadSuspension5x5",
           "size": "Large",
           "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 523,
+          "hidden": true,
+          "rename": "Offroad 5x5 Wheel Suspension"
+        },
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension5x5": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension5x5",
+          "name": "DisplayName_Block_OffroadSuspension5x5",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 526,
+          "hidden": true,
+          "rename": "Offroad 5x5 Wheel Suspension"
+        },
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension5x5@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension5x5@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension5x5",
+          "size": "Large",
+          "components": {
             "SteelPlate": 80.0,
             "Construction": 55.0,
             "LargeTube": 20.0,
@@ -12882,9 +13070,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension5x5": {
+      "MotorSuspension.OffroadSmallSuspension5x5@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension5x5",
+          "id": "MotorSuspension.OffroadSmallSuspension5x5@2466033777",
           "name": "DisplayName_Block_OffroadSuspension5x5",
           "size": "Small",
           "components": {
@@ -12911,6 +13099,53 @@
           "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
           "size": "Large",
           "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 530,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 20000.0,
+          "operational_power_consumption": 0.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension1x1mirrored": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored",
+          "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 533,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 120.0,
+          "operational_power_consumption": 0.1,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension1x1mirrored@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension1x1mirrored@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
+          "size": "Large",
+          "components": {
             "SteelPlate": 30.0,
             "Construction": 20.0,
             "LargeTube": 8.0,
@@ -12929,9 +13164,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension1x1mirrored": {
+      "MotorSuspension.OffroadSmallSuspension1x1mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored",
+          "id": "MotorSuspension.OffroadSmallSuspension1x1mirrored@2466033777",
           "name": "DisplayName_Block_OffroadSuspension1x1mirrored",
           "size": "Small",
           "components": {
@@ -12958,6 +13193,53 @@
           "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
           "size": "Large",
           "components": {
+            "SteelPlate": 25.0,
+            "Construction": 15.0,
+            "LargeTube": 6.0,
+            "SmallTube": 12.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 528,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 60000.0,
+          "operational_power_consumption": 1.0,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension3x3mirrored": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored",
+          "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 7.0,
+            "SmallTube": 2.0,
+            "Motor": 1.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 531,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 1920.0,
+          "operational_power_consumption": 0.2,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension3x3mirrored@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension3x3mirrored@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
+          "size": "Large",
+          "components": {
             "SteelPlate": 30.0,
             "Construction": 20.0,
             "LargeTube": 8.0,
@@ -12976,9 +13258,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension3x3mirrored": {
+      "MotorSuspension.OffroadSmallSuspension3x3mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored",
+          "id": "MotorSuspension.OffroadSmallSuspension3x3mirrored@2466033777",
           "name": "DisplayName_Block_OffroadSuspension3x3mirrored",
           "size": "Small",
           "components": {
@@ -13005,6 +13287,53 @@
           "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
           "size": "Large",
           "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 529,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSmallSuspension5x5mirrored": {
+        "data": {
+          "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored",
+          "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "index": 532,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.OffroadSuspension5x5mirrored@2466033777": {
+        "data": {
+          "id": "MotorSuspension.OffroadSuspension5x5mirrored@2466033777",
+          "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
+          "size": "Large",
+          "components": {
             "SteelPlate": 80.0,
             "Construction": 55.0,
             "LargeTube": 20.0,
@@ -13023,9 +13352,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension5x5mirrored": {
+      "MotorSuspension.OffroadSmallSuspension5x5mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored",
+          "id": "MotorSuspension.OffroadSmallSuspension5x5mirrored@2466033777",
           "name": "DisplayName_Block_OffroadSuspension5x5mirrored",
           "size": "Small",
           "components": {
@@ -13153,8 +13482,8 @@
             "Motor": 20.0
           },
           "has_physics": true,
-          "mod_id": 2466033777,
-          "index": 22,
+          "mod_id": null,
+          "index": 797,
           "hidden": true,
           "rename": null
         },
@@ -13176,6 +13505,53 @@
             "Motor": 2.0
           },
           "has_physics": true,
+          "mod_id": null,
+          "index": 800,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 4800.0,
+          "operational_power_consumption": 0.3,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.Suspension5x5mirrored@2466033777": {
+        "data": {
+          "id": "MotorSuspension.Suspension5x5mirrored@2466033777",
+          "name": "DisplayName_Block_Suspension5x5mirrored",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 70.0,
+            "Construction": 40.0,
+            "LargeTube": 20.0,
+            "SmallTube": 30.0,
+            "Motor": 20.0
+          },
+          "has_physics": true,
+          "mod_id": 2466033777,
+          "index": 22,
+          "hidden": true,
+          "rename": null
+        },
+        "details": {
+          "force": 100000.0,
+          "operational_power_consumption": 1.5,
+          "idle_power_consumption": 0.002
+        }
+      },
+      "MotorSuspension.SmallSuspension5x5mirrored@2466033777": {
+        "data": {
+          "id": "MotorSuspension.SmallSuspension5x5mirrored@2466033777",
+          "name": "DisplayName_Block_Suspension5x5mirrored",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 16.0,
+            "Construction": 12.0,
+            "SmallTube": 4.0,
+            "Motor": 2.0
+          },
+          "has_physics": true,
           "mod_id": 2466033777,
           "index": 23,
           "hidden": true,
@@ -13187,9 +13563,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.Suspension7x7mirrored": {
+      "MotorSuspension.Suspension7x7mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.Suspension7x7mirrored",
+          "id": "MotorSuspension.Suspension7x7mirrored@2466033777",
           "name": "DisplayName_Wheel_Suspension_7x7_Left",
           "size": "Large",
           "components": {
@@ -13211,9 +13587,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.SmallSuspension7x7mirrored": {
+      "MotorSuspension.SmallSuspension7x7mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.SmallSuspension7x7mirrored",
+          "id": "MotorSuspension.SmallSuspension7x7mirrored@2466033777",
           "name": "DisplayName_Wheel_Suspension_7x7_Left",
           "size": "Small",
           "components": {
@@ -13234,9 +13610,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSuspension7x7mirrored": {
+      "MotorSuspension.OffroadSuspension7x7mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSuspension7x7mirrored",
+          "id": "MotorSuspension.OffroadSuspension7x7mirrored@2466033777",
           "name": "DisplayName_Wheel_Offroad_Suspension_7x7_Left",
           "size": "Large",
           "components": {
@@ -13258,9 +13634,9 @@
           "idle_power_consumption": 0.002
         }
       },
-      "MotorSuspension.OffroadSmallSuspension7x7mirrored": {
+      "MotorSuspension.OffroadSmallSuspension7x7mirrored@2466033777": {
         "data": {
-          "id": "MotorSuspension.OffroadSmallSuspension7x7mirrored",
+          "id": "MotorSuspension.OffroadSmallSuspension7x7mirrored@2466033777",
           "name": "DisplayName_Wheel_Offroad_Suspension_7x7_Left",
           "size": "Small",
           "components": {
@@ -14037,9 +14413,9 @@
           "inventory_volume_any": 64.00000000000001
         }
       },
-      "ShipConnector.AQD_SG_ConnectorSmall": {
+      "ShipConnector.AQD_SG_ConnectorSmall@2678657382": {
         "data": {
-          "id": "ShipConnector.AQD_SG_ConnectorSmall",
+          "id": "ShipConnector.AQD_SG_ConnectorSmall@2678657382",
           "name": "{LOC:DisplayName_AQD_SG_ConnectorSmall}",
           "size": "Small",
           "components": {

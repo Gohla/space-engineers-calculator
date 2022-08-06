@@ -22,12 +22,18 @@ impl BlockData {
     hide_block_by_regex_name: &RegexSet,
     hide_block_by_exact_subtype_id: &HashSet<String>,
     hide_block_by_regex_subtype_id: &RegexSet,
+    hide_block_by_exact_id: &HashSet<String>,
+    hide_block_by_regex_id: &RegexSet,
     rename_block_by_regex: &[(Regex, String)]
   ) -> Result<Self, XmlError> {
     let id_node = def.child_elem("Id")?;
     let type_id: String = id_node.parse_child_elem("TypeId")?;
     let subtype_id: String = id_node.parse_child_elem_opt("SubtypeId")?.unwrap_or_default();
-    let id = type_id + "." + &subtype_id;
+    let id = if let Some(mod_id) = mod_id {
+      format!("{}.{}@{}", type_id, subtype_id, mod_id)
+    } else {
+      format!("{}.{}", type_id, subtype_id)
+    };
     let name: String = def.parse_child_elem("DisplayName")?;
     let mut components = LinkedHashMap::new();
     let size = GridSize::from_def(def)?;
@@ -43,8 +49,9 @@ impl BlockData {
     let hidden = if !public {
       true
     } else {
-      Self::is_hidden(localized_name, hide_block_by_exact_name, hide_block_by_regex_name) ||
-        Self::is_hidden(&subtype_id, hide_block_by_exact_subtype_id, hide_block_by_regex_subtype_id)
+      Self::is_hidden(localized_name, hide_block_by_exact_name, hide_block_by_regex_name)
+        || Self::is_hidden(&subtype_id, hide_block_by_exact_subtype_id, hide_block_by_regex_subtype_id)
+        || Self::is_hidden(&id, hide_block_by_exact_id, hide_block_by_regex_id)
     };
     let rename = Self::rename(localized_name, rename_block_by_regex);
 
@@ -280,6 +287,8 @@ pub struct BlocksBuilder {
   hide_block_by_regex_name: RegexSet,
   hide_block_by_exact_subtype_id: HashSet<String>,
   hide_block_by_regex_subtype_id: RegexSet,
+  hide_block_by_exact_id: HashSet<String>,
+  hide_block_by_regex_id: RegexSet,
   rename_block_by_regex: Vec<(Regex, String)>,
 
   batteries: Vec<Block<Battery>>,
@@ -308,10 +317,13 @@ impl BlocksBuilder {
     hide_block_by_regex_name: impl Iterator<Item=String>,
     hide_block_by_exact_subtype_id: impl Iterator<Item=String>,
     hide_block_by_regex_subtype_id: impl Iterator<Item=String>,
+    hide_block_by_exact_id: impl Iterator<Item=String>,
+    hide_block_by_regex_id: impl Iterator<Item=String>,
     rename_block_by_regex: impl Iterator<Item=(String, String)>,
   ) -> Result<Self, CreateError> {
     let hide_block_by_regex_name = RegexSet::new(hide_block_by_regex_name)?;
     let hide_block_by_regex_subtype_id = RegexSet::new(hide_block_by_regex_subtype_id)?;
+    let hide_block_by_regex_id = RegexSet::new(hide_block_by_regex_id)?;
     let rename_block_by_regex = {
       let mut renames = Vec::with_capacity(rename_block_by_regex.size_hint().0);
       for (regex, rename) in rename_block_by_regex {
@@ -325,6 +337,8 @@ impl BlocksBuilder {
       hide_block_by_regex_name,
       hide_block_by_exact_subtype_id: HashSet::from_iter(hide_block_by_exact_subtype_id),
       hide_block_by_regex_subtype_id,
+      hide_block_by_exact_id: HashSet::from_iter(hide_block_by_exact_id),
+      hide_block_by_regex_id,
       rename_block_by_regex,
 
       batteries: vec![],
@@ -438,7 +452,9 @@ impl BlocksBuilder {
           &self.hide_block_by_regex_name,
           &self.hide_block_by_exact_subtype_id,
           &self.hide_block_by_regex_subtype_id,
-          &self.rename_block_by_regex
+          &self.hide_block_by_exact_id,
+          &self.hide_block_by_regex_id,
+          &self.rename_block_by_regex,
         )?;
         fn add_block<T>(details: T, data: BlockData, vec: &mut Vec<Block<T>>) {
           let block = Block::new(data, details);

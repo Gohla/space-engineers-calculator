@@ -50,6 +50,13 @@ ExtractConfig(
     ],
     hide_block_by_regex_subtype_id: [
     ],
+    hide_block_by_exact_id: [
+        // Lifted Wheel Suspension
+        "MotorSuspension.Suspension5x5@2466033777", // Just a model override
+        "MotorSuspension.SmallSuspension5x5@2466033777", // Just a model override
+    ],
+    hide_block_by_regex_id: [
+    ],
     rename_block_by_regex: [
         // Small and large grid wheel suspensions
         ("Wheel Suspension (.+) Right", "$1 Wheel Suspension"), // Remove 'Right'

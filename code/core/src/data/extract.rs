@@ -18,6 +18,8 @@ pub struct ExtractConfig {
   pub hide_block_by_regex_name: Vec<String>,
   pub hide_block_by_exact_subtype_id: Vec<String>,
   pub hide_block_by_regex_subtype_id: Vec<String>,
+  pub hide_block_by_exact_id: Vec<String>,
+  pub hide_block_by_regex_id: Vec<String>,
   pub rename_block_by_regex: Vec<(String, String)>,
 }
 
@@ -59,6 +61,8 @@ impl Data {
       extract_config.hide_block_by_regex_name.into_iter(),
       extract_config.hide_block_by_exact_subtype_id.into_iter(),
       extract_config.hide_block_by_regex_subtype_id.into_iter(),
+      extract_config.hide_block_by_exact_id.into_iter(),
+      extract_config.hide_block_by_regex_id.into_iter(),
       extract_config.rename_block_by_regex.into_iter(),
     )?;
     blocks_builder.update_from_se_dir(se_directory, &localization)?;

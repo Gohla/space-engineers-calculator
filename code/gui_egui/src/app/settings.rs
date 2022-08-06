@@ -1,4 +1,5 @@
 use egui::{Context, DragValue, Window};
+use egui::output::OpenUrl;
 
 use crate::App;
 use crate::widget::UiExtensions;
@@ -28,7 +29,10 @@ impl App {
         ui.open_header_with_grid("Mods", |ui| {
           for m in self.data.mods.iter() {
             let id = m.0;
-            ui.hyperlink_to(&m.1, format!("https://steamcommunity.com/workshop/filedetails/?id={}", id));
+            if ui.link(&m.1).clicked() {
+              let url = format!("https://steamcommunity.com/workshop/filedetails/?id={}", id);
+              ctx.output().open_url = Some(OpenUrl { url, new_tab: true });
+            }
             let mut enabled = self.enabled_mod_ids.contains(&m.0);
             if ui.checkbox(&mut enabled, "").changed() {
               if enabled {
