@@ -3,27 +3,29 @@ use std::io;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-use blocks::Blocks;
-use components::Components;
-use gas_properties::GasProperties;
-use localization::Localization;
+use crate::data::blocks::Blocks;
+use crate::data::components::Components;
+use crate::data::gas_properties::GasProperties;
+use crate::data::localization::Localization;
+use crate::data::mods::Mods;
 
 pub mod blocks;
 pub mod components;
 pub mod gas_properties;
 pub mod localization;
+pub mod mods;
 #[cfg(feature = "extract")]
-pub mod xml;
+pub mod extract;
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]
 #[serde(default)]
 pub struct Data {
+  pub mods: Mods,
+  pub localization: Localization,
   pub blocks: Blocks,
   pub components: Components,
   pub gas_properties: GasProperties,
-  pub localization: Localization,
 }
-
 
 // From/to JSON
 
@@ -39,7 +41,6 @@ pub enum WriteError {
   ToJSON(#[from] serde_json::Error),
 }
 
-
 impl Data {
   pub fn from_json<R: io::Read>(reader: R) -> Result<Self, ReadError> {
     let data = serde_json::from_reader(reader)?;
@@ -49,46 +50,5 @@ impl Data {
   pub fn to_json<W: io::Write>(&self, writer: W) -> Result<(), WriteError> {
     serde_json::to_writer_pretty(writer, self)?;
     Ok(())
-  }
-}
-
-
-// Extraction
-
-#[cfg(feature = "extract")]
-pub mod extract {
-  use std::path::Path;
-
-  use thiserror::Error;
-
-  use crate::data::{blocks, components, Data, gas_properties, localization};
-  use crate::data::blocks::Blocks;
-  use crate::data::components::Components;
-  use crate::data::gas_properties::GasProperties;
-  use crate::data::localization::Localization;
-
-  impl Data {
-    pub fn extract_from_se_dir(
-      se_dir_path: impl AsRef<Path>
-    ) -> Result<Self, ExtractError> {
-      let se_dir_path = se_dir_path.as_ref();
-      let localization = Localization::from_se_dir(se_dir_path)?;
-      let blocks = Blocks::from_se_dir(se_dir_path, &localization)?;
-      let components = Components::from_se_dir(se_dir_path)?;
-      let gas_properties = GasProperties::from_se_dir(se_dir_path)?;
-      Ok(Self { blocks, components, gas_properties, localization })
-    }
-  }
-
-  #[derive(Error, Debug)]
-  pub enum ExtractError {
-    #[error("Could not read blocks")]
-    ReadBlocks(#[from] blocks::extract::Error),
-    #[error("Could not read components")]
-    ReadComponents(#[from] components::extract::Error),
-    #[error("Could not read gas properties")]
-    ReadGasProperties(#[from] gas_properties::extract::Error),
-    #[error("Could not read localization")]
-    ReadLocalization(#[from] localization::extract::Error),
   }
 }

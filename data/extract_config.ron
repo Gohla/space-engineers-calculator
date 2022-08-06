@@ -1,0 +1,62 @@
+ExtractConfig(
+    extract_mods: [
+        Mod(2678657382, "AQD - Small Grid Expansion"),
+        Mod(1463667637, "Plane Parts plus: Propeller"),
+        Mod(2727185097, "Lifted Wheel Suspension"),
+        Mod(2745706747, "7x7 - 15x15 Lifted Wheel Suspension"),
+        Mod(2466033777, "Wheel 7x7"),
+        Mod(2275681005, "More Batteries"),
+    ],
+    hide_block_by_exact_name: [
+        // Small grid storage
+        "Weapon Rack", // Not conveyered
+        "Control Seat", // Not conveyered
+        "Passenger Seat Offset", // Not conveyered
+        "Passenger Bench", // Not conveyered
+        // Large grid storage
+        "Armory", // Not conveyered
+        "Armory Lockers", // Not conveyered
+        "Lockers", // Not conveyered
+        "Large Industrial Cargo Container", // Not conveyered
+        "Weapon Rack", // Not conveyered
+        "Control Station", // Not conveyered
+        // Small and large grid storage
+        "Passenger Seat", // Not conveyered
+        // Small and large grid thrusters
+        "Warfare Battery", // Just a different model
+        "Industrial Hydrogen Tank", // Just a different model
+    ],
+    hide_block_by_regex_name: [
+        // Small and large grid thrusters
+        "Industrial .+ Thruster", // Just a different model
+        "Sci-Fi .+ Thruster", // Just a different model
+        ".*Warfare .+ Thruster", // Just a different model
+        ".+ Warfare Reactor", // Just a different model
+        // Small and large grid wheel suspensions
+        "Offroad Wheel Suspension .+", // Just a different model
+        "Wheel Suspension .+ Left", // Just mirrors
+        // Plane Parts plus: Propeller
+        "Prop_.+_silver_.+", // Just a different color
+        "Prop_.+_backw", // Just with inverse thrust
+        // Lifted Wheel Suspension
+        "Offroad Lifted Wheel Suspension .+", // Just a different model
+        "(1|3|5)x(1|3|5) Lifted Wheel Suspension.+", // Duplicates of vanilla
+        ".+ Lifted Wheel Suspension Left", // Just mirrors
+    ],
+    hide_block_by_exact_subtype_id: [
+        // Lifted Wheel Suspension
+        "OffroadSmallSuspension7x7", // Just a different model (and can't hide by name)
+        "OffroadSuspension7x7", // Just a different model (and can't hide by name)
+    ],
+    hide_block_by_regex_subtype_id: [
+    ],
+    rename_block_by_regex: [
+        // Small and large grid wheel suspensions
+        ("Wheel Suspension (.+) Right", "$1 Wheel Suspension"), // Remove 'Right'
+        // Plane Parts plus: Propeller
+        ("Prop_S_(\\d).+", "Propeller Small $1-blade"), // Rename into something sensible
+        ("Prop_L_(\\d).+", "Propeller Large $1-blade"), // Rename into something sensible
+        // Lifted Wheel Suspension
+        ("(.+) Lifted Wheel Suspension Right", "$1 Lifted Wheel Suspension"), // Remove 'Right'
+    ],
+)

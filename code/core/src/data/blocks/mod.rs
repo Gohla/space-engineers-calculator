@@ -50,6 +50,7 @@ pub struct BlockData {
   pub size: GridSize,
   pub components: LinkedHashMap<String, f64>,
   pub has_physics: bool,
+  pub mod_id: Option<u64>,
 
   pub index: u64,
   pub hidden: bool,
@@ -65,7 +66,7 @@ impl BlockData {
     if let Some(rename) = &self.rename {
       &rename
     } else {
-      localization.get(&self.name).unwrap_or(&self.name)
+      localization.get(&self.name)
     }
   }
 

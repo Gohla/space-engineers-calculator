@@ -2,15 +2,16 @@ cargo-features = ["named-profiles", "profile-overrides"]
 
 [workspace]
 members = [
-  "code/*",
+    "code/*",
 ]
 default-members = [
-  "code/*",
+    "code/*",
 ]
 resolver = "2"
 
 
-#[patch.crates-io]
+[patch.crates-io]
+steamlocate = { git = "https://github.com/LovecraftianHorror/steamlocate-rs", branch = "fully-switch-from-steamy-vdf" } # Use this branch due to https://github.com/WilliamVenner/steamlocate-rs/issues/6
 #egui = { git = "https://github.com/emilk/egui", branch = "master" }
 #eframe = { git = "https://github.com/emilk/egui", branch = "master" }
 #egui_extras = { git = "https://github.com/emilk/egui", branch = "master" }

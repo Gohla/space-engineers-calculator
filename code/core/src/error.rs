@@ -5,7 +5,7 @@ pub trait ErrorExt {
 }
 
 impl<T: Error + 'static> ErrorExt for T {
-  fn into_boxed(self) -> Box<dyn Error> {
-    Box::new(self) as Box<dyn Error>
+  fn into_boxed(self) -> Box<dyn Error + 'static> {
+    Box::new(self) as Box<dyn Error + 'static>
   }
 }

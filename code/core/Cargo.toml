@@ -12,7 +12,8 @@ thiserror = "1"
 walkdir = { version = "2.2", optional = true }
 roxmltree = { version = "0.14", optional = true }
 regex = { version = "1", optional = true }
+alphanumeric-sort = { version = "1", optional = true }
 
 [features]
 default = []
-extract = ["dep:walkdir", "dep:roxmltree", "dep:regex"]
+extract = ["dep:walkdir", "dep:roxmltree", "dep:regex", "dep:alphanumeric-sort"]
