@@ -18,7 +18,7 @@ jobs:
         run: cargo install wasm-bindgen-cli
       - name: Build
         run: |
-          cargo +nightly build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
+          cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
           wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
