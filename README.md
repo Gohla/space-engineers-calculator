@@ -1,6 +1,6 @@
 # Space Engineers Calculator
 
-Calculator for designing Space Engineers ships. A live version of this calculator can be found at https://secalc.gohla.nl/.
+Calculator for designing Space Engineers ships. A live version of this calculator can be found at https://gohla.github.io/space_engineers_calc/.
 
 ## Requirements
 
