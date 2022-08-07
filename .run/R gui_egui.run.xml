@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="R gui_egui" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="run --bin secalc_gui_egui" />
+  <configuration default="false" name="R gui" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+    <option name="command" value="run --bin secalc_gui" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />

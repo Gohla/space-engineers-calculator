@@ -8,5 +8,4 @@ edition = "2021"
 secalc_core = { path = "../core", features = ["extract"] }
 structopt = "0.3"
 steamlocate = "1"
-snafu = "0.7"
 ron = "0.7"

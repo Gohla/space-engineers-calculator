@@ -1,5 +1,5 @@
 [package]
-name = "secalc_gui_egui"
+name = "secalc_gui"
 version = "0.1.0"
 authors = ["Gabriel Konat <gabrielkonat@gmail.com>"]
 edition = "2021"

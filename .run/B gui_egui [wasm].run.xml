@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="B gui_egui [wasm]" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="build --bin secalc_gui_egui --target wasm32-unknown-unknown --target-dir ../../../target-wasm" />
-    <option name="workingDirectory" value="file://$PROJECT_DIR$/code/gui_egui/web" />
+  <configuration default="false" name="B gui [wasm]" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+    <option name="command" value="build --bin secalc_gui --target wasm32-unknown-unknown --target-dir ../../../target-wasm" />
+    <option name="workingDirectory" value="file://$PROJECT_DIR$/code/gui/web" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />
     <option name="allFeatures" value="false" />
@@ -16,7 +16,7 @@
       <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
     </method>
   </configuration>
-  <configuration default="false" name="B gui_egui [wasm]" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="C:\Dev\space_engineers_calc\code\gui_egui\web\build.ps1" workingDirectory="C:\Dev\space_engineers_calc\code\gui_egui\web\" executablePath="$PROJECT_DIR$/../../Windows/System32/WindowsPowerShell/v1.0/powershell.exe">
+  <configuration default="false" name="B gui [wasm]" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="C:\Dev\space_engineers_calc\code\gui\web\build.ps1" workingDirectory="C:\Dev\space_engineers_calc\code\gui\web\" executablePath="$PROJECT_DIR$/../../Windows/System32/WindowsPowerShell/v1.0/powershell.exe">
     <envs />
     <method v="2" />
   </configuration>
