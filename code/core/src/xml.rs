@@ -16,17 +16,17 @@ use crate::error::ErrorExt;
 #[derive(Error, Debug)]
 pub enum XmlError {
   #[error("Unexpected XML structure")]
-  XmlStructure(Backtrace),
-  #[error("Could not parse text of XML element")]
-  XmlParseText(#[from] Box<dyn std::error::Error>, Backtrace),
+  StructureFail(Backtrace),
+  #[error("Could not parse text or attribute of an XML element")]
+  ParseTextFail(#[from] Box<dyn std::error::Error + 'static + Send + Sync>, Backtrace),
 }
 
 impl From<ParseFloatError> for XmlError {
-  fn from(e: ParseFloatError) -> Self { Self::XmlParseText(e.into_boxed(), Backtrace::capture()) }
+  fn from(e: ParseFloatError) -> Self { Self::ParseTextFail(e.into_boxed(), Backtrace::capture()) }
 }
 
 impl From<ParseBoolError> for XmlError {
-  fn from(e: ParseBoolError) -> Self { Self::XmlParseText(e.into_boxed(), Backtrace::capture()) }
+  fn from(e: ParseBoolError) -> Self { Self::ParseTextFail(e.into_boxed(), Backtrace::capture()) }
 }
 
 // XML convenience extension
@@ -39,10 +39,10 @@ pub trait NodeExt<'a, 'input: 'a> {
 
   fn text_or_err(&self) -> Result<&str, XmlError>;
 
-  fn parse_child_elem<T: FromStr>(&self, tag: &'static str) -> Result<T, XmlError> where T::Err: Error + 'static;
-  fn parse_child_elem_opt<T: FromStr>(&self, tag: &'static str) -> Result<Option<T>, XmlError> where T::Err: Error + 'static;
+  fn parse_child_elem<T: FromStr>(&self, tag: &'static str) -> Result<T, XmlError> where T::Err: Error + Send + Sync + 'static;
+  fn parse_child_elem_opt<T: FromStr>(&self, tag: &'static str) -> Result<Option<T>, XmlError> where T::Err: Error + Send + Sync + 'static;
 
-  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<T, XmlError> where T::Err: Error + 'static;
+  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<T, XmlError> where T::Err: Error + Send + Sync + 'static;
 }
 
 impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
@@ -52,7 +52,7 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
       if !node.has_tag_name(tag) { continue }
       return Ok(node);
     }
-    Err(XmlError::XmlStructure(Backtrace::capture()))
+    Err(XmlError::StructureFail(Backtrace::capture()))
   }
   fn child_elem_opt(&self, tag: &'static str) -> Option<Node> {
     for node in self.children() {
@@ -64,7 +64,7 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
   }
   fn first_child_elem(&self) -> Result<Node, XmlError> {
     self.first_element_child()
-      .ok_or_else(|| XmlError::XmlStructure(Backtrace::capture()))
+      .ok_or_else(|| XmlError::StructureFail(Backtrace::capture()))
   }
   fn children_elems(&self, tag: &'static str) -> ElemChildren {
     ElemChildren { children: self.children(), tag }
@@ -73,41 +73,41 @@ impl<'a, 'input: 'a> NodeExt<'a, 'input> for Node<'a, 'input> {
 
   fn text_or_err(&self) -> Result<&str, XmlError> {
     self.text()
-      .ok_or_else(|| XmlError::XmlStructure(Backtrace::capture()))
+      .ok_or_else(|| XmlError::StructureFail(Backtrace::capture()))
   }
 
 
-  fn parse_child_elem<T: FromStr>(&self, tag: &'static str) -> Result<T, XmlError> where T::Err: Error + 'static {
+  fn parse_child_elem<T: FromStr>(&self, tag: &'static str) -> Result<T, XmlError> where T::Err: Error + Send + Sync + 'static {
     for node in self.children() {
       if !node.is_element() { continue }
       if !node.has_tag_name(tag) { continue }
       if let Some(text) = node.text() {
         return text.trim().parse()
-          .map_err(|e: <T as FromStr>::Err| XmlError::XmlParseText(e.into_boxed(), Backtrace::capture()));
+          .map_err(|e: <T as FromStr>::Err| XmlError::ParseTextFail(e.into_boxed(), Backtrace::capture()));
       }
     }
-    Err(XmlError::XmlStructure(Backtrace::capture()))
+    Err(XmlError::StructureFail(Backtrace::capture()))
   }
-  fn parse_child_elem_opt<T: FromStr>(&self, tag: &'static str) -> Result<Option<T>, XmlError> where T::Err: Error + 'static {
+  fn parse_child_elem_opt<T: FromStr>(&self, tag: &'static str) -> Result<Option<T>, XmlError> where T::Err: Error + Send + Sync + 'static {
     for node in self.children() {
       if !node.is_element() { continue }
       if !node.has_tag_name(tag) { continue }
       if let Some(text) = node.text() {
         return text.trim().parse()
           .map(|v| Some(v))
-          .map_err(|e: <T as FromStr>::Err| XmlError::XmlParseText(e.into_boxed(), Backtrace::capture()));
+          .map_err(|e: <T as FromStr>::Err| XmlError::ParseTextFail(e.into_boxed(), Backtrace::capture()));
       }
     }
     Ok(None)
   }
 
 
-  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<T, XmlError> where T::Err: Error + 'static {
+  fn parse_attribute<T: FromStr, N: Into<ExpandedName<'a, 'a>>>(&self, name: N) -> Result<T, XmlError> where T::Err: Error + Send + Sync + 'static {
     if let Some(attribute) = self.attribute(name) {
       return attribute.trim().parse()
-        .map_err(|e: <T as FromStr>::Err| XmlError::XmlParseText(e.into_boxed(), Backtrace::capture()));
+        .map_err(|e: <T as FromStr>::Err| XmlError::ParseTextFail(e.into_boxed(), Backtrace::capture()));
     }
-    Err(XmlError::XmlStructure(Backtrace::capture()))
+    Err(XmlError::StructureFail(Backtrace::capture()))
   }
 }
 

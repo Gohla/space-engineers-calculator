@@ -24,6 +24,7 @@ impl App {
           ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
           ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.engine_enabled, self.calculator_default.engine_enabled);
           ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::items(), self.calculator_default.battery_mode);
+          ui.checkbox_suffix_row("Charge Railguns", "", &mut self.calculator.railgun_charging, self.calculator_default.railgun_charging);
           ui.checkbox_suffix_row("Charge Jump Drives", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
           changed |= ui.changed
         });
@@ -89,16 +90,9 @@ impl App {
             }
             changed |= ui.changed
           });
-          ui.open_header_with_grid("Ship Tools", |ui| {
-            let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-            for data in self.data.blocks.ship_tool_blocks(self.grid_size, &self.enabled_mod_ids) {
-              ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
-            }
-            changed |= ui.changed
-          });
           ui.open_header_with_grid("Other", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
-            for data in self.data.blocks.jump_drive_blocks(self.grid_size, &self.enabled_mod_ids) {
+            for data in self.data.blocks.other_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
             }
             changed |= ui.changed

@@ -1,6 +1,7 @@
 use std::fs::{File, OpenOptions};
 use std::path::PathBuf;
 
+use anyhow::{Context, Result};
 use steamlocate::SteamDir;
 use structopt::StructOpt;
 
@@ -19,39 +20,49 @@ enum Command {
   #[structopt()]
   /// Extracts game data into a format that SECalc can handle
   ExtractGameData {
-    #[structopt(long, short, parse(from_os_str))]
+    #[structopt(long, short, parse(from_os_str), env = "SECALC_EXTRACT_SE_DIRECTORY")]
     /// Space Engineers directory to extract game data from. Automatically inferred if installed via Steam when not set
     se_directory: Option<PathBuf>,
-    #[structopt(long, parse(from_os_str))]
+    #[structopt(long, parse(from_os_str), env = "SECALC_EXTRACT_SE_WORKSHOP_DIRECTORY")]
     /// Space engineers workshop (mod) directory. Automatically inferred if installed via Steam when not set. No mods are extracted if this directory is not found
     se_workshop_directory: Option<PathBuf>,
-    #[structopt(parse(from_os_str))]
+    #[structopt(parse(from_os_str), env = "SECALC_EXTRACT_CONFIG_FILE")]
     /// Extract configuration file
-    extract_config_file: PathBuf,
+    config_file: PathBuf,
     /// File to write extracted data to
-    #[structopt(parse(from_os_str))]
+    #[structopt(parse(from_os_str), env = "SECALC_EXTRACT_OUTPUT_FILE")]
     output_file: PathBuf,
   },
 }
 
-fn main() {
+fn main() -> Result<()> {
+  dotenv::dotenv()
+    .context("Failed to read .env file")?;
   let opt: Opt = Opt::from_args();
   match opt.command {
     Command::ExtractGameData {
       se_directory,
       se_workshop_directory,
-      extract_config_file,
+      config_file,
       output_file
     } => {
       let mut steam_dir = SteamDir::locate();
-      let se_directory = se_directory.or(get_se_directory(&mut steam_dir)).expect("Space Engineers directory was not set, and failed to automatically infer the directory");
+      let se_directory = se_directory.or(get_se_directory(&mut steam_dir))
+        .context("Space Engineers directory was not set, and failed to automatically infer the directory")?;
       let se_workshop_directory = se_workshop_directory.or(get_se_workshop_directory(&se_directory));
-      let extract_config: ExtractConfig = ron::de::from_reader(File::open(extract_config_file).unwrap()).expect("Failed to read extract configuration");
-      let data = Data::extract_from_se_dir(se_directory, se_workshop_directory, extract_config).expect("Failed to read Space Engineers data");
-      let writer = OpenOptions::new().write(true).create(true).truncate(true).open(output_file).expect("Failed to create a writer for writing game data to file");
-      data.to_json(writer).expect("Failed to write game data to file");
+      let config_reader = File::open(config_file)
+        .context("Failed to open extract config file for reading")?;
+      let extract_config: ExtractConfig = ron::de::from_reader(config_reader)
+        .context("Failed to read extract configuration")?;
+      let data = Data::extract_from_se_dir(se_directory, se_workshop_directory, extract_config)
+        .context("Failed to read Space Engineers data")?;
+      let data_writer = OpenOptions::new().write(true).create(true).truncate(true).open(output_file)
+        .context("Failed to create a writer for writing game data to file")?;
+      data.to_json(data_writer)
+        .context("Failed to write game data to file")?;
     },
   }
+  Ok(())
 }
 
 fn get_se_directory(steam_dir: &mut Option<SteamDir>) -> Option<PathBuf> {

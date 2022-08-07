@@ -32,13 +32,13 @@ pub struct Data {
 #[derive(Error, Debug)]
 pub enum ReadError {
   #[error("Could not read data from JSON")]
-  FromJSON(#[from] serde_json::Error),
+  FromJSONFail(#[from] serde_json::Error),
 }
 
 #[derive(Error, Debug)]
 pub enum WriteError {
   #[error("Could not write data to JSON")]
-  ToJSON(#[from] serde_json::Error),
+  ToJSONFail(#[from] serde_json::Error),
 }
 
 impl Data {

@@ -53,7 +53,6 @@ pub struct BlockData {
   pub has_physics: bool,
   pub mod_id: Option<u64>,
 
-  pub index: u64,
   pub hidden: bool,
   pub rename: Option<String>,
 }
@@ -167,11 +166,32 @@ pub struct Battery {
   pub output: f64,
 }
 
-/// Battery.
+/// Jump Drive.
 #[derive(Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct JumpDrive {
-  /// Maximum power input (MW)
-  pub input: f64,
+  /// Power capacity (MWh)
+  pub capacity: f64,
+  /// Maximum power input (MW); when charging
+  pub operational_power_consumption: f64,
+  /// Efficiency when charging
+  pub power_efficiency: f64,
+  /// Base maximum jump distance (m)
+  pub max_jump_distance: f64,
+  /// Maximum jump mass (kg) at which `max_jump_distance` can be jumped. Grids that have a higher
+  /// mass have a lower maximum jump distance based on the formula: 
+  /// `max_jump_distance * max_jump_mass * <num_jump_drives> / <total mass>`
+  pub max_jump_mass: f64,
+}
+
+/// Railgun.
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+pub struct Railgun {
+  /// Power capacity (MWh)
+  pub capacity: f64,
+  /// Operational power consumption (MW); when charging 
+  pub operational_power_consumption: f64,
+  /// Idle power consumption (MW)
+  pub idle_power_consumption: f64,
 }
 
 /// Type of thruster
@@ -329,6 +349,7 @@ pub struct Drill {
 pub struct Blocks {
   pub batteries: LinkedHashMap<BlockId, Block<Battery>>,
   pub jump_drives: LinkedHashMap<BlockId, Block<JumpDrive>>,
+  pub railguns: LinkedHashMap<BlockId, Block<Railgun>>,
   pub thrusters: LinkedHashMap<BlockId, Block<Thruster>>,
   pub wheel_suspensions: LinkedHashMap<BlockId, Block<WheelSuspension>>,
   pub hydrogen_engines: LinkedHashMap<BlockId, Block<HydrogenEngine>>,
@@ -364,16 +385,14 @@ impl Blocks {
       .chain(self.hydrogen_tanks.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
   }
   #[inline]
-  pub fn ship_tool_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
-    self.drills.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
-  }
-  #[inline]
   pub fn wheel_suspension_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
     self.wheel_suspensions.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
   }
   #[inline]
-  pub fn jump_drive_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
-    self.jump_drives.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
+  pub fn other_blocks<'a>(&'a self, grid_size: GridSize, enabled_mod_ids: &'a HashSet<u64>) -> impl Iterator<Item=&BlockData> + 'a {
+    self.drills.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data)
+      .chain(self.jump_drives.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
+      .chain(self.railguns.values().filter(move |b| filter(b, grid_size, enabled_mod_ids)).map(|b| &b.data))
   }
 }
 

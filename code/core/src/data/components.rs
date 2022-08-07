@@ -46,11 +46,15 @@ pub mod extract {
   #[derive(Error, Debug)]
   pub enum Error {
     #[error("Could not read components file '{file}'")]
-    ReadFile { file: PathBuf, source: std::io::Error, },
+    ReadFileFail { file: PathBuf, source: std::io::Error, },
     #[error("Could not XML parse components file '{file}'")]
-    ParseFile { file: PathBuf, source: roxmltree::Error, },
+    ParseFileFail { file: PathBuf, source: roxmltree::Error, },
     #[error(transparent)]
-    XmlFail(#[from] XmlError),
+    XmlFail {
+      #[from]
+      #[backtrace]
+      source: XmlError
+    },
   }
 
   impl Components {
@@ -61,9 +65,9 @@ pub mod extract {
     pub fn from_sbc_file<P: AsRef<Path>>(path: P) -> Result<Self, Error> {
       let path = path.as_ref();
       let string = read_string_from_file(path)
-        .map_err(|source| Error::ReadFile { file: path.to_path_buf(), source })?;
+        .map_err(|source| Error::ReadFileFail { file: path.to_path_buf(), source })?;
       let doc = Document::parse(&string)
-        .map_err(|source| Error::ParseFile { file: path.to_path_buf(), source })?;
+        .map_err(|source| Error::ParseFileFail { file: path.to_path_buf(), source })?;
 
       let mut components = LinkedHashMap::new();
 

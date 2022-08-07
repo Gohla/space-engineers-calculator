@@ -70,16 +70,18 @@ impl App {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.label("");
         ui.label("Consumption");
+        ui.label("Total Consumption");
         ui.label("Balance");
         ui.label("Duration: Batteries");
         ui.end_row();
         let power_formatter = |v| format!("{:.2}", v);
         let duration_formatter = |v| format!("{:.2}", v);
         ui.power_row("Idle:", power_formatter, duration_formatter, &self.calculated.power_idle);
-        ui.power_row("Misc:", power_formatter, duration_formatter, &self.calculated.power_misc);
+        ui.power_row("Charge Railguns", power_formatter, duration_formatter, &self.calculated.power_railgun);
+        ui.power_row("+ Utility:", power_formatter, duration_formatter, &self.calculated.power_upto_utility);
+        ui.power_row("+ Wheel Suspensions:", power_formatter, duration_formatter, &self.calculated.power_upto_wheel_suspension);
         ui.power_row("+ Charge Jump Drives:", power_formatter, duration_formatter, &self.calculated.power_upto_jump_drive);
         ui.power_row("+ O2/H2 Generators:", power_formatter, duration_formatter, &self.calculated.power_upto_generator);
-        ui.power_row("+ Wheel Suspensions:", power_formatter, duration_formatter, &self.calculated.power_upto_wheel_suspension);
         ui.power_row("+ Up/Down Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_up_down_thruster);
         ui.power_row("+ Front/Back Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_front_back_thruster);
         ui.power_row("+ Left/Right Thrusters:", power_formatter, duration_formatter, &self.calculated.power_upto_left_right_thruster);
@@ -189,6 +191,7 @@ impl<'ui> ResultUi<'ui> {
   fn power_row(&mut self, label: impl Into<WidgetText>, power_formatter: impl Fn(f64) -> String, duration_formatter: impl Fn(f64) -> String, power: &PowerCalculated) {
     self.ui.label(label);
     self.right_align_value_with_unit(power_formatter(power.consumption), "MW");
+    self.right_align_value_with_unit(power_formatter(power.total_consumption), "MW");
     self.right_align_value_with_unit(power_formatter(power.balance), "MW");
     self.right_align_optional_value_with_unit(power.duration_battery.map(|d| duration_formatter(d)), "min");
     self.ui.end_row();

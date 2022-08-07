@@ -100,7 +100,7 @@ impl<T> PerDirection<T> {
   #[inline]
   pub fn iter_mut(&mut self) -> impl Iterator<Item=&mut T> { self.0.iter_mut() }
 
-  #[inline]
+  #[inline] //noinspection RsBorrowChecker
   pub fn iter_with_direction(&self) -> impl Iterator<Item=(Direction, &T)> {
     Direction::items().into_iter().map(|d| (d, &self[d]))
   }
@@ -180,6 +180,8 @@ pub struct GridCalculator {
   pub battery_mode: BatteryMode,
   /// Engines enabled?
   pub engine_enabled: bool,
+  /// Are railguns charging?
+  pub railgun_charging: bool,
   /// Are jump drives charging?
   pub jump_drive_charging: bool,
   /// Thruster power 0-100%
@@ -212,6 +214,7 @@ impl Default for GridCalculator {
       planetary_influence: 1.0,
       battery_mode: Default::default(),
       engine_enabled: true,
+      railgun_charging: true,
       jump_drive_charging: true,
       thruster_power: 100.0,
       wheel_power: 100.0,
@@ -247,10 +250,11 @@ impl GridCalculator {
     let mut c = GridCalculated::default();
 
     let mut power_consumption_idle = 0.0;
-    let mut power_consumption_misc = 0.0;
-    let mut power_consumption_generator = 0.0;
-    let mut power_consumption_jump_drive = 0.0;
+    let mut power_consumption_railgun = 0.0;
+    let mut power_consumption_utility = 0.0;
     let mut power_consumption_wheel_suspension = 0.0;
+    let mut power_consumption_jump_drive = 0.0;
+    let mut power_consumption_generator = 0.0;
     let mut power_consumption_thruster: PerDirection<f64> = PerDirection::default();
     let mut power_consumption_battery = 0.0;
 
@@ -392,7 +396,19 @@ impl GridCalculator {
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
         if self.jump_drive_charging {
-          power_consumption_jump_drive += details.input * count;
+          power_consumption_jump_drive += details.operational_power_consumption * count;
+        }
+      }
+    }
+    // Railguns
+    for (id, count) in self.blocks.iter() {
+      if let Some(block) = data.blocks.railguns.get(id) {
+        let count = *count as f64;
+        let details = &block.details;
+        c.total_mass_empty += block.mass(&data.components) * count;
+        power_consumption_idle += details.idle_power_consumption * count;
+        if self.railgun_charging {
+          power_consumption_railgun += details.operational_power_consumption * count;
         }
       }
     }
@@ -416,7 +432,7 @@ impl GridCalculator {
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
         power_consumption_idle += details.idle_power_consumption * count;
-        power_consumption_misc += details.operational_power_consumption * count;
+        power_consumption_utility += details.operational_power_consumption * count;
         c.hydrogen_capacity_tank += details.capacity * count;
       }
     }
@@ -428,7 +444,7 @@ impl GridCalculator {
         c.total_mass_empty += block.mass(&data.components) * count;
         c.total_volume_ore_only += details.inventory_volume_ore * count;
         power_consumption_idle += details.idle_power_consumption * count;
-        power_consumption_misc += details.operational_power_consumption * count;
+        power_consumption_utility += details.operational_power_consumption * count;
       }
     }
 
@@ -465,23 +481,28 @@ impl GridCalculator {
     }
 
     {
-      c.power_idle = c.power_resource(power_consumption_idle);
-      let mut consumption = power_consumption_misc;
-      c.power_misc = c.power_resource(consumption);
-      consumption += power_consumption_jump_drive;
-      c.power_upto_jump_drive = c.power_resource(consumption);
-      consumption += power_consumption_generator;
-      c.power_upto_generator = c.power_resource(consumption);
-      consumption += power_consumption_wheel_suspension;
-      c.power_upto_wheel_suspension = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Up, Direction::Down);
-      c.power_upto_up_down_thruster = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Front, Direction::Back);
-      c.power_upto_front_back_thruster = c.power_resource(consumption);
-      consumption += Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Left, Direction::Right);
-      c.power_upto_left_right_thruster = c.power_resource(consumption);
-      consumption += power_consumption_battery;
-      c.power_upto_battery = c.power_resource(consumption);
+      c.power_idle = c.power_resource(power_consumption_idle, power_consumption_idle);
+      let mut total_consumption = power_consumption_railgun;
+      c.power_railgun = c.power_resource(power_consumption_railgun, total_consumption);
+      total_consumption += power_consumption_utility;
+      c.power_upto_utility = c.power_resource(power_consumption_utility, total_consumption);
+      total_consumption += power_consumption_wheel_suspension;
+      c.power_upto_wheel_suspension = c.power_resource(power_consumption_wheel_suspension, total_consumption);
+      total_consumption += power_consumption_jump_drive;
+      c.power_upto_jump_drive = c.power_resource(power_consumption_jump_drive, total_consumption);
+      total_consumption += power_consumption_generator;
+      c.power_upto_generator = c.power_resource(power_consumption_generator, total_consumption);
+      let up_down_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Up, Direction::Down);
+      total_consumption += up_down_consumption;
+      c.power_upto_up_down_thruster = c.power_resource(up_down_consumption, total_consumption);
+      let front_left_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Front, Direction::Back);
+      total_consumption += front_left_consumption;
+      c.power_upto_front_back_thruster = c.power_resource(front_left_consumption, total_consumption);
+      let left_right_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Left, Direction::Right);
+      total_consumption += left_right_consumption;
+      c.power_upto_left_right_thruster = c.power_resource(left_right_consumption, total_consumption);
+      total_consumption += power_consumption_battery;
+      c.power_upto_battery = c.power_resource(power_consumption_battery, total_consumption);
     }
 
     {
@@ -528,10 +549,11 @@ pub struct GridCalculated {
   pub power_capacity_battery: f64,
   pub power_battery_discharging: bool,
   pub power_idle: PowerCalculated,
-  pub power_misc: PowerCalculated,
-  pub power_upto_generator: PowerCalculated,
-  pub power_upto_jump_drive: PowerCalculated,
+  pub power_railgun: PowerCalculated,
+  pub power_upto_utility: PowerCalculated,
   pub power_upto_wheel_suspension: PowerCalculated,
+  pub power_upto_jump_drive: PowerCalculated,
+  pub power_upto_generator: PowerCalculated,
   pub power_upto_up_down_thruster: PowerCalculated,
   pub power_upto_front_back_thruster: PowerCalculated,
   pub power_upto_left_right_thruster: PowerCalculated,
@@ -565,15 +587,16 @@ pub struct ThrusterAccelerationCalculated {
 #[derive(Default)]
 pub struct PowerCalculated {
   pub consumption: f64,
+  pub total_consumption: f64,
   pub balance: f64,
   pub duration_battery: Option<f64>,
 }
 
 impl PowerCalculated {
-  fn new(consumption: f64, generation: f64, capacity_battery: f64, battery_discharging: bool, conversion_rate: f64) -> Self {
-    let balance = generation - consumption;
-    let duration_battery = (consumption != 0.0 && capacity_battery != 0.0 && battery_discharging).then(|| (capacity_battery / consumption) * conversion_rate);
-    PowerCalculated { consumption, balance, duration_battery }
+  fn new(consumption: f64, total_consumption: f64, generation: f64, capacity_battery: f64, battery_discharging: bool, conversion_rate: f64) -> Self {
+    let balance = generation - total_consumption;
+    let duration_battery = (total_consumption != 0.0 && capacity_battery != 0.0 && battery_discharging).then(|| (capacity_battery / total_consumption) * conversion_rate);
+    PowerCalculated { consumption, total_consumption, balance, duration_battery }
   }
 }
 
@@ -597,8 +620,8 @@ impl HydrogenCalculated {
 }
 
 impl GridCalculated {
-  fn power_resource(&self, consumption: f64) -> PowerCalculated {
-    PowerCalculated::new(consumption, self.power_generation, self.power_capacity_battery, self.power_battery_discharging, 60.0 /* MWh to mins */)
+  fn power_resource(&self, consumption: f64, total_consumption: f64) -> PowerCalculated {
+    PowerCalculated::new(consumption, total_consumption, self.power_generation, self.power_capacity_battery, self.power_battery_discharging, 60.0 /* MWh to mins */)
   }
 
   fn hydrogen_resource(&self, consumption: f64) -> HydrogenCalculated {

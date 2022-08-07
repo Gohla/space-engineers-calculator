@@ -5491,7 +5491,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 325,
           "hidden": false,
           "rename": null
         },
@@ -5514,7 +5513,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 326,
           "hidden": false,
           "rename": null
         },
@@ -5537,7 +5535,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 1,
           "hidden": false,
           "rename": null
         },
@@ -5560,7 +5557,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 3,
           "hidden": false,
           "rename": null
         },
@@ -5583,7 +5579,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 5,
           "hidden": true,
           "rename": null
         },
@@ -5606,7 +5601,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 7,
           "hidden": true,
           "rename": null
         },
@@ -5629,7 +5623,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 0,
           "hidden": false,
           "rename": null
         },
@@ -5652,7 +5645,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 2,
           "hidden": false,
           "rename": null
         },
@@ -5675,7 +5667,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 4,
           "hidden": true,
           "rename": null
         },
@@ -5698,7 +5689,6 @@
           },
           "has_physics": true,
           "mod_id": 2275681005,
-          "index": 6,
           "hidden": true,
           "rename": null
         },
@@ -5721,7 +5711,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 327,
           "hidden": false,
           "rename": null
         },
@@ -5744,7 +5733,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 754,
           "hidden": true,
           "rename": null
         },
@@ -5767,7 +5755,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 755,
           "hidden": true,
           "rename": null
         },
@@ -5796,12 +5783,15 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 712,
           "hidden": false,
           "rename": null
         },
         "details": {
-          "input": 32.0
+          "capacity": 3.0,
+          "operational_power_consumption": 32.0,
+          "power_efficiency": 0.8,
+          "max_jump_distance": 2000000.0,
+          "max_jump_mass": 1250000.0
         }
       },
       "JumpDrive.AQD_SG_Jumpdrive@2678657382": {
@@ -5821,12 +5811,65 @@
           },
           "has_physics": true,
           "mod_id": 2678657382,
-          "index": 4,
           "hidden": false,
           "rename": null
         },
         "details": {
-          "input": 16.0
+          "capacity": 3.0,
+          "operational_power_consumption": 16.0,
+          "power_efficiency": 0.8,
+          "max_jump_distance": 1000000.0,
+          "max_jump_mass": 125000.0
+        }
+      }
+    },
+    "railguns": {
+      "SmallMissileLauncherReload.LargeRailgun": {
+        "data": {
+          "id": "SmallMissileLauncherReload.LargeRailgun",
+          "name": "DisplayName_Block_Railgun",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 350.0,
+            "Construction": 150.0,
+            "Superconductor": 150.0,
+            "LargeTube": 60.0,
+            "PowerCell": 100.0,
+            "Computer": 100.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "capacity": 0.5,
+          "operational_power_consumption": 38.0,
+          "idle_power_consumption": 0.0002
+        }
+      },
+      "SmallMissileLauncherReload.SmallRailgun": {
+        "data": {
+          "id": "SmallMissileLauncherReload.SmallRailgun",
+          "name": "DisplayName_Block_Railgun",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 25.0,
+            "Construction": 20.0,
+            "Superconductor": 20.0,
+            "LargeTube": 6.0,
+            "PowerCell": 10.0,
+            "Computer": 20.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "capacity": 0.016,
+          "operational_power_consumption": 3.6,
+          "idle_power_consumption": 0.0002
         }
       }
     },
@@ -5845,7 +5888,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 697,
           "hidden": false,
           "rename": null
         },
@@ -5876,7 +5918,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 699,
           "hidden": false,
           "rename": null
         },
@@ -5906,7 +5947,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 693,
           "hidden": false,
           "rename": null
         },
@@ -5936,7 +5976,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 695,
           "hidden": false,
           "rename": null
         },
@@ -5966,7 +6005,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 396,
           "hidden": true,
           "rename": null
         },
@@ -5996,7 +6034,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 398,
           "hidden": true,
           "rename": null
         },
@@ -6026,7 +6063,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 395,
           "hidden": true,
           "rename": null
         },
@@ -6056,7 +6092,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 397,
           "hidden": true,
           "rename": null
         },
@@ -6086,7 +6121,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 688,
           "hidden": false,
           "rename": null
         },
@@ -6116,7 +6150,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 690,
           "hidden": false,
           "rename": null
         },
@@ -6147,7 +6180,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 696,
           "hidden": false,
           "rename": null
         },
@@ -6178,7 +6210,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 698,
           "hidden": false,
           "rename": null
         },
@@ -6208,7 +6239,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 692,
           "hidden": false,
           "rename": null
         },
@@ -6238,7 +6268,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 694,
           "hidden": false,
           "rename": null
         },
@@ -6268,7 +6297,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 689,
           "hidden": false,
           "rename": null
         },
@@ -6298,7 +6326,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 691,
           "hidden": false,
           "rename": null
         },
@@ -6328,7 +6355,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 765,
           "hidden": true,
           "rename": null
         },
@@ -6358,7 +6384,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 767,
           "hidden": true,
           "rename": null
         },
@@ -6389,7 +6414,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 32,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6420,7 +6444,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 33,
           "hidden": false,
           "rename": "Propeller Large 2-blade"
         },
@@ -6451,7 +6474,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 34,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6482,7 +6504,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 35,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6513,7 +6534,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 48,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6544,7 +6564,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 49,
           "hidden": false,
           "rename": "Propeller Large 2-blade"
         },
@@ -6575,7 +6594,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 50,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6606,7 +6624,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 51,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6637,7 +6654,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 96,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6668,7 +6684,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 97,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6699,7 +6714,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 98,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6730,7 +6744,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 99,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6761,7 +6774,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 112,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6792,7 +6804,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 113,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6823,7 +6834,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 114,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6854,7 +6864,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 115,
           "hidden": true,
           "rename": "Propeller Large 2-blade"
         },
@@ -6885,7 +6894,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 36,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -6916,7 +6924,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 37,
           "hidden": false,
           "rename": "Propeller Large 3-blade"
         },
@@ -6947,7 +6954,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 38,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -6978,7 +6984,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 39,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7009,7 +7014,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 52,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7040,7 +7044,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 53,
           "hidden": false,
           "rename": "Propeller Large 3-blade"
         },
@@ -7071,7 +7074,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 54,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7102,7 +7104,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 55,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7133,7 +7134,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 100,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7164,7 +7164,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 101,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7195,7 +7194,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 102,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7226,7 +7224,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 103,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7257,7 +7254,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 116,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7288,7 +7284,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 117,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7319,7 +7314,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 118,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7350,7 +7344,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 119,
           "hidden": true,
           "rename": "Propeller Large 3-blade"
         },
@@ -7381,7 +7374,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 40,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7412,7 +7404,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 41,
           "hidden": false,
           "rename": "Propeller Large 4-blade"
         },
@@ -7443,7 +7434,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 42,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7474,7 +7464,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 43,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7505,7 +7494,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 56,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7536,7 +7524,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 57,
           "hidden": false,
           "rename": "Propeller Large 4-blade"
         },
@@ -7567,7 +7554,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 58,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7598,7 +7584,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 59,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7629,7 +7614,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 104,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7660,7 +7644,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 105,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7691,7 +7674,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 106,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7722,7 +7704,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 107,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7753,7 +7734,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 120,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7784,7 +7764,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 121,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7815,7 +7794,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 122,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7846,7 +7824,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 123,
           "hidden": true,
           "rename": "Propeller Large 4-blade"
         },
@@ -7877,7 +7854,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 44,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -7908,7 +7884,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 45,
           "hidden": false,
           "rename": "Propeller Large 8-blade"
         },
@@ -7939,7 +7914,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 46,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -7970,7 +7944,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 47,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8001,7 +7974,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 60,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8032,7 +8004,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 61,
           "hidden": false,
           "rename": "Propeller Large 8-blade"
         },
@@ -8063,7 +8034,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 62,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8094,7 +8064,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 63,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8125,7 +8094,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 108,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8156,7 +8124,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 109,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8187,7 +8154,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 110,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8218,7 +8184,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 111,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8249,7 +8214,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 124,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8280,7 +8244,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 125,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8311,7 +8274,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 126,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8342,7 +8304,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 127,
           "hidden": true,
           "rename": "Propeller Large 8-blade"
         },
@@ -8373,7 +8334,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 0,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8404,7 +8364,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 1,
           "hidden": false,
           "rename": "Propeller Small 2-blade"
         },
@@ -8435,7 +8394,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 2,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8466,7 +8424,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 3,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8497,7 +8454,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 16,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8528,7 +8484,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 17,
           "hidden": false,
           "rename": "Propeller Small 2-blade"
         },
@@ -8559,7 +8514,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 18,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8590,7 +8544,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 19,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8621,7 +8574,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 64,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8652,7 +8604,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 65,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8683,7 +8634,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 66,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8714,7 +8664,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 67,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8745,7 +8694,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 80,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8776,7 +8724,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 81,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8807,7 +8754,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 82,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8838,7 +8784,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 83,
           "hidden": true,
           "rename": "Propeller Small 2-blade"
         },
@@ -8869,7 +8814,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 4,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -8900,7 +8844,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 5,
           "hidden": false,
           "rename": "Propeller Small 3-blade"
         },
@@ -8931,7 +8874,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 6,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -8962,7 +8904,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 7,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -8993,7 +8934,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 20,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9024,7 +8964,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 21,
           "hidden": false,
           "rename": "Propeller Small 3-blade"
         },
@@ -9055,7 +8994,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 22,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9086,7 +9024,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 23,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9117,7 +9054,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 68,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9148,7 +9084,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 69,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9179,7 +9114,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 70,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9210,7 +9144,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 71,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9241,7 +9174,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 84,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9272,7 +9204,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 85,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9303,7 +9234,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 86,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9334,7 +9264,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 87,
           "hidden": true,
           "rename": "Propeller Small 3-blade"
         },
@@ -9365,7 +9294,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 8,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9396,7 +9324,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 9,
           "hidden": false,
           "rename": "Propeller Small 4-blade"
         },
@@ -9427,7 +9354,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 10,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9458,7 +9384,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 11,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9489,7 +9414,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 24,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9520,7 +9444,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 25,
           "hidden": false,
           "rename": "Propeller Small 4-blade"
         },
@@ -9551,7 +9474,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 26,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9582,7 +9504,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 27,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9613,7 +9534,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 72,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9644,7 +9564,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 73,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9675,7 +9594,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 74,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9706,7 +9624,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 75,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9737,7 +9654,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 88,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9768,7 +9684,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 89,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9799,7 +9714,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 90,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9830,7 +9744,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 91,
           "hidden": true,
           "rename": "Propeller Small 4-blade"
         },
@@ -9861,7 +9774,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 12,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -9892,7 +9804,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 13,
           "hidden": false,
           "rename": "Propeller Small 8-blade"
         },
@@ -9923,7 +9834,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 14,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -9954,7 +9864,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 15,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -9985,7 +9894,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 28,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10016,7 +9924,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 29,
           "hidden": false,
           "rename": "Propeller Small 8-blade"
         },
@@ -10047,7 +9954,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 30,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10078,7 +9984,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 31,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10109,7 +10014,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 76,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10140,7 +10044,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 77,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10171,7 +10074,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 78,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10202,7 +10104,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 79,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10233,7 +10134,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 92,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10264,7 +10164,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 93,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10295,7 +10194,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 94,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10326,7 +10224,6 @@
           },
           "has_physics": true,
           "mod_id": 1463667637,
-          "index": 95,
           "hidden": true,
           "rename": "Propeller Small 8-blade"
         },
@@ -10357,7 +10254,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 597,
           "hidden": true,
           "rename": null
         },
@@ -10388,7 +10284,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 599,
           "hidden": true,
           "rename": null
         },
@@ -10418,7 +10313,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 592,
           "hidden": true,
           "rename": null
         },
@@ -10448,7 +10342,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 594,
           "hidden": true,
           "rename": null
         },
@@ -10479,7 +10372,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 596,
           "hidden": true,
           "rename": null
         },
@@ -10510,7 +10402,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 598,
           "hidden": true,
           "rename": null
         },
@@ -10540,7 +10431,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 593,
           "hidden": true,
           "rename": null
         },
@@ -10570,7 +10460,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 595,
           "hidden": true,
           "rename": null
         },
@@ -10600,7 +10489,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 764,
           "hidden": true,
           "rename": null
         },
@@ -10630,7 +10518,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 766,
           "hidden": true,
           "rename": null
         },
@@ -10663,7 +10550,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 8,
           "hidden": true,
           "rename": null
         },
@@ -10686,7 +10572,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 18,
           "hidden": true,
           "rename": null
         },
@@ -10710,7 +10595,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 9,
           "hidden": true,
           "rename": null
         },
@@ -10733,7 +10617,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 19,
           "hidden": true,
           "rename": null
         },
@@ -10757,7 +10640,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 29,
           "hidden": true,
           "rename": "1x1 Lifted Wheel Suspension"
         },
@@ -10780,7 +10662,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 39,
           "hidden": true,
           "rename": "1x1 Lifted Wheel Suspension"
         },
@@ -10804,7 +10685,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 28,
           "hidden": true,
           "rename": null
         },
@@ -10827,7 +10707,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 38,
           "hidden": true,
           "rename": null
         },
@@ -10851,7 +10730,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 792,
           "hidden": false,
           "rename": "1x1 Wheel Suspension"
         },
@@ -10874,7 +10752,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 795,
           "hidden": false,
           "rename": "1x1 Wheel Suspension"
         },
@@ -10898,7 +10775,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 6,
           "hidden": true,
           "rename": null
         },
@@ -10921,7 +10797,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 16,
           "hidden": true,
           "rename": null
         },
@@ -10945,7 +10820,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 7,
           "hidden": true,
           "rename": null
         },
@@ -10968,7 +10842,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 17,
           "hidden": true,
           "rename": null
         },
@@ -10992,7 +10865,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 27,
           "hidden": false,
           "rename": "2x2 Lifted Wheel Suspension"
         },
@@ -11015,7 +10887,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 37,
           "hidden": false,
           "rename": "2x2 Lifted Wheel Suspension"
         },
@@ -11039,7 +10910,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 26,
           "hidden": true,
           "rename": null
         },
@@ -11062,7 +10932,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 36,
           "hidden": true,
           "rename": null
         },
@@ -11086,7 +10955,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 4,
           "hidden": true,
           "rename": null
         },
@@ -11109,7 +10977,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 14,
           "hidden": true,
           "rename": null
         },
@@ -11133,7 +11000,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 5,
           "hidden": true,
           "rename": null
         },
@@ -11156,7 +11022,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 15,
           "hidden": true,
           "rename": null
         },
@@ -11180,7 +11045,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 25,
           "hidden": true,
           "rename": "3x3 Lifted Wheel Suspension"
         },
@@ -11203,7 +11067,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 35,
           "hidden": true,
           "rename": "3x3 Lifted Wheel Suspension"
         },
@@ -11227,7 +11090,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 24,
           "hidden": true,
           "rename": null
         },
@@ -11250,7 +11112,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 34,
           "hidden": true,
           "rename": null
         },
@@ -11274,7 +11135,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 790,
           "hidden": false,
           "rename": "3x3 Wheel Suspension"
         },
@@ -11297,7 +11157,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 793,
           "hidden": false,
           "rename": "3x3 Wheel Suspension"
         },
@@ -11321,7 +11180,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 2,
           "hidden": true,
           "rename": null
         },
@@ -11344,7 +11202,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 12,
           "hidden": true,
           "rename": null
         },
@@ -11368,7 +11225,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 3,
           "hidden": true,
           "rename": null
         },
@@ -11391,7 +11247,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 13,
           "hidden": true,
           "rename": null
         },
@@ -11415,7 +11270,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 23,
           "hidden": false,
           "rename": "4x4 Lifted Wheel Suspension"
         },
@@ -11438,7 +11292,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 33,
           "hidden": false,
           "rename": "4x4 Lifted Wheel Suspension"
         },
@@ -11462,7 +11315,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 22,
           "hidden": true,
           "rename": null
         },
@@ -11485,7 +11337,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 32,
           "hidden": true,
           "rename": null
         },
@@ -11509,7 +11360,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 0,
           "hidden": true,
           "rename": null
         },
@@ -11532,7 +11382,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 10,
           "hidden": true,
           "rename": null
         },
@@ -11556,7 +11405,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 1,
           "hidden": true,
           "rename": null
         },
@@ -11579,7 +11427,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 11,
           "hidden": true,
           "rename": null
         },
@@ -11603,7 +11450,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 21,
           "hidden": true,
           "rename": "5x5 Lifted Wheel Suspension"
         },
@@ -11626,7 +11472,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 31,
           "hidden": true,
           "rename": "5x5 Lifted Wheel Suspension"
         },
@@ -11650,7 +11495,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 20,
           "hidden": true,
           "rename": null
         },
@@ -11673,7 +11517,6 @@
           },
           "has_physics": true,
           "mod_id": 2727185097,
-          "index": 30,
           "hidden": true,
           "rename": null
         },
@@ -11697,7 +11540,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 791,
           "hidden": false,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11720,7 +11562,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 794,
           "hidden": false,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11744,7 +11585,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 20,
           "hidden": true,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11767,7 +11607,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 21,
           "hidden": true,
           "rename": "5x5 Wheel Suspension"
         },
@@ -11791,7 +11630,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 8,
           "hidden": true,
           "rename": null
         },
@@ -11814,7 +11652,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 18,
           "hidden": true,
           "rename": null
         },
@@ -11838,7 +11675,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 9,
           "hidden": true,
           "rename": null
         },
@@ -11861,7 +11697,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 19,
           "hidden": true,
           "rename": null
         },
@@ -11885,7 +11720,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 29,
           "hidden": false,
           "rename": "7x7 Lifted Wheel Suspension"
         },
@@ -11908,7 +11742,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 39,
           "hidden": false,
           "rename": "7x7 Lifted Wheel Suspension"
         },
@@ -11932,7 +11765,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 28,
           "hidden": true,
           "rename": null
         },
@@ -11955,7 +11787,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 38,
           "hidden": true,
           "rename": null
         },
@@ -11979,7 +11810,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 0,
           "hidden": false,
           "rename": "7x7 Wheel Suspension"
         },
@@ -12002,7 +11832,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 1,
           "hidden": false,
           "rename": "7x7 Wheel Suspension"
         },
@@ -12026,7 +11855,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 16,
           "hidden": true,
           "rename": "7x7 Wheel Suspension"
         },
@@ -12049,7 +11877,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 17,
           "hidden": true,
           "rename": "7x7 Wheel Suspension"
         },
@@ -12073,7 +11900,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 6,
           "hidden": true,
           "rename": null
         },
@@ -12096,7 +11922,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 16,
           "hidden": true,
           "rename": null
         },
@@ -12120,7 +11945,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 7,
           "hidden": true,
           "rename": null
         },
@@ -12143,7 +11967,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 17,
           "hidden": true,
           "rename": null
         },
@@ -12167,7 +11990,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 27,
           "hidden": false,
           "rename": "9x9 Lifted Wheel Suspension"
         },
@@ -12190,7 +12012,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 37,
           "hidden": false,
           "rename": "9x9 Lifted Wheel Suspension"
         },
@@ -12214,7 +12035,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 26,
           "hidden": true,
           "rename": null
         },
@@ -12237,7 +12057,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 36,
           "hidden": true,
           "rename": null
         },
@@ -12261,7 +12080,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 4,
           "hidden": true,
           "rename": null
         },
@@ -12284,7 +12102,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 14,
           "hidden": true,
           "rename": null
         },
@@ -12308,7 +12125,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 5,
           "hidden": true,
           "rename": null
         },
@@ -12331,7 +12147,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 15,
           "hidden": true,
           "rename": null
         },
@@ -12355,7 +12170,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 25,
           "hidden": false,
           "rename": "11x11 Lifted Wheel Suspension"
         },
@@ -12378,7 +12192,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 35,
           "hidden": false,
           "rename": "11x11 Lifted Wheel Suspension"
         },
@@ -12402,7 +12215,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 24,
           "hidden": true,
           "rename": null
         },
@@ -12425,7 +12237,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 34,
           "hidden": true,
           "rename": null
         },
@@ -12449,7 +12260,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 2,
           "hidden": true,
           "rename": null
         },
@@ -12472,7 +12282,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 12,
           "hidden": true,
           "rename": null
         },
@@ -12496,7 +12305,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 3,
           "hidden": true,
           "rename": null
         },
@@ -12519,7 +12327,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 13,
           "hidden": true,
           "rename": null
         },
@@ -12543,7 +12350,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 23,
           "hidden": false,
           "rename": "13x13 Lifted Wheel Suspension"
         },
@@ -12566,7 +12372,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 33,
           "hidden": false,
           "rename": "13x13 Lifted Wheel Suspension"
         },
@@ -12590,7 +12395,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 22,
           "hidden": true,
           "rename": null
         },
@@ -12613,7 +12417,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 32,
           "hidden": true,
           "rename": null
         },
@@ -12637,7 +12440,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 0,
           "hidden": true,
           "rename": null
         },
@@ -12660,7 +12462,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 10,
           "hidden": true,
           "rename": null
         },
@@ -12684,7 +12485,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 1,
           "hidden": true,
           "rename": null
         },
@@ -12707,7 +12507,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 11,
           "hidden": true,
           "rename": null
         },
@@ -12731,7 +12530,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 21,
           "hidden": false,
           "rename": "15x15 Lifted Wheel Suspension"
         },
@@ -12754,7 +12552,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 31,
           "hidden": false,
           "rename": "15x15 Lifted Wheel Suspension"
         },
@@ -12778,7 +12575,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 20,
           "hidden": true,
           "rename": null
         },
@@ -12801,7 +12597,6 @@
           },
           "has_physics": true,
           "mod_id": 2745706747,
-          "index": 30,
           "hidden": true,
           "rename": null
         },
@@ -12825,7 +12620,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 524,
           "hidden": true,
           "rename": "Offroad 1x1 Wheel Suspension"
         },
@@ -12848,7 +12642,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 527,
           "hidden": true,
           "rename": "Offroad 1x1 Wheel Suspension"
         },
@@ -12872,7 +12665,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 4,
           "hidden": true,
           "rename": "Offroad 1x1 Wheel Suspension"
         },
@@ -12895,7 +12687,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 5,
           "hidden": true,
           "rename": "Offroad 1x1 Wheel Suspension"
         },
@@ -12919,7 +12710,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 522,
           "hidden": true,
           "rename": "Offroad 3x3 Wheel Suspension"
         },
@@ -12942,7 +12732,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 525,
           "hidden": true,
           "rename": "Offroad 3x3 Wheel Suspension"
         },
@@ -12966,7 +12755,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 8,
           "hidden": true,
           "rename": "Offroad 3x3 Wheel Suspension"
         },
@@ -12989,7 +12777,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 9,
           "hidden": true,
           "rename": "Offroad 3x3 Wheel Suspension"
         },
@@ -13013,7 +12800,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 523,
           "hidden": true,
           "rename": "Offroad 5x5 Wheel Suspension"
         },
@@ -13036,7 +12822,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 526,
           "hidden": true,
           "rename": "Offroad 5x5 Wheel Suspension"
         },
@@ -13060,7 +12845,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 12,
           "hidden": true,
           "rename": "Offroad 5x5 Wheel Suspension"
         },
@@ -13083,7 +12867,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 13,
           "hidden": true,
           "rename": "Offroad 5x5 Wheel Suspension"
         },
@@ -13107,7 +12890,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 530,
           "hidden": true,
           "rename": null
         },
@@ -13130,7 +12912,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 533,
           "hidden": true,
           "rename": null
         },
@@ -13154,7 +12935,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 6,
           "hidden": true,
           "rename": null
         },
@@ -13177,7 +12957,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 7,
           "hidden": true,
           "rename": null
         },
@@ -13201,7 +12980,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 528,
           "hidden": true,
           "rename": null
         },
@@ -13224,7 +13002,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 531,
           "hidden": true,
           "rename": null
         },
@@ -13248,7 +13025,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 10,
           "hidden": true,
           "rename": null
         },
@@ -13271,7 +13047,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 11,
           "hidden": true,
           "rename": null
         },
@@ -13295,7 +13070,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 529,
           "hidden": true,
           "rename": null
         },
@@ -13318,7 +13092,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 532,
           "hidden": true,
           "rename": null
         },
@@ -13342,7 +13115,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 14,
           "hidden": true,
           "rename": null
         },
@@ -13365,7 +13137,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 15,
           "hidden": true,
           "rename": null
         },
@@ -13389,7 +13160,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 798,
           "hidden": true,
           "rename": null
         },
@@ -13412,7 +13182,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 801,
           "hidden": true,
           "rename": null
         },
@@ -13436,7 +13205,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 796,
           "hidden": true,
           "rename": null
         },
@@ -13459,7 +13227,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 799,
           "hidden": true,
           "rename": null
         },
@@ -13483,7 +13250,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 797,
           "hidden": true,
           "rename": null
         },
@@ -13506,7 +13272,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 800,
           "hidden": true,
           "rename": null
         },
@@ -13530,7 +13295,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 22,
           "hidden": true,
           "rename": null
         },
@@ -13553,7 +13317,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 23,
           "hidden": true,
           "rename": null
         },
@@ -13577,7 +13340,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 2,
           "hidden": true,
           "rename": null
         },
@@ -13600,7 +13362,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 3,
           "hidden": true,
           "rename": null
         },
@@ -13624,7 +13385,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 18,
           "hidden": true,
           "rename": null
         },
@@ -13647,7 +13407,6 @@
           },
           "has_physics": true,
           "mod_id": 2466033777,
-          "index": 19,
           "hidden": true,
           "rename": null
         },
@@ -13675,7 +13434,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 332,
           "hidden": false,
           "rename": null
         },
@@ -13701,7 +13459,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 333,
           "hidden": false,
           "rename": null
         },
@@ -13729,7 +13486,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 329,
           "hidden": false,
           "rename": null
         },
@@ -13755,7 +13511,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 331,
           "hidden": false,
           "rename": null
         },
@@ -13781,7 +13536,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 746,
           "hidden": true,
           "rename": null
         },
@@ -13806,7 +13560,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 748,
           "hidden": true,
           "rename": null
         },
@@ -13831,7 +13584,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 328,
           "hidden": false,
           "rename": null
         },
@@ -13856,7 +13608,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 330,
           "hidden": false,
           "rename": null
         },
@@ -13881,7 +13632,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 745,
           "hidden": true,
           "rename": null
         },
@@ -13906,7 +13656,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 747,
           "hidden": true,
           "rename": null
         },
@@ -13931,7 +13680,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 507,
           "hidden": false,
           "rename": null
         },
@@ -13958,7 +13706,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 508,
           "hidden": false,
           "rename": null
         },
@@ -13987,7 +13734,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 442,
           "hidden": false,
           "rename": null
         },
@@ -14011,7 +13757,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 444,
           "hidden": false,
           "rename": null
         },
@@ -14035,7 +13780,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 369,
           "hidden": true,
           "rename": null
         },
@@ -14059,7 +13803,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 443,
           "hidden": false,
           "rename": null
         },
@@ -14083,7 +13826,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 445,
           "hidden": false,
           "rename": null
         },
@@ -14108,7 +13850,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 258,
           "hidden": true,
           "rename": null
         },
@@ -14130,7 +13871,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 259,
           "hidden": true,
           "rename": null
         },
@@ -14153,7 +13893,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 450,
           "hidden": false,
           "rename": null
         },
@@ -14178,7 +13917,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 452,
           "hidden": false,
           "rename": null
         },
@@ -14203,7 +13941,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 359,
           "hidden": true,
           "rename": null
         },
@@ -14225,7 +13962,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 263,
           "hidden": true,
           "rename": null
         },
@@ -14248,7 +13984,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 449,
           "hidden": false,
           "rename": null
         },
@@ -14271,7 +14006,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 448,
           "hidden": false,
           "rename": null
         },
@@ -14296,7 +14030,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 451,
           "hidden": false,
           "rename": null
         },
@@ -14316,7 +14049,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 720,
           "hidden": true,
           "rename": null
         },
@@ -14336,7 +14068,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 721,
           "hidden": true,
           "rename": null
         },
@@ -14361,7 +14092,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 458,
           "hidden": false,
           "rename": null
         },
@@ -14383,7 +14113,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 460,
           "hidden": false,
           "rename": null
         },
@@ -14405,7 +14134,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 459,
           "hidden": false,
           "rename": null
         },
@@ -14427,7 +14155,6 @@
           },
           "has_physics": true,
           "mod_id": 2678657382,
-          "index": 2,
           "hidden": false,
           "rename": null
         },
@@ -14451,7 +14178,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 265,
           "hidden": false,
           "rename": null
         },
@@ -14474,7 +14200,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 519,
           "hidden": false,
           "rename": null
         },
@@ -14498,7 +14223,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 241,
           "hidden": false,
           "rename": null
         },
@@ -14522,7 +14246,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 242,
           "hidden": false,
           "rename": null
         },
@@ -14545,7 +14268,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 248,
           "hidden": true,
           "rename": null
         },
@@ -14568,7 +14290,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 249,
           "hidden": true,
           "rename": null
         },
@@ -14591,7 +14312,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 240,
           "hidden": true,
           "rename": null
         },
@@ -14611,7 +14331,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 262,
           "hidden": false,
           "rename": null
         },
@@ -14631,7 +14350,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 261,
           "hidden": false,
           "rename": null
         },
@@ -14651,7 +14369,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 250,
           "hidden": false,
           "rename": null
         },
@@ -14671,7 +14388,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 251,
           "hidden": false,
           "rename": null
         },
@@ -14691,7 +14407,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 252,
           "hidden": false,
           "rename": null
         },
@@ -14717,7 +14432,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 243,
           "hidden": false,
           "rename": null
         },
@@ -14740,7 +14454,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 244,
           "hidden": false,
           "rename": null
         },
@@ -14763,7 +14476,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 762,
           "hidden": false,
           "rename": null
         },
@@ -14786,7 +14498,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 763,
           "hidden": false,
           "rename": null
         },
@@ -14812,7 +14523,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 268,
           "hidden": false,
           "rename": null
         },
@@ -14838,7 +14548,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 269,
           "hidden": false,
           "rename": null
         },
@@ -14858,7 +14567,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 742,
           "hidden": true,
           "rename": null
         },
@@ -14878,7 +14586,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 413,
           "hidden": true,
           "rename": null
         },
@@ -14898,7 +14605,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 414,
           "hidden": true,
           "rename": null
         },
@@ -14918,7 +14624,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 415,
           "hidden": true,
           "rename": null
         },
@@ -14938,7 +14643,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 416,
           "hidden": true,
           "rename": null
         },
@@ -14961,7 +14665,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 245,
           "hidden": false,
           "rename": null
         },
@@ -14984,7 +14687,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 264,
           "hidden": false,
           "rename": null
         },
@@ -15007,7 +14709,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 266,
           "hidden": false,
           "rename": null
         },
@@ -15032,7 +14733,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 700,
           "hidden": false,
           "rename": null
         },
@@ -15056,7 +14756,6 @@
           },
           "has_physics": true,
           "mod_id": null,
-          "index": 701,
           "hidden": false,
           "rename": null
         },

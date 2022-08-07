@@ -26,15 +26,35 @@ pub struct ExtractConfig {
 #[derive(Error, Debug)]
 pub enum ExtractError {
   #[error("Could not create blocks builder")]
-  CreateBlocksBuilder(#[from] blocks::extract::CreateError),
-  #[error("Could not read blocks")]
-  ReadBlocks(#[from] blocks::extract::ExtractError),
-  #[error("Could not read components")]
-  ReadComponents(#[from] components::extract::Error),
-  #[error("Could not read gas properties")]
-  ReadGasProperties(#[from] gas_properties::extract::Error),
-  #[error("Could not read localization")]
-  ReadLocalization(#[from] localization::extract::Error),
+  CreateBlocksBuilderFail {
+    #[from]
+    #[backtrace]
+    source: blocks::extract::CreateError
+  },
+  #[error("Could not extract blocks")]
+  ExtractBlocksFail {
+    #[from]
+    #[backtrace]
+    source: blocks::extract::ExtractError
+  },
+  #[error("Could not extract components")]
+  ExtractComponentsFail {
+    #[from]
+    #[backtrace]
+    source: components::extract::Error
+  },
+  #[error("Could not extract gas properties")]
+  ExtractGasPropertiesFail {
+    #[from]
+    #[backtrace]
+    source: gas_properties::extract::Error
+  },
+  #[error("Could not extract localization")]
+  ExtractLocalizationFail {
+    #[from]
+    #[backtrace]
+    source: localization::extract::Error
+  },
 }
 
 impl Data {

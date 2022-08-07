@@ -1,3 +1,4 @@
+use std::backtrace::Backtrace;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
@@ -15,7 +16,6 @@ use crate::xml::{NodeExt, read_string_from_file, XmlError};
 impl BlockData {
   pub fn from_def(
     def: &Node,
-    index: u64,
     localization: &Localization,
     mod_id: Option<u64>,
     hide_block_by_exact_name: &HashSet<String>,
@@ -55,7 +55,7 @@ impl BlockData {
     };
     let rename = Self::rename(localized_name, rename_block_by_regex);
 
-    Ok(BlockData { id, name, size, components, has_physics, mod_id, index, hidden, rename })
+    Ok(BlockData { id, name, size, components, has_physics, mod_id, hidden, rename })
   }
 
   fn is_hidden(name: &str, hide_block_by_exact_name: &HashSet<String>, hide_block_by_regex_name: &RegexSet) -> bool {
@@ -95,17 +95,44 @@ pub const DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER: f64 = 3600.0;
 
 impl Battery {
   pub fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let capacity: f64 = def.parse_child_elem("MaxStoredPower")?;
-    let input: f64 = def.parse_child_elem("RequiredPowerInput")?;
-    let output: f64 = def.parse_child_elem("MaxPowerOutput")?;
-    Ok(Battery { capacity, input, output })
+    let capacity = def.parse_child_elem("MaxStoredPower")?;
+    let input = def.parse_child_elem("RequiredPowerInput")?;
+    let output = def.parse_child_elem("MaxPowerOutput")?;
+    Ok(Self { capacity, input, output })
   }
 }
 
 impl JumpDrive {
-  pub fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let input: f64 = def.parse_child_elem("RequiredPowerInput")?;
-    Ok(JumpDrive { input })
+  pub fn from_def(def: &Node) -> Result<Self, XmlError> { // Defaults according to MyObjectBuilder_JumpDriveDefinition.cs
+    let capacity = def.parse_child_elem_opt("PowerNeededForJump")?.unwrap_or(1.0);
+    let operational_power_consumption = def.parse_child_elem_opt("RequiredPowerInput")?.unwrap_or(4.0);
+    let power_efficiency = def.parse_child_elem_opt("PowerEfficiency")?.unwrap_or(0.8);
+    let max_jump_distance = def.parse_child_elem_opt("MaxJumpDistance")?.unwrap_or(5000.0);
+    let max_jump_mass = def.parse_child_elem_opt("MaxJumpMass")?.unwrap_or(1250000.0);
+    Ok(Self { capacity, operational_power_consumption, power_efficiency, max_jump_distance, max_jump_mass })
+  }
+}
+
+impl Railgun {
+  pub fn from_def(def: &Node, entity_components: &Node) -> Result<Self, XmlError> {
+    let mut capacity = None;
+    let mut operational_power_consumption = None;
+    let subtype_id: String = def.child_elem("Id")?.parse_child_elem("SubtypeId")?;
+    for entity_component in entity_components.children_elems("EntityComponent") {
+      if let Some("MyObjectBuilder_EntityCapacitorComponentDefinition") = entity_component.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
+        let entity_component_subtype_id: String = entity_component.child_elem("Id")?.parse_child_elem("SubtypeId")?;
+        if subtype_id != entity_component_subtype_id { continue }
+        capacity = Some(entity_component.parse_child_elem("Capacity")?);
+        operational_power_consumption = Some(entity_component.parse_child_elem("RechargeDraw")?);
+        break;
+      }
+    }
+    if let (Some(capacity), Some(operational_power_consumption)) = (capacity, operational_power_consumption) {
+      let idle_power_consumption = 0.0002; // According to MySmallMissileLauncher.cs
+      Ok(Self { capacity, operational_power_consumption, idle_power_consumption })
+    } else {
+      Err(XmlError::StructureFail(Backtrace::capture()))
+    }
   }
 }
 
@@ -154,38 +181,38 @@ impl Thruster {
 
 impl WheelSuspension {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let force: f64 = def.parse_child_elem("PropulsionForce")?;
-    let operational_power_consumption: f64 = def.parse_child_elem("RequiredPowerInput")?;
-    let idle_power_consumption: f64 = def.parse_child_elem("RequiredIdlePowerInput")?;
+    let force = def.parse_child_elem("PropulsionForce")?;
+    let operational_power_consumption = def.parse_child_elem("RequiredPowerInput")?;
+    let idle_power_consumption = def.parse_child_elem("RequiredIdlePowerInput")?;
     Ok(Self { force, operational_power_consumption, idle_power_consumption })
   }
 }
 
 impl HydrogenEngine {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let fuel_capacity: f64 = def.parse_child_elem("FuelCapacity")?;
-    let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput")?;
-    let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem_opt("FuelProductionToCapacityMultiplier")?.unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
+    let fuel_capacity = def.parse_child_elem("FuelCapacity")?;
+    let max_power_generation = def.parse_child_elem("MaxPowerOutput")?;
+    let fuel_production_to_capacity_multiplier = def.parse_child_elem_opt("FuelProductionToCapacityMultiplier")?.unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
     let max_fuel_consumption = max_power_generation / fuel_production_to_capacity_multiplier;
-    Ok(HydrogenEngine { fuel_capacity, max_power_generation, max_fuel_consumption })
+    Ok(Self { fuel_capacity, max_power_generation, max_fuel_consumption })
   }
 }
 
 impl Reactor {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let max_power_generation: f64 = def.parse_child_elem("MaxPowerOutput")?;
-    let fuel_production_to_capacity_multiplier: f64 = def.parse_child_elem_opt("FuelProductionToCapacityMultiplier")?.unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
+    let max_power_generation = def.parse_child_elem("MaxPowerOutput")?;
+    let fuel_production_to_capacity_multiplier = def.parse_child_elem_opt("FuelProductionToCapacityMultiplier")?.unwrap_or(DEFAULT_FUEL_PRODUCTION_TO_CAPACITY_MULTIPLIER);
     let max_fuel_consumption = max_power_generation / fuel_production_to_capacity_multiplier;
-    Ok(Reactor { max_power_generation, max_fuel_consumption })
+    Ok(Self { max_power_generation, max_fuel_consumption })
   }
 }
 
 impl Generator {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let ice_consumption: f64 = def.parse_child_elem("IceConsumptionPerSecond")?;
-    let inventory_volume_ice: f64 = def.parse_child_elem::<f64>("InventoryMaxVolume")? * VOLUME_MULTIPLIER;
-    let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption")?;
-    let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption")?;
+    let ice_consumption = def.parse_child_elem("IceConsumptionPerSecond")?;
+    let inventory_volume_ice = def.parse_child_elem::<f64>("InventoryMaxVolume")? * VOLUME_MULTIPLIER;
+    let operational_power_consumption = def.parse_child_elem("OperationalPowerConsumption")?;
+    let idle_power_consumption = def.parse_child_elem("StandbyPowerConsumption")?;
     let mut oxygen_generation = 0.0;
     let mut hydrogen_generation = 0.0;
     for gas_info in def.child_elem("ProducedGases")?.children_elems("GasInfo") {
@@ -198,7 +225,7 @@ impl Generator {
         _ => panic!("Unrecognized gas ID {} in generator {:?}", gas_id, def),
       }) = gas_generation;
     }
-    Ok(Generator {
+    Ok(Self {
       ice_consumption,
       inventory_volume_ice,
       operational_power_consumption,
@@ -211,18 +238,18 @@ impl Generator {
 
 impl HydrogenTank {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
-    let capacity: f64 = def.parse_child_elem("Capacity")?;
-    let operational_power_consumption: f64 = def.parse_child_elem("OperationalPowerConsumption")?;
-    let idle_power_consumption: f64 = def.parse_child_elem("StandbyPowerConsumption")?;
-    Ok(HydrogenTank { capacity, operational_power_consumption, idle_power_consumption })
+    let capacity = def.parse_child_elem("Capacity")?;
+    let operational_power_consumption = def.parse_child_elem("OperationalPowerConsumption")?;
+    let idle_power_consumption = def.parse_child_elem("StandbyPowerConsumption")?;
+    Ok(Self { capacity, operational_power_consumption, idle_power_consumption })
   }
 }
 
 impl Container {
   fn from_def(def: &Node, entity_components: &Node) -> Result<Self, XmlError> {
     let subtype_id: String = def.child_elem("Id")?.parse_child_elem("SubtypeId")?;
-    let mut inventory_volume_any = 0.0;
-    let mut store_any = false;
+    let mut inventory_volume_any = None;
+    let mut store_any = None;
     for entity_component in entity_components.children_elems("EntityComponent") {
       if let Some("MyObjectBuilder_InventoryComponentDefinition") = entity_component.attribute(("http://www.w3.org/2001/XMLSchema-instance", "type")) {
         let entity_component_subtype_id: String = entity_component.child_elem("Id")?.parse_child_elem("SubtypeId")?;
@@ -231,15 +258,16 @@ impl Container {
         let x: f64 = size.parse_attribute("x")?;
         let y: f64 = size.parse_attribute("y")?;
         let z: f64 = size.parse_attribute("z")?;
-        inventory_volume_any = x * y * z * VOLUME_MULTIPLIER;
-        store_any = entity_component.child_elem_opt("InputConstraint").map_or(true, |_| false);
+        inventory_volume_any = Some(x * y * z * VOLUME_MULTIPLIER);
+        store_any = Some(entity_component.child_elem_opt("InputConstraint").map_or(true, |_| false));
         break;
       }
     }
-    if inventory_volume_any == 0.0 {
-      panic!("Unrecognized container {:?}", def);
+    if let (Some(inventory_volume_any), Some(store_any)) = (inventory_volume_any, store_any) {
+      Ok(Self { inventory_volume_any, store_any })
+    } else {
+      Err(XmlError::StructureFail(Backtrace::capture()))
     }
-    Ok(Container { inventory_volume_any, store_any })
   }
 }
 
@@ -259,7 +287,7 @@ impl Cockpit {
   fn from_def(def: &Node) -> Result<Self, XmlError> {
     let has_inventory = def.parse_child_elem_opt("HasInventory")?.unwrap_or(true);
     let inventory_volume_any = if has_inventory { VOLUME_MULTIPLIER } else { 0.0 }; // Inventory capacity according to MyCockpit.cs.
-    Ok(Cockpit { has_inventory, inventory_volume_any })
+    Ok(Self { has_inventory, inventory_volume_any })
   }
 }
 
@@ -272,15 +300,14 @@ impl Drill {
     let z: f64 = size.parse_attribute("z")?;
     let cube_size = data.size.size();
     let inventory_volume_ore = x * y * z * cube_size * cube_size * cube_size * 0.5 * VOLUME_MULTIPLIER; // Inventory capacity according to MyShipDrill.cs.
-    let operational_power_consumption: f64 = 1.0 / 500.0 * 1.0; // Maximum required power according to ComputeMaxRequiredPower in MyShipDrill.cs.
-    let idle_power_consumption: f64 = 1e-06; // Idle power according to ComputeMaxRequiredPower in MyShipDrill.cs.
+    let operational_power_consumption = 1.0 / 500.0 * 1.0; // Maximum required power according to ComputeMaxRequiredPower in MyShipDrill.cs.
+    let idle_power_consumption = 1e-06; // Idle power according to ComputeMaxRequiredPower in MyShipDrill.cs.
     Ok(Self { inventory_volume_ore, operational_power_consumption, idle_power_consumption })
   }
 }
 
 
 // All block definitions
-
 
 pub struct BlocksBuilder {
   hide_block_by_exact_name: HashSet<String>,
@@ -293,6 +320,7 @@ pub struct BlocksBuilder {
 
   batteries: Vec<Block<Battery>>,
   jump_drives: Vec<Block<JumpDrive>>,
+  railguns: Vec<Block<Railgun>>,
   thrusters: Vec<Block<Thruster>>,
   wheel_suspensions: Vec<Block<WheelSuspension>>,
   hydrogen_engines: Vec<Block<HydrogenEngine>>,
@@ -343,6 +371,7 @@ impl BlocksBuilder {
 
       batteries: vec![],
       jump_drives: vec![],
+      railguns: vec![],
       thrusters: vec![],
       wheel_suspensions: vec![],
       hydrogen_engines: vec![],
@@ -360,15 +389,19 @@ impl BlocksBuilder {
 #[derive(Error, Debug)]
 pub enum ExtractError {
   #[error("Could not read CubeBlocks file '{file}'")]
-  ReadCubeBlocksFile { file: PathBuf, source: std::io::Error },
+  ReadCubeBlocksFileFail { file: PathBuf, source: std::io::Error },
   #[error("Could not XML parse CubeBlocks file '{file}'")]
-  ParseCubeBlocksFile { file: PathBuf, source: roxmltree::Error },
+  ParseCubeBlocksFileFail { file: PathBuf, source: roxmltree::Error },
   #[error("Could not read EntityComponents file '{file}'")]
-  ReadEntityComponentsFile { file: PathBuf, source: std::io::Error },
+  ReadEntityComponentsFileFail { file: PathBuf, source: std::io::Error },
   #[error("Could not XML parse EntityComponents file '{file}'")]
-  ParseEntityComponentsFile { file: PathBuf, source: roxmltree::Error },
+  ParseEntityComponentsFileFail { file: PathBuf, source: roxmltree::Error },
   #[error(transparent)]
-  XmlError(#[from] XmlError),
+  XmlFail {
+    #[from]
+    #[backtrace]
+    source: XmlError
+  },
 }
 
 impl BlocksBuilder {
@@ -413,14 +446,13 @@ impl BlocksBuilder {
   ) -> Result<(), ExtractError> {
     let entity_components_file = entity_components_file.as_ref();
     let entity_components_string = read_string_from_file(entity_components_file)
-      .map_err(|source| ExtractError::ReadEntityComponentsFile { file: entity_components_file.to_path_buf(), source })?;
+      .map_err(|source| ExtractError::ReadEntityComponentsFileFail { file: entity_components_file.to_path_buf(), source })?;
     let entity_components_doc = Document::parse(&entity_components_string)
-      .map_err(|source| ExtractError::ParseEntityComponentsFile { file: entity_components_file.to_path_buf(), source })?;
+      .map_err(|source| ExtractError::ParseEntityComponentsFileFail { file: entity_components_file.to_path_buf(), source })?;
     let entity_components_root = entity_components_doc.root();
     let entity_components_root_node = entity_components_root.first_child_elem()?;
     let entity_components_node = entity_components_root_node.child_elem("EntityComponents")?;
 
-    let mut index = 0;
     let cube_blocks_file_paths = WalkDir::new(search_path)
       .into_iter()
       .filter_map(|de| {
@@ -436,16 +468,15 @@ impl BlocksBuilder {
     for cube_blocks_file_path in cube_blocks_file_paths {
       let cube_blocks_file_path = &cube_blocks_file_path;
       let cube_blocks_string = read_string_from_file(cube_blocks_file_path)
-        .map_err(|source| ExtractError::ReadCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
+        .map_err(|source| ExtractError::ReadCubeBlocksFileFail { file: cube_blocks_file_path.to_path_buf(), source })?;
       let cube_blocks_doc = Document::parse(&cube_blocks_string)
-        .map_err(|source| ExtractError::ParseCubeBlocksFile { file: cube_blocks_file_path.to_path_buf(), source })?;
+        .map_err(|source| ExtractError::ParseCubeBlocksFileFail { file: cube_blocks_file_path.to_path_buf(), source })?;
       let definitions_node = cube_blocks_doc.root();
       let definitions_node = definitions_node.first_child_elem()?;
       let definitions_node = definitions_node.first_child_elem()?;
       for def in definitions_node.children_elems("Definition") {
         let data = BlockData::from_def(
           &def,
-          index,
           localization,
           mod_id,
           &self.hide_block_by_exact_name,
@@ -467,6 +498,11 @@ impl BlocksBuilder {
             }
             "MyObjectBuilder_JumpDriveDefinition" => {
               add_block(JumpDrive::from_def(&def)?, data, &mut self.jump_drives);
+            }
+            "MyObjectBuilder_WeaponBlockDefinition" => {
+              if data.id.contains("Railgun") {
+                add_block(Railgun::from_def(&def, &entity_components_node)?, data, &mut self.railguns);
+              }
             }
             "MyObjectBuilder_ThrustDefinition" => {
               add_block(Thruster::from_def(&def)?, data, &mut self.thrusters);
@@ -502,7 +538,6 @@ impl BlocksBuilder {
             _ => {}
           }
         }
-        index += 1;
       }
     }
     Ok(())
@@ -514,6 +549,7 @@ impl BlocksBuilder {
     }
     sort_block_vec(&mut self.batteries, localization);
     sort_block_vec(&mut self.jump_drives, localization);
+    sort_block_vec(&mut self.railguns, localization);
     sort_block_vec(&mut self.thrusters, localization);
     sort_block_vec(&mut self.wheel_suspensions, localization);
     sort_block_vec(&mut self.hydrogen_engines, localization);
@@ -530,6 +566,7 @@ impl BlocksBuilder {
     Blocks {
       batteries: create_map(self.batteries),
       jump_drives: create_map(self.jump_drives),
+      railguns: create_map(self.railguns),
       thrusters: create_map(self.thrusters),
       wheel_suspensions: create_map(self.wheel_suspensions),
       hydrogen_engines: create_map(self.hydrogen_engines),
