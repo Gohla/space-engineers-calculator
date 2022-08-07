@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="R cli" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-    <option name="command" value="run --bin secalc_cli -- extract-game-data data\extract_config.ron C:\Dev\space_engineers_calc\data\data.json" />
+    <option name="command" value="run --package secalc_cli -- extract-game-data data\extract_config.ron C:\Dev\space_engineers_calc\data\data.json" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <option name="channel" value="DEFAULT" />
     <option name="requiredFeatures" value="true" />
