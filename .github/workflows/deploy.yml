@@ -14,6 +14,8 @@ jobs:
         with:
           toolchain: nightly-2022-06-06
           targets: wasm32-unknown-unknown
+      - name: Install wasm-bindgen CLI
+        run: cargo install wasm-bindgen-cli
       - name: Build
         run: |
           cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
