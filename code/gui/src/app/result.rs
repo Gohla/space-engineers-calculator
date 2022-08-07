@@ -199,7 +199,7 @@ impl<'ui> ResultUi<'ui> {
 
   fn hydrogen_row(&mut self, label: impl Into<WidgetText>, hydrogen_formatter: impl Fn(f64) -> String, duration_formatter: impl Fn(f64) -> String, hydrogen: &HydrogenCalculated) {
     self.ui.label(label);
-    self.right_align_value_with_unit(hydrogen_formatter(hydrogen.consumption), "L/s");
+    self.right_align_value_with_unit(hydrogen_formatter(hydrogen.total_consumption), "L/s");
     self.right_align_value_with_unit(hydrogen_formatter(hydrogen.balance), "L/s");
     self.right_align_optional_value_with_unit(hydrogen.duration_tank.map(|d| duration_formatter(d)), "min");
     self.right_align_optional_value_with_unit(hydrogen.duration_engine.map(|d| duration_formatter(d)), "min");

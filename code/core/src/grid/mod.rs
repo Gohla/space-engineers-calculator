@@ -530,43 +530,75 @@ impl GridCalculator {
 
 #[derive(Default)]
 pub struct GridCalculated {
+  /// Total volume available in inventories that accept any item (L)
   pub total_volume_any: f64,
+  /// Total volume available for ore in inventories that accept any item (L)
   pub total_volume_ore: f64,
+  /// Total volume available for ice in inventories that accept any item (L)
   pub total_volume_ice: f64,
+  /// Total volume available for ore in inventories that accept only ore (L)
   pub total_volume_ore_only: f64,
+  /// Total volume available for ore in inventories that accept only ice (L)
   pub total_volume_ice_only: f64,
+  /// Total mass without items (kg)
   pub total_mass_empty: f64,
+  /// Total mass when fully filled with items (kg)
   pub total_mass_filled: f64,
+  /// Total number of ore that can are stored
   pub total_items_ore: f64,
+  /// Total number of ice that can are stored
   pub total_items_ice: f64,
+  /// Total number of steel plates that can are stored
   pub total_items_steel_plate: f64,
 
   pub thruster_acceleration: PerDirection<ThrusterAccelerationCalculated>,
   /// Force (N)
   pub wheel_force: f64,
 
+  /// Total power generation (MW)
   pub power_generation: f64,
+  /// Total power capacity in batteries (MWh)
   pub power_capacity_battery: f64,
+  /// Whether batteries are discharging
   pub power_battery_discharging: bool,
+  /// Idle power calculation
   pub power_idle: PowerCalculated,
+  /// Railgun (charging) power calculation
   pub power_railgun: PowerCalculated,
+  /// + Utility power calculation
   pub power_upto_utility: PowerCalculated,
+  /// + Wheel suspension power calculation
   pub power_upto_wheel_suspension: PowerCalculated,
+  /// + Jump drive (charging) power calculation
   pub power_upto_jump_drive: PowerCalculated,
+  /// + Generator power calculation
   pub power_upto_generator: PowerCalculated,
+  /// + Up/down thruster power calculation
   pub power_upto_up_down_thruster: PowerCalculated,
+  /// + Front/back thruster power calculation
   pub power_upto_front_back_thruster: PowerCalculated,
+  /// + Left/right thruster power calculation
   pub power_upto_left_right_thruster: PowerCalculated,
+  /// + Battery (charging) power calculation
   pub power_upto_battery: PowerCalculated,
 
+  /// Total hydrogen generation (L/s)
   pub hydrogen_generation: f64,
+  /// Total hydrogen capacity in tanks (L)
   pub hydrogen_capacity_tank: f64,
+  /// Total hydrogen capacity in engines (L)
   pub hydrogen_capacity_engine: f64,
+  /// Whether hydrogen engines are enabled
   pub hydrogen_engine_enabled: bool,
+  /// Idle hydrogen calculation
   pub hydrogen_idle: HydrogenCalculated,
+  /// + Engine (filling) hydrogen calculation
   pub hydrogen_engine: HydrogenCalculated,
+  /// + Up/down thruster hydrogen calculation
   pub hydrogen_upto_up_down_thruster: HydrogenCalculated,
+  /// + Front/back thruster hydrogen calculation
   pub hydrogen_upto_front_back_thruster: HydrogenCalculated,
+  /// + Left/right thruster hydrogen calculation
   pub hydrogen_upto_left_right_thruster: HydrogenCalculated,
 }
 
@@ -586,9 +618,14 @@ pub struct ThrusterAccelerationCalculated {
 
 #[derive(Default)]
 pub struct PowerCalculated {
+  /// Power consumption of this group (MW)
   pub consumption: f64,
+  /// Total power consumption upto this group (MW)
   pub total_consumption: f64,
+  /// Power balance upto this group (+-MW)
   pub balance: f64,
+  /// Duration until batteries are empty when discharging (min), or None if there are no batteries
+  /// or they are not discharging.
   pub duration_battery: Option<f64>,
 }
 
@@ -602,9 +639,14 @@ impl PowerCalculated {
 
 #[derive(Default)]
 pub struct HydrogenCalculated {
-  pub consumption: f64,
+  /// Total hydrogen consumption upto this group (L/s)
+  pub total_consumption: f64,
+  /// Hydrogen balance upto this group (+-L/s)
   pub balance: f64,
+  /// Duration until hydrogen tanks are empty when discharging (min), or None if there are no 
+  /// hydrogen tanks or they are stockpiling. TODO: stockpiling behaviour
   pub duration_tank: Option<f64>,
+  /// TODO: remove, this one makes no sense, as engines don't make their hydrogen available.
   pub duration_engine: Option<f64>,
 }
 
@@ -615,7 +657,7 @@ impl HydrogenCalculated {
     let duration_tank = (has_consumption && capacity_tanks != 0.0).then(|| (capacity_tanks / consumption) * conversion_rate);
     let has_capacity_engines = capacity_engines.map_or(false, |c| c != 0.0);
     let duration_engine = (has_consumption && has_capacity_engines && engine_enabled).then(|| consumption).and_then(|_| capacity_engines.map(|c| (c / consumption) * conversion_rate));
-    HydrogenCalculated { consumption, balance, duration_tank, duration_engine }
+    HydrogenCalculated { total_consumption: consumption, balance, duration_tank, duration_engine }
   }
 }
 
