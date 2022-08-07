@@ -1,0 +1,24 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build
+        run: |
+          cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
+          wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./code/gui/web
