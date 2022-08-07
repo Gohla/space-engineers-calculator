@@ -1,8 +1,16 @@
-use egui::{Button, CollapsingHeader, CollapsingResponse, Color32, Grid, InnerResponse, Response, Stroke, Ui, WidgetText};
+use egui::{Button, CollapsingHeader, CollapsingResponse, Color32, Grid, Id, InnerResponse, Response, Stroke, Ui, WidgetText};
+use egui::collapsing_header::CollapsingState;
 
 pub trait UiExtensions {
-  fn open_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
-  fn open_header<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<R>;
+  fn open_collapsing_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
+  fn open_collapsing_header<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<R>;
+
+  fn open_collapsing_state<HR, BR>(
+    &mut self,
+    id_source: impl std::hash::Hash,
+    add_header: impl FnOnce(&mut Ui) -> HR,
+    add_body: impl FnOnce(&mut Ui) -> BR
+  ) -> (Response, InnerResponse<HR>, Option<InnerResponse<BR>>);
 
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R>;
 
@@ -10,15 +18,28 @@ pub trait UiExtensions {
 }
 
 impl UiExtensions for Ui {
-  fn open_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>> {
+  fn open_collapsing_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>> {
     CollapsingHeader::new(header).default_open(true).show(self, |ui| {
       Grid::new(format!("{} Grid", header)).striped(true).min_col_width(1.0).show(ui, add_contents)
     })
   }
 
-  fn open_header<R>(&mut self, header: &str, add_body: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<R> {
+  fn open_collapsing_header<R>(&mut self, header: &str, add_body: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<R> {
     CollapsingHeader::new(header).default_open(true).show(self, add_body)
   }
+
+
+  fn open_collapsing_state<HR, BR>(
+    &mut self,
+    id_source: impl std::hash::Hash,
+    add_header: impl FnOnce(&mut Ui) -> HR,
+    add_body: impl FnOnce(&mut Ui) -> BR
+  ) -> (Response, InnerResponse<HR>, Option<InnerResponse<BR>>) {
+    CollapsingState::load_with_default_open(self.ctx(), Id::new(id_source), true)
+      .show_header(self, add_header)
+      .body(add_body)
+  }
+
 
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R> {
     Grid::new(id_source).striped(true).min_col_width(1.0).show(self, add_contents)

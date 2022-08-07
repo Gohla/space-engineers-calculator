@@ -13,7 +13,7 @@ use crate::widget::UiExtensions;
 impl App {
   pub fn show_results(&mut self, ui: &mut Ui, ctx: &Context) {
     ui.horizontal(|ui| {
-      ui.open_header_with_grid("Volume", |ui| {
+      ui.open_collapsing_header_with_grid("Volume", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.show_row("Any", format!("{}", self.calculated.total_volume_any.round()), "L");
         ui.show_row("Ore", format!("{}", self.calculated.total_volume_ore.round()), "L");
@@ -22,12 +22,12 @@ impl App {
         ui.show_row("Ice-only", format!("{}", self.calculated.total_volume_ice_only.round()), "L");
       });
       ui.vertical(|ui| {
-        ui.open_header_with_grid("Mass", |ui| {
+        ui.open_collapsing_header_with_grid("Mass", |ui| {
           let mut ui = ResultUi::new(ui, self.number_separator_policy);
           ui.show_row("Empty", format!("{}", self.calculated.total_mass_empty.round()), "kg");
           ui.show_row("Filled", format!("{}", self.calculated.total_mass_filled.round()), "kg");
         });
-        ui.open_header_with_grid("Items", |ui| {
+        ui.open_collapsing_header_with_grid("Items", |ui| {
           let mut ui = ResultUi::new(ui, self.number_separator_policy);
           ui.show_row("Ore", format!("{}", self.calculated.total_items_ore.round()), "#");
           ui.show_row("Ice", format!("{}", self.calculated.total_items_ice.round()), "#");
@@ -35,7 +35,7 @@ impl App {
         });
       });
     });
-    ui.open_header_with_grid("Thruster Acceleration & Force", |ui| {
+    ui.open_collapsing_header_with_grid("Thruster Acceleration & Force", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);
       ui.label("");
       ui.label("Filled");
@@ -56,15 +56,15 @@ impl App {
         ui.acceleration_row(direction, &self.calculated.thruster_acceleration, ctx);
       }
     });
-    ui.open_header_with_grid("Wheel Force", |ui| {
+    ui.open_collapsing_header_with_grid("Wheel Force", |ui| {
       let mut ui = ResultUi::new(ui, self.number_separator_policy);
       ui.show_row("Force", format!("{:.2}", self.calculated.wheel_force / 1000.0), "kN");
     });
-    ui.open_header("Power", |ui| {
+    ui.open_collapsing_header("Power", |ui| {
       Grid::new("Power Grid 1").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.show_row("Generation:", format!("{:.2}", self.calculated.power_generation), "MW");
-        ui.show_row("Capacity - Batteries:", format!("{:.2}", self.calculated.power_capacity_battery), "MWh");
+        ui.show_optional_row("Capacity - Batteries:", self.calculated.battery_capacity.map(|c| format!("{:.2}", c)), "MWh");
       });
       Grid::new("Power Grid 2").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
@@ -88,12 +88,12 @@ impl App {
         ui.power_row("+ Charge Batteries:", power_formatter, duration_formatter, &self.calculated.power_upto_battery);
       });
     });
-    ui.open_header("Hydrogen", |ui| {
+    ui.open_collapsing_header("Hydrogen", |ui| {
       Grid::new("Hydrogen Grid 1").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.show_row("Generation:", format!("{}", self.calculated.hydrogen_generation.round()), "L/s");
-        ui.show_row("Capacity - Tanks:", format!("{}", self.calculated.hydrogen_capacity_tank.round()), "L");
-        ui.show_row("Capacity - Engines:", format!("{}", self.calculated.hydrogen_capacity_engine.round()), "L");
+        ui.show_optional_row("Capacity - Tanks:", self.calculated.hydrogen_tank_capacity.map(|c| format!("{}", c.round())), "L");
+        ui.show_optional_row("Capacity - Engines:", self.calculated.hydrogen_engine_capacity.map(|c| format!("{}", c.round())), "L");
       });
       Grid::new("Hydrogen Grid 2").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
@@ -130,6 +130,12 @@ impl<'ui> ResultUi<'ui> {
   fn show_row(&mut self, label: impl Into<WidgetText>, value: impl Borrow<str>, unit: impl Into<WidgetText>) {
     self.ui.label(label);
     self.right_align_value_with_unit(value, unit);
+    self.ui.end_row();
+  }
+
+  fn show_optional_row(&mut self, label: impl Into<WidgetText>, value: Option<impl Borrow<str>>, unit: impl Into<WidgetText>) {
+    self.ui.label(label);
+    self.right_align_optional_value_with_unit(value, unit);
     self.ui.end_row();
   }
 

@@ -14,7 +14,7 @@ use crate::widget::UiExtensions;
 impl App {
   pub fn show_calculator(&mut self, ui: &mut Ui) -> bool {
     let mut changed = false;
-    ui.open_header("Options", |ui| {
+    ui.open_collapsing_header("Options", |ui| {
       ui.horizontal_top(|ui| {
         ui.grid("Options Grid 1", |ui| {
           let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 110.0);
@@ -22,7 +22,7 @@ impl App {
           ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
           ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
           ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-          ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.engine_enabled, self.calculator_default.engine_enabled);
+          ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.hydrogen_engine_enabled, self.calculator_default.hydrogen_engine_enabled);
           ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::items(), self.calculator_default.battery_mode);
           ui.checkbox_suffix_row("Charge Railguns", "", &mut self.calculator.railgun_charging, self.calculator_default.railgun_charging);
           ui.checkbox_suffix_row("Charge Jump Drives", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
@@ -42,14 +42,14 @@ impl App {
       });
     });
     let block_edit_size = 40.0 + self.font_size_modifier as f32;
-    ui.open_header("Grid", |ui| {
+    ui.open_collapsing_header("Grid", |ui| {
       ComboBox::from_id_source("Grid Size")
         .selected_text(format!("{}", self.grid_size))
         .show_ui(ui, |ui| {
           ui.selectable_value(&mut self.grid_size, GridSize::Small, "Small");
           ui.selectable_value(&mut self.grid_size, GridSize::Large, "Large");
         });
-      ui.open_header_with_grid("Thrusters", |ui| {
+      ui.open_collapsing_header_with_grid("Thrusters", |ui| {
         let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
         ui.header_count_directed_row();
         for data in self.data.blocks.thruster_blocks(self.grid_size, &self.enabled_mod_ids) {
@@ -60,14 +60,14 @@ impl App {
       });
       ui.horizontal(|ui| {
         ui.vertical(|ui| {
-          ui.open_header_with_grid("Storage", |ui| {
+          ui.open_collapsing_header_with_grid("Storage", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
             for data in self.data.blocks.storage_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
             }
             changed |= ui.changed
           });
-          ui.open_header_with_grid("Wheel Suspensions", |ui| {
+          ui.open_collapsing_header_with_grid("Wheel Suspensions", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
             for data in self.data.blocks.wheel_suspension_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
@@ -76,21 +76,21 @@ impl App {
           });
         });
         ui.vertical(|ui| {
-          ui.open_header_with_grid("Power", |ui| {
+          ui.open_collapsing_header_with_grid("Power", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
             for data in self.data.blocks.power_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
             }
             changed |= ui.changed
           });
-          ui.open_header_with_grid("Hydrogen", |ui| {
+          ui.open_collapsing_header_with_grid("Hydrogen", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
             for data in self.data.blocks.hydrogen_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());
             }
             changed |= ui.changed
           });
-          ui.open_header_with_grid("Other", |ui| {
+          ui.open_collapsing_header_with_grid("Other", |ui| {
             let mut ui = CalculatorUi::new(ui, self.number_separator_policy, block_edit_size);
             for data in self.data.blocks.other_blocks(self.grid_size, &self.enabled_mod_ids) {
               ui.edit_count_row(data.name(&self.data.localization), self.calculator.blocks.entry(data.id_cloned()).or_default());

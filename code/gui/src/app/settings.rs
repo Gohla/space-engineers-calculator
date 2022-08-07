@@ -26,7 +26,7 @@ impl App {
       .open(&mut show_settings_window)
       .auto_sized()
       .show(ctx, |ui| {
-        ui.open_header_with_grid("Mods", |ui| {
+        ui.open_collapsing_header_with_grid("Mods", |ui| {
           for m in self.data.mods.iter() {
             let id = m.0;
             if ui.link(&m.1).clicked() {
@@ -44,7 +44,7 @@ impl App {
             ui.end_row();
           }
         });
-        ui.open_header_with_grid("GUI", |ui| {
+        ui.open_collapsing_header_with_grid("GUI", |ui| {
           ui.label("Dark mode");
           if ui.checkbox(&mut self.dark_mode, "").changed() {
             self.apply_style(ctx);
