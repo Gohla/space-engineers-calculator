@@ -159,7 +159,7 @@ impl GridCalculator {
     let mut hydrogen_consumption_thruster: PerDirection<f64> = PerDirection::default();
 
     let mut jump_power = 0.0;
-    let mut max_jump_range = f64::MAX;
+    let mut max_jump_distance = 0.0;
 
     c.total_mass_empty += self.additional_mass;
 
@@ -230,10 +230,9 @@ impl GridCalculator {
           power_consumption_jump_drive += details.operational_power_consumption * count;
         }
         // Formula based on https://www.spaceengineerswiki.com/Jump_drive
-        let max_jump_distance = details.max_jump_distance / 1000.0; // Convert from m to km.
-        jump_power += max_jump_distance * details.max_jump_mass * count;
-        // TODO: not sure if the actual maximum range is determined like this; may be the average between jump drives?
-        max_jump_range = max_jump_range.min(max_jump_distance);
+        let max_jump_drive_distance = details.max_jump_distance / 1000.0; // Convert from m to km.
+        jump_power += max_jump_drive_distance * details.max_jump_mass * count;
+        max_jump_distance += max_jump_drive_distance * count;
       } else if let Some(block) = data.blocks.railguns.get(id) { // Railguns
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
@@ -377,8 +376,8 @@ impl GridCalculator {
 
     c.jump_drive_charge_time = c.jump_drive_capacity.map(|c| (c / actual_power_consumption_jump_drive) * MWH_TO_MINUTES);
     if jump_power != 0.0 {
-      c.jump_drive_max_distance_empty = Some((jump_power / c.total_mass_empty).min(max_jump_range));
-      c.jump_drive_max_distance_filled = Some((jump_power / c.total_mass_filled).min(max_jump_range));
+      c.jump_drive_max_distance_empty = Some((jump_power / c.total_mass_empty).min(max_jump_distance));
+      c.jump_drive_max_distance_filled = Some((jump_power / c.total_mass_filled).min(max_jump_distance));
     } else {
       c.jump_drive_max_distance_empty = None;
       c.jump_drive_max_distance_filled = None;
