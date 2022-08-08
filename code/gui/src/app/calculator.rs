@@ -6,7 +6,8 @@ use egui::emath::Numeric;
 use thousands::SeparatorPolicy;
 
 use secalc_core::data::blocks::GridSize;
-use secalc_core::grid::{BatteryMode, CountPerDirection};
+use secalc_core::grid::BatteryMode;
+use secalc_core::grid::direction::CountPerDirection;
 
 use crate::App;
 use crate::widget::UiExtensions;
