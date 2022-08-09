@@ -1,12 +1,12 @@
 use std::fmt::Display;
 use std::ops::{Deref, DerefMut, RangeInclusive};
 
-use egui::{Button, ComboBox, DragValue, Response, Ui, WidgetText};
+use egui::{Button, ComboBox, DragValue, Response, Ui, Vec2, WidgetText};
 use egui::emath::Numeric;
 use thousands::SeparatorPolicy;
 
 use secalc_core::data::blocks::GridSize;
-use secalc_core::grid::BatteryMode;
+use secalc_core::grid::{BatteryMode, HydrogenTankMode};
 use secalc_core::grid::direction::CountPerDirection;
 
 use crate::App;
@@ -18,21 +18,25 @@ impl App {
     ui.open_collapsing_header("Options", |ui| {
       ui.horizontal_top(|ui| {
         ui.grid("Options Grid 1", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 110.0);
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 100.0 + (self.font_size_modifier * 2) as f32);
           ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
           ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
           ui.edit_suffix_row("Planetary Influence", "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence);
           ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
-          ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.hydrogen_engine_enabled, self.calculator_default.hydrogen_engine_enabled);
-          ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::items(), self.calculator_default.battery_mode);
+          ui.edit_percentage_row("Thruster Power", &mut self.calculator.thruster_power, self.calculator_default.thruster_power);
+          ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
           ui.checkbox_suffix_row("Charge Railguns", "", &mut self.calculator.railgun_charging, self.calculator_default.railgun_charging);
           ui.checkbox_suffix_row("Charge Jump Drives", "", &mut self.calculator.jump_drive_charging, self.calculator_default.jump_drive_charging);
+          ui.combobox_suffix_row("Battery Mode", "Battery Mode", "", &mut self.calculator.battery_mode, BatteryMode::items(), self.calculator_default.battery_mode);
+          ui.edit_percentage_row("Battery Fill", &mut self.calculator.battery_fill, self.calculator_default.battery_fill);
           changed |= ui.changed
         });
         ui.grid("Options Grid 2", |ui| {
-          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 60.0);
-          ui.edit_percentage_row("Thruster Power", &mut self.calculator.thruster_power, self.calculator_default.thruster_power);
-          ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
+          let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 90.0 + (self.font_size_modifier * 2) as f32);
+          ui.combobox_suffix_row("Hydrogen Tanks Mode", "Hydrogen Tanks Mode", "", &mut self.calculator.hydrogen_tank_mode, HydrogenTankMode::items(), self.calculator_default.hydrogen_tank_mode);
+          ui.edit_percentage_row("Hydrogen Tanks Fill", &mut self.calculator.hydrogen_tank_fill, self.calculator_default.hydrogen_tank_fill);
+          ui.checkbox_suffix_row("Engines Enabled", "", &mut self.calculator.hydrogen_engine_enabled, self.calculator_default.hydrogen_engine_enabled);
+          ui.edit_percentage_row("Engines Fill", &mut self.calculator.hydrogen_engine_fill, self.calculator_default.hydrogen_engine_fill);
           ui.edit_percentage_row("Ice-only Fill", &mut self.calculator.ice_only_fill, self.calculator_default.ice_only_fill);
           ui.edit_percentage_row("Ore-only Fill", &mut self.calculator.ore_only_fill, self.calculator_default.ore_only_fill);
           ui.edit_percentage_row("Any-fill with Ice", &mut self.calculator.any_fill_with_ice, self.calculator_default.any_fill_with_ice);
@@ -118,7 +122,15 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
 
-  fn edit_row<N: Numeric + Display>(&mut self, label: impl Into<WidgetText>, suffix: Option<impl Into<WidgetText>>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
+  fn edit_row<N: Numeric + Display>(
+    &mut self,
+    label: impl Into<WidgetText>,
+    suffix: Option<impl Into<WidgetText>>,
+    value: &mut N,
+    speed: impl Into<f64>,
+    clamp_range: RangeInclusive<N>,
+    reset_value: N
+  ) {
     self.ui.label(label);
     self.drag(value, speed, clamp_range);
     if let Some(suffix) = suffix {
@@ -128,7 +140,15 @@ impl<'ui> CalculatorUi<'ui> {
     self.ui.end_row();
   }
 
-  fn edit_suffix_row<N: Numeric + Display>(&mut self, label: impl Into<WidgetText>, suffix: impl Into<WidgetText>, value: &mut N, speed: impl Into<f64>, clamp_range: RangeInclusive<N>, reset_value: N) {
+  fn edit_suffix_row<N: Numeric + Display>(
+    &mut self,
+    label: impl Into<WidgetText>,
+    suffix: impl Into<WidgetText>,
+    value: &mut N,
+    speed: impl Into<f64>,
+    clamp_range: RangeInclusive<N>,
+    reset_value: N
+  ) {
     self.edit_row(label, Some(suffix), value, speed, clamp_range, reset_value)
   }
 
@@ -155,8 +175,18 @@ impl<'ui> CalculatorUi<'ui> {
     self.checkbox_row(label, Some(suffix), value, reset_value)
   }
 
-  fn combobox_row<T: PartialEq + Display + Copy>(&mut self, label: impl Into<WidgetText>, id_source: impl std::hash::Hash, suffix: Option<impl Into<WidgetText>>, value: &mut T, values: impl IntoIterator<Item=T>, reset_value: T) {
+  fn combobox_row<T: PartialEq + Display + Copy>(
+    &mut self,
+    label: impl Into<WidgetText>,
+    id_source: impl std::hash::Hash,
+    suffix: Option<impl Into<WidgetText>>,
+    value: &mut T,
+    values: impl IntoIterator<Item=T>,
+    reset_value: T
+  ) {
     self.ui.label(label);
+    let style = self.ui.style_mut();
+    style.spacing.interact_size = Vec2::new(0.0, 24.0); // HACK: fix combo box not starting at the top
     self.changed |= ComboBox::from_id_source(id_source)
       .width(self.edit_size - 8.0)
       .selected_text(format!("{}", value))
@@ -165,6 +195,7 @@ impl<'ui> CalculatorUi<'ui> {
           self.changed |= ui.selectable_value(value, v, format!("{}", v)).changed();
         }
       }).response.changed();
+    self.ui.reset_style();
     if let Some(suffix) = suffix {
       self.ui.label(suffix);
     }
@@ -172,7 +203,15 @@ impl<'ui> CalculatorUi<'ui> {
     self.ui.end_row();
   }
 
-  fn combobox_suffix_row<T: PartialEq + Display + Copy>(&mut self, label: impl Into<WidgetText>, id_source: impl std::hash::Hash, suffix: impl Into<WidgetText>, value: &mut T, values: impl IntoIterator<Item=T>, reset_value: T) {
+  fn combobox_suffix_row<T: PartialEq + Display + Copy>(
+    &mut self,
+    label: impl Into<WidgetText>,
+    id_source: impl std::hash::Hash,
+    suffix: impl Into<WidgetText>,
+    value: &mut T,
+    values: impl IntoIterator<Item=T>,
+    reset_value: T
+  ) {
     self.combobox_row(label, id_source, Some(suffix), value, values, reset_value)
   }
 

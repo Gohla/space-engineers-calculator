@@ -125,10 +125,11 @@ impl App {
         let hydrogen_formatter = |v| format!("{:.2}", v);
         let duration_formatter = |v| format!("{:.2}", v);
         ui.hydrogen_row("Idle:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_idle);
-        ui.hydrogen_row("Engines:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_engine);
+        ui.hydrogen_row("Fill Engines:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_engine);
         ui.hydrogen_row("+ Up/Down Thrusters:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_upto_up_down_thruster);
         ui.hydrogen_row("+ Front/Back Thrusters:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_upto_front_back_thruster);
         ui.hydrogen_row("+ Left/Right Thrusters:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_upto_left_right_thruster);
+        ui.hydrogen_row("+ Fill Tanks:", hydrogen_formatter, duration_formatter, &self.calculated.hydrogen_upto_tank);
       });
     });
     ui.horizontal(|ui| {
