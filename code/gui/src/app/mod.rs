@@ -12,7 +12,7 @@ use secalc_core::grid::{GridCalculated, GridCalculator};
 
 mod calculator;
 mod result;
-mod settings;
+mod window;
 mod save_load;
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -255,7 +255,7 @@ impl eframe::App for App {
                 .horizontal(|mut strip| {
                   // Calculator
                   strip.cell(|ui| {
-                    ScrollArea::vertical()
+                    ScrollArea::both()
                       .id_source("Calculator Scroll")
                       .auto_shrink([false; 2])
                       .show(ui, |ui| {
@@ -269,7 +269,7 @@ impl eframe::App for App {
                   strip.cell(|ui| { ui.add(Separator::default().spacing(0.0).vertical()); });
                   // Result (calculated)
                   strip.cell(|ui| {
-                    ScrollArea::vertical()
+                    ScrollArea::both()
                       .id_source("Result Scroll")
                       .auto_shrink([false; 2])
                       .show(ui, |ui| {
