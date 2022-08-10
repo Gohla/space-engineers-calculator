@@ -283,7 +283,7 @@ impl eframe::App for App {
     });
     // Windows
     self.show_save_load_reset_windows(ctx, frame);
-    self.show_settings_windows(ctx);
+    self.show_settings_windows(ctx, frame);
   }
 
   fn save(&mut self, storage: &mut dyn eframe::Storage) {
