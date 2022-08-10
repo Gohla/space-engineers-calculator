@@ -366,12 +366,12 @@ impl GridCalculator {
           match details.ty {
             ThrusterType::Hydrogen => {
               hydrogen_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-              let max_consumption = details.actual_max_consumption(&data.gas_properties) * thruster_power_ratio * count; // TODO: should this be multiplied with `effectiveness`?
+              let max_consumption = details.actual_max_consumption(&data.gas_properties) * thruster_power_ratio * effectiveness * count;
               hydrogen_consumption_thruster[direction] += max_consumption;
             },
             _ => {
               power_consumption_idle += details.actual_min_consumption(&data.gas_properties) * count;
-              let max_consumption = details.actual_max_consumption(&data.gas_properties) * thruster_power_ratio * count; // TODO: should this be multiplied with `effectiveness`?
+              let max_consumption = details.actual_max_consumption(&data.gas_properties) * thruster_power_ratio * effectiveness * count;
               power_consumption_thruster[direction] += max_consumption;
             },
           }
