@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::ops::{Deref, DerefMut};
 
-use egui::{Align, Context, Grid, Layout, TextFormat, TextStyle, Ui, WidgetText};
+use egui::{Align, Context, Grid, Layout, RichText, TextFormat, TextStyle, Ui, WidgetText};
 use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
 
@@ -71,7 +71,7 @@ impl App {
       });
       Grid::new("Power Grid 2").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.label("");
+        ui.label("Group");
         ui.label("Consumption");
         ui.label("");
         ui.label("");
@@ -82,8 +82,10 @@ impl App {
         ui.label("Group");
         ui.label("Total");
         ui.label("Balance");
-        ui.label("Batteries");
-        ui.label("Engines");
+        ui.label(RichText::new("Batteries").underline())
+          .on_hover_text_at_pointer("Duration until batteries are empty at the total consumption in the row. Does not take into account charging the batteries via any means.");
+        ui.label(RichText::new("Engines").underline())
+          .on_hover_text_at_pointer("Duration until hydrogen engines are empty at the total consumption in the row. Does not take into account filling the engines via generators or tanks.");
         ui.end_row();
         let power_formatter = |v| format!("{:.2}", v);
         ui.power_row("Idle:", power_formatter, &self.calculated.power_idle);
@@ -124,7 +126,7 @@ impl App {
       });
       Grid::new("Hydrogen Grid 2").striped(true).show(ui, |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.label("");
+        ui.label("Group");
         ui.label("Consumption");
         ui.label("");
         ui.label("Balance");
@@ -134,7 +136,8 @@ impl App {
         ui.label("Group");
         ui.label("Total");
         ui.label("");
-        ui.label("Tanks");
+        ui.label(RichText::new("Tanks").underline())
+          .on_hover_text_at_pointer("Duration until hydrogen tanks are empty at the total consumption in the row. Does not take into account filling the tank via generators or other tanks.");
         ui.end_row();
         let hydrogen_formatter = |v| format!("{:.2}", v);
         ui.hydrogen_row("Idle:", hydrogen_formatter, &self.calculated.hydrogen_idle);
@@ -218,7 +221,7 @@ impl<'ui> ResultUi<'ui> {
       self.right_align_value_with_unit("-", unit);
     }
   }
-  
+
 
   fn show_optional_duration_row(&mut self, label: impl Into<WidgetText>, duration: Option<Duration>) {
     self.ui.label(label);
