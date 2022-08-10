@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::ops::{Deref, DerefMut};
 
-use egui::{Align, Context, Grid, Layout, RichText, TextFormat, TextStyle, Ui, WidgetText};
+use egui::{Align, Context, Layout, RichText, TextFormat, TextStyle, Ui, Vec2, WidgetText};
 use egui::text::LayoutJob;
 use thousands::{Separable, SeparatorPolicy};
 
@@ -36,68 +36,96 @@ impl App {
           ui.show_row("Steel Plate", format!("{}", self.calculated.total_items_steel_plate.round()), "#");
         });
       });
+      ui.vertical(|ui| {
+        ui.open_collapsing_header_with_grid("Wheel Force", |ui| {
+          let mut ui = ResultUi::new(ui, self.number_separator_policy);
+          ui.show_row("Force", format!("{:.2}", self.calculated.wheel_force / 1000.0), "kN");
+        });
+      });
     });
     ui.horizontal(|ui| {
       ui.open_collapsing_header_with_grid("Thruster Acceleration & Force", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.label("");
+        ui.label("Direction");
+        ui.vertical_separator_unpadded();
         ui.label("Filled");
         ui.label("");
+        ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label("Empty");
         ui.label("");
         ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label("Force");
         ui.end_row();
+
         ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label("Gravity");
+        ui.vertical_separator_unpadded();
         ui.label("No grav.");
+        ui.vertical_separator_unpadded();
         ui.label("Gravity");
+        ui.vertical_separator_unpadded();
         ui.label("No grav.");
+        ui.vertical_separator_unpadded();
         ui.label("");
         ui.end_row();
+
         for direction in Direction::items() {
           ui.acceleration_row(direction, &self.calculated.thruster_acceleration, ctx);
         }
       });
-      ui.open_collapsing_header_with_grid("Wheel Force", |ui| {
-        let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.show_row("Force", format!("{:.2}", self.calculated.wheel_force / 1000.0), "kN");
-      });
     });
     ui.open_collapsing_header("Power", |ui| {
-      Grid::new("Power Grid 1").striped(true).show(ui, |ui| {
+      ui.grid_unstriped("Power Grid 1", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.show_row("Generation:", format!("{:.2}", self.calculated.power_generation), "MW");
+        ui.horizontal_separator_unpadded();
+        ui.horizontal_separator_unpadded();
+        ui.end_row();
       });
-      Grid::new("Power Grid 2").striped(true).show(ui, |ui| {
+      ui.allocate_space(Vec2::new(0.0, 1.0));
+      ui.grid("Power Grid 2", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.label("Group");
+        ui.label("Group Name");
+        ui.vertical_separator_unpadded();
         ui.label("Consumption");
         ui.label("");
         ui.label("");
+        ui.vertical_separator_unpadded();
+        ui.label("Balance");
+        ui.vertical_separator_unpadded();
         ui.label("Duration");
         ui.label("");
         ui.end_row();
+
         ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label("Group");
+        ui.vertical_separator_unpadded();
         ui.label("Total");
-        ui.label("Balance");
+        ui.vertical_separator_unpadded();
+        ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label(RichText::new("Batteries").underline())
           .on_hover_text_at_pointer("Duration until batteries are empty at the total consumption in the row. Does not take into account charging the batteries via any means.");
+        ui.vertical_separator_unpadded();
         ui.label(RichText::new("Engines").underline())
           .on_hover_text_at_pointer("Duration until hydrogen engines are empty at the total consumption in the row. Does not take into account filling the engines via generators or tanks.");
         ui.end_row();
+
         let power_formatter = |v| format!("{:.2}", v);
-        ui.power_row("Idle:", power_formatter, &self.calculated.power_idle);
-        ui.power_row("Charge Railguns:", power_formatter, &self.calculated.power_railgun);
-        ui.power_row("+ Utility:", power_formatter, &self.calculated.power_upto_utility);
-        ui.power_row("+ Wheel Suspensions:", power_formatter, &self.calculated.power_upto_wheel_suspension);
-        ui.power_row("+ Charge Jump Drives:", power_formatter, &self.calculated.power_upto_jump_drive);
-        ui.power_row("+ O2/H2 Generators:", power_formatter, &self.calculated.power_upto_generator);
-        ui.power_row("+ Up/Down Thrusters:", power_formatter, &self.calculated.power_upto_up_down_thruster);
-        ui.power_row("+ Front/Back Thrusters:", power_formatter, &self.calculated.power_upto_front_back_thruster);
-        ui.power_row("+ Left/Right Thrusters:", power_formatter, &self.calculated.power_upto_left_right_thruster);
-        ui.power_row("+ Charge Batteries:", power_formatter, &self.calculated.power_upto_battery);
+        ui.power_row("Idle", power_formatter, &self.calculated.power_idle);
+        ui.power_row("Charge Railguns", power_formatter, &self.calculated.power_railgun);
+        ui.power_row("+ Utility", power_formatter, &self.calculated.power_upto_utility);
+        ui.power_row("+ Wheel Suspensions", power_formatter, &self.calculated.power_upto_wheel_suspension);
+        ui.power_row("+ Charge Jump Drives", power_formatter, &self.calculated.power_upto_jump_drive);
+        ui.power_row("+ O2/H2 Generators", power_formatter, &self.calculated.power_upto_generator);
+        ui.power_row("+ Up/Down Thrusters", power_formatter, &self.calculated.power_upto_up_down_thruster);
+        ui.power_row("+ Front/Back Thrusters", power_formatter, &self.calculated.power_upto_front_back_thruster);
+        ui.power_row("+ Left/Right Thrusters", power_formatter, &self.calculated.power_upto_left_right_thruster);
+        ui.power_row("+ Charge Batteries", power_formatter, &self.calculated.power_upto_battery);
       });
     });
     ui.horizontal(|ui| {
@@ -120,32 +148,47 @@ impl App {
       });
     });
     ui.open_collapsing_header("Hydrogen", |ui| {
-      Grid::new("Hydrogen Grid 1").striped(true).show(ui, |ui| {
+      ui.grid_unstriped("Hydrogen Grid 1", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.show_row("Generation:", format!("{}", self.calculated.hydrogen_generation.round()), "L/s");
+        ui.horizontal_separator_unpadded();
+        ui.horizontal_separator_unpadded();
+        ui.end_row();
       });
-      Grid::new("Hydrogen Grid 2").striped(true).show(ui, |ui| {
+      ui.allocate_space(Vec2::new(0.0, 1.0));
+      ui.grid("Hydrogen Grid 2", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
-        ui.label("Group");
+        ui.label("Group Name");
+        ui.vertical_separator_unpadded();
         ui.label("Consumption");
         ui.label("");
-        ui.label("Balance");
+        ui.label("");
+        ui.vertical_separator_unpadded();
+        ui.label(RichText::new("Balance").underline())
+          .on_hover_text_at_pointer("Does not include hydrogen provided by hydrogen tanks (yet).");
+        ui.vertical_separator_unpadded();
         ui.label("Duration");
         ui.end_row();
+
         ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label("Group");
+        ui.vertical_separator_unpadded();
         ui.label("Total");
+        ui.vertical_separator_unpadded();
         ui.label("");
+        ui.vertical_separator_unpadded();
         ui.label(RichText::new("Tanks").underline())
           .on_hover_text_at_pointer("Duration until hydrogen tanks are empty at the total consumption in the row. Does not take into account filling the tank via generators or other tanks.");
         ui.end_row();
+
         let hydrogen_formatter = |v| format!("{:.2}", v);
-        ui.hydrogen_row("Idle:", hydrogen_formatter, &self.calculated.hydrogen_idle);
-        ui.hydrogen_row("Fill Engines:", hydrogen_formatter, &self.calculated.hydrogen_engine);
-        ui.hydrogen_row("+ Up/Down Thrusters:", hydrogen_formatter, &self.calculated.hydrogen_upto_up_down_thruster);
-        ui.hydrogen_row("+ Front/Back Thrusters:", hydrogen_formatter, &self.calculated.hydrogen_upto_front_back_thruster);
-        ui.hydrogen_row("+ Left/Right Thrusters:", hydrogen_formatter, &self.calculated.hydrogen_upto_left_right_thruster);
-        ui.hydrogen_row("+ Fill Tanks:", hydrogen_formatter, &self.calculated.hydrogen_upto_tank);
+        ui.hydrogen_row("Idle", hydrogen_formatter, &self.calculated.hydrogen_idle);
+        ui.hydrogen_row("Fill Engines", hydrogen_formatter, &self.calculated.hydrogen_engine);
+        ui.hydrogen_row("+ Up/Down Thrusters", hydrogen_formatter, &self.calculated.hydrogen_upto_up_down_thruster);
+        ui.hydrogen_row("+ Front/Back Thrusters", hydrogen_formatter, &self.calculated.hydrogen_upto_front_back_thruster);
+        ui.hydrogen_row("+ Left/Right Thrusters", hydrogen_formatter, &self.calculated.hydrogen_upto_left_right_thruster);
+        ui.hydrogen_row("+ Fill Tanks", hydrogen_formatter, &self.calculated.hydrogen_upto_tank);
       });
     });
     ui.horizontal(|ui| {
@@ -193,20 +236,6 @@ impl<'ui> ResultUi<'ui> {
   }
 
 
-  fn right_align_value(&mut self, value: impl Borrow<str>) {
-    self.ui.with_layout(Layout::right_to_left(), |ui| {
-      ui.monospace(value.borrow().separate_by_policy(self.number_separator_policy));
-    });
-  }
-
-  fn right_align_optional_value(&mut self, value: Option<impl Borrow<str>>) {
-    if let Some(value) = value {
-      self.right_align_value(value);
-    } else {
-      self.right_align_value("-");
-    }
-  }
-
   fn right_align_value_with_unit(&mut self, value: impl Borrow<str>, unit: impl Into<WidgetText>) {
     self.ui.with_layout(Layout::right_to_left(), |ui| {
       ui.label(unit);
@@ -244,39 +273,53 @@ impl<'ui> ResultUi<'ui> {
 
 
   fn acceleration_row(&mut self, direction: Direction, acceleration: &PerDirection<ThrusterAccelerationCalculated>, ctx: &Context) {
+    let acceleration_label = self.acceleration_layout_job(ctx);
     self.right_align_label(format!("{}", direction));
-    self.right_align_optional_value(acceleration.get(direction).acceleration_filled_gravity.map(|a| format!("{:.2}", a)));
-    self.right_align_optional_value(acceleration.get(direction).acceleration_filled_no_gravity.map(|a| format!("{:.2}", a)));
-    self.right_align_optional_value(acceleration.get(direction).acceleration_empty_gravity.map(|a| format!("{:.2}", a)));
-    self.right_align_optional_value(acceleration.get(direction).acceleration_empty_no_gravity.map(|a| format!("{:.2}", a)));
-    self.acceleration_label(ctx);
+    self.ui.vertical_separator_unpadded();
+    self.right_align_optional_value_with_unit(acceleration.get(direction).acceleration_filled_gravity.map(|a| format!("{:.2}", a)), acceleration_label.clone());
+    self.ui.vertical_separator_unpadded();
+    self.right_align_optional_value_with_unit(acceleration.get(direction).acceleration_filled_no_gravity.map(|a| format!("{:.2}", a)), acceleration_label.clone());
+    self.ui.vertical_separator_unpadded();
+    self.right_align_optional_value_with_unit(acceleration.get(direction).acceleration_empty_gravity.map(|a| format!("{:.2}", a)), acceleration_label.clone());
+    self.ui.vertical_separator_unpadded();
+    self.right_align_optional_value_with_unit(acceleration.get(direction).acceleration_empty_no_gravity.map(|a| format!("{:.2}", a)), acceleration_label);
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(format!("{:.2}", acceleration.get(direction).force / 1000.0), "kN");
     self.ui.end_row();
   }
 
-  fn acceleration_label(&mut self, ctx: &Context) {
+  fn acceleration_layout_job(&mut self, ctx: &Context) -> LayoutJob {
     let mut acceleration = LayoutJob::default();
     let color = ctx.style().visuals.text_color();
     acceleration.append("m/s", 0.0, TextFormat { font_id: TextStyle::Body.resolve(&ctx.style()), color, ..TextFormat::default() });
     acceleration.append("2", 0.0, TextFormat { font_id: TextStyle::Small.resolve(&ctx.style()), color, valign: Align::Min, ..TextFormat::default() });
-    self.ui.label(acceleration);
+    acceleration
   }
 
   fn power_row(&mut self, label: impl Into<WidgetText>, power_formatter: impl Fn(f64) -> String, power: &PowerCalculated) {
     self.ui.label(label);
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(power_formatter(power.consumption), "MW");
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(power_formatter(power.total_consumption), "MW");
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(power_formatter(power.balance), "MW");
+    self.ui.vertical_separator_unpadded();
     self.right_align_optional_duration(power.battery_duration);
+    self.ui.vertical_separator_unpadded();
     self.right_align_optional_duration(power.engine_duration);
     self.ui.end_row();
   }
 
   fn hydrogen_row(&mut self, label: impl Into<WidgetText>, hydrogen_formatter: impl Fn(f64) -> String, hydrogen: &HydrogenCalculated) {
     self.ui.label(label);
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(hydrogen_formatter(hydrogen.consumption), "L/s");
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(hydrogen_formatter(hydrogen.total_consumption), "L/s");
+    self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(hydrogen_formatter(hydrogen.balance), "L/s");
+    self.ui.vertical_separator_unpadded();
     self.right_align_optional_duration(hydrogen.tank_duration);
     self.ui.end_row();
   }
