@@ -72,9 +72,17 @@ impl App {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.label("");
         ui.label("Consumption");
-        ui.label("Total Consumption");
+        ui.label("");
+        ui.label("");
+        ui.label("Duration");
+        ui.label("");
+        ui.end_row();
+        ui.label("");
+        ui.label("Group");
+        ui.label("Total");
         ui.label("Balance");
-        ui.label("Duration: Batteries");
+        ui.label("Batteries");
+        ui.label("Engines");
         ui.end_row();
         let power_formatter = |v| format!("{:.2}", v);
         let duration_formatter = |v| format!("{:.2}", v);
@@ -118,9 +126,15 @@ impl App {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         ui.label("");
         ui.label("Consumption");
-        ui.label("Total Consumption");
+        ui.label("");
         ui.label("Balance");
-        ui.label("Duration: Tanks");
+        ui.label("Duration");
+        ui.end_row();
+        ui.label("");
+        ui.label("Group");
+        ui.label("Total");
+        ui.label("");
+        ui.label("Tanks");
         ui.end_row();
         let hydrogen_formatter = |v| format!("{:.2}", v);
         let duration_formatter = |v| format!("{:.2}", v);
@@ -232,6 +246,7 @@ impl<'ui> ResultUi<'ui> {
     self.right_align_value_with_unit(power_formatter(power.total_consumption), "MW");
     self.right_align_value_with_unit(power_formatter(power.balance), "MW");
     self.right_align_optional_value_with_unit(power.battery_duration.map(|d| duration_formatter(d)), "min");
+    self.right_align_optional_value_with_unit(power.engine_duration.map(|d| duration_formatter(d)), "min");
     self.ui.end_row();
   }
 

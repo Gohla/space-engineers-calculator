@@ -183,8 +183,9 @@ impl Default for GridCalculator {
   }
 }
 
-const MWH_TO_MINUTES: f64 = 60.0;
-const LS_TO_MINUTES: f64 = 1.0 / 60.0;
+const HOURS_TO_MINUTES: f64 = 60.0;
+const SECONDS_TO_MINUTES: f64 = 1.0 / 60.0;
+const CHARGE_EFFICIENCY: f64 = 0.8;
 
 impl GridCalculator {
   pub fn new() -> Self {
@@ -221,6 +222,12 @@ impl GridCalculator {
 
     let mut jump_strength = 0.0; // Divide by mass to get max jump distance.
     let mut max_jump_distance = 0.0; // Cap on max jump distance.
+
+    let mut battery_power_generation = 0.0;
+    let mut hydrogen_engine_fuel_consumption = 0.0;
+    let mut hydrogen_engine_power_generation = 0.0;
+
+    let mut hydrogen_tank_generation = 0.0;
 
     c.total_mass_empty += self.additional_mass;
 
@@ -267,6 +274,9 @@ impl GridCalculator {
             1.0
           };
           hydrogen_consumption_engine += details.max_fuel_consumption * multiplier * count;
+
+          hydrogen_engine_fuel_consumption += details.max_fuel_consumption * count;
+          hydrogen_engine_power_generation += details.max_power_generation * count;
         }
         *c.hydrogen_engine_capacity.get_or_insert(0.0) += details.fuel_capacity * count;
       } else if let Some(block) = data.blocks.reactors.get(id) {  // Reactors.
@@ -280,6 +290,7 @@ impl GridCalculator {
         c.total_mass_empty += block.mass(&data.components) * count;
         if self.battery_mode.is_discharging() {
           c.power_generation += details.output * count;
+          battery_power_generation += details.output * count;
         }
         if self.battery_mode.is_charging() {
           power_consumption_battery += details.input * count;
@@ -323,6 +334,7 @@ impl GridCalculator {
           } else {
             0.0
           };
+          hydrogen_tank_generation = details.capacity * 0.05; // Same as consumption.
         }
         *c.hydrogen_tank_capacity.get_or_insert(0.0) += details.capacity * count;
       } else if let Some(block) = data.blocks.drills.get(id) { // Drills
@@ -396,58 +408,101 @@ impl GridCalculator {
       a.acceleration_filled_gravity = has_mass_filled.then(|| (a.force - (c.total_mass_filled * 9.81 * self.gravity_multiplier)) / c.total_mass_filled);
     }
 
+    // Calculate power
     let (actual_power_consumption_railgun, actual_power_consumption_jump_drive, actual_power_consumption_battery) = {
-      let battery_discharging = self.battery_mode.is_discharging();
+      struct PowerCalculatedBuilder {
+        generation: f64,
+        battery_capacity: Option<f64>,
+        battery_fill: f64,
+        battery_generation: f64,
+        battery_discharging: bool,
+        engine_capacity: Option<f64>,
+        engine_fill: f64,
+        engine_fuel_consumption: f64,
+        engine_generation: f64,
+        engine_discharging: bool
+      }
+      impl PowerCalculatedBuilder {
+        fn power_resource(&self, consumption: f64, total_consumption: f64) -> PowerCalculated {
+          let balance = self.generation - total_consumption;
+          let battery_duration = if total_consumption != 0.0 && self.battery_discharging {
+            self.battery_capacity.map(|c| (c * (self.battery_fill / 100.0) / total_consumption.min(self.battery_generation)) * HOURS_TO_MINUTES)
+          } else {
+            None
+          };
+          let engine_duration = if total_consumption != 0.0 && self.engine_discharging {
+            self.engine_capacity.map(|c| {
+              let capacity = c * (self.engine_fill / 100.0);
+              (capacity / self.engine_fuel_consumption) * (self.engine_generation / total_consumption.min(self.engine_generation)) * SECONDS_TO_MINUTES
+            })
+          } else {
+            None
+          };
+          PowerCalculated { consumption, total_consumption, balance, battery_duration, engine_duration }
+        }
+      }
+      let b = PowerCalculatedBuilder {
+        generation: c.power_generation,
+        battery_capacity: c.battery_capacity,
+        battery_fill: self.battery_fill,
+        battery_generation: battery_power_generation,
+        battery_discharging: self.battery_mode.is_discharging(),
+        engine_capacity: c.hydrogen_engine_capacity,
+        engine_fill: self.hydrogen_engine_fill,
+        engine_fuel_consumption: hydrogen_engine_fuel_consumption,
+        engine_generation: hydrogen_engine_power_generation,
+        engine_discharging: self.hydrogen_engine_enabled,
+      };
 
       // Idle
-      c.power_idle = c.power_resource(power_consumption_idle, power_consumption_idle, self.battery_fill, battery_discharging);
+      c.power_idle = b.power_resource(power_consumption_idle, power_consumption_idle);
 
       // Non-idle
       // Defense (railgun)
       let actual_power_consumption_railgun = power_consumption_railgun.min(c.power_generation).max(0.0);
       let mut total_consumption = power_consumption_railgun;
-      c.power_railgun = c.power_resource(power_consumption_railgun, total_consumption, self.battery_fill, battery_discharging);
+      c.power_railgun = b.power_resource(power_consumption_railgun, total_consumption);
       // Utility
       total_consumption += power_consumption_utility;
-      c.power_upto_utility = c.power_resource(power_consumption_utility, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_utility = b.power_resource(power_consumption_utility, total_consumption);
       // Utility (wheel suspensions)
       total_consumption += power_consumption_wheel_suspension;
-      c.power_upto_wheel_suspension = c.power_resource(power_consumption_wheel_suspension, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_wheel_suspension = b.power_resource(power_consumption_wheel_suspension, total_consumption);
       // Charge jump drive
       let actual_power_consumption_jump_drive = power_consumption_jump_drive.min(c.power_upto_wheel_suspension.balance).max(0.0);
       total_consumption += power_consumption_jump_drive;
-      c.power_upto_jump_drive = c.power_resource(power_consumption_jump_drive, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_jump_drive = b.power_resource(power_consumption_jump_drive, total_consumption);
       // Generator
       total_consumption += power_consumption_generator;
-      c.power_upto_generator = c.power_resource(power_consumption_generator, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_generator = b.power_resource(power_consumption_generator, total_consumption);
       // Thrust - Up/Down
       let up_down_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Up, Direction::Down);
       total_consumption += up_down_consumption;
-      c.power_upto_up_down_thruster = c.power_resource(up_down_consumption, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_up_down_thruster = b.power_resource(up_down_consumption, total_consumption);
       // Thrust - Front/Back
       let front_back_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Front, Direction::Back);
       total_consumption += front_back_consumption;
-      c.power_upto_front_back_thruster = c.power_resource(front_back_consumption, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_front_back_thruster = b.power_resource(front_back_consumption, total_consumption);
       // Thrust - Left/Right
       let left_right_consumption = Self::thruster_consumption_peak(&power_consumption_thruster, Direction::Left, Direction::Right);
       total_consumption += left_right_consumption;
-      c.power_upto_left_right_thruster = c.power_resource(left_right_consumption, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_left_right_thruster = b.power_resource(left_right_consumption, total_consumption);
       // Charge battery
       let actual_power_consumption_battery = power_consumption_battery.min(c.power_upto_left_right_thruster.balance).max(0.0);
       total_consumption += power_consumption_battery;
-      c.power_upto_battery = c.power_resource(power_consumption_battery, total_consumption, self.battery_fill, battery_discharging);
+      c.power_upto_battery = b.power_resource(power_consumption_battery, total_consumption);
 
       (actual_power_consumption_railgun, actual_power_consumption_jump_drive, actual_power_consumption_battery)
     };
 
     if self.railgun_charging { // TODO: is this also 80% efficient?
-      c.railgun_charge_time = c.railgun_capacity.map(|c| (c / actual_power_consumption_railgun) * MWH_TO_MINUTES);
+      c.railgun_charge_time = c.railgun_capacity.map(|c| (c / actual_power_consumption_railgun) * HOURS_TO_MINUTES);
     } else {
       c.railgun_charge_time = None;
     }
 
-    // TODO: use efficiency from jump drive data, instead of hardcoded 80% (* 0.8) efficiency!
-    c.jump_drive_charge_time = c.jump_drive_capacity.map(|c| (c / (actual_power_consumption_jump_drive * 0.8)) * MWH_TO_MINUTES);
+    // TODO: use efficiency from jump drive data, instead of hardcoded 80% efficiency!
+    c.jump_drive_charge_time = c.jump_drive_capacity.map(|c| (c / (actual_power_consumption_jump_drive * CHARGE_EFFICIENCY)) * HOURS_TO_MINUTES);
     if jump_strength != 0.0 {
       c.jump_drive_max_distance_empty = Some((jump_strength / c.total_mass_empty).min(max_jump_distance));
       c.jump_drive_max_distance_filled = Some((jump_strength / c.total_mass_filled).min(max_jump_distance));
@@ -458,51 +513,78 @@ impl GridCalculator {
 
     if self.battery_mode.is_charging() {
       let anti_fill = 1.0 - self.battery_fill / 100.0;
-      c.battery_charge_time = c.battery_capacity.map(|c| (c * anti_fill / (actual_power_consumption_battery * 0.8)) * MWH_TO_MINUTES);
+      c.battery_charge_time = c.battery_capacity.map(|c| (c * anti_fill / (actual_power_consumption_battery * CHARGE_EFFICIENCY)) * HOURS_TO_MINUTES);
     } else {
       c.battery_charge_time = None;
     }
 
+    // Calculate Hydrogen
     let (actual_hydrogen_consumption_tank, actual_hydrogen_consumption_engine) = {
-      let hydrogen_tank_enabled = self.hydrogen_tank_mode.is_providing();
+      struct HydrogenCalculatedBuilder {
+        generation: f64,
+        tank_capacity: Option<f64>,
+        tank_fill: f64,
+        tank_generation: f64,
+        tank_enabled: bool,
+      }
+      impl HydrogenCalculatedBuilder {
+        fn hydrogen_resource(&self, consumption: f64, total_consumption: f64) -> HydrogenCalculated {
+          let balance = self.generation - total_consumption;
+          let has_consumption = total_consumption != 0.0;
+          let tank_duration = if has_consumption && self.tank_enabled {
+            self.tank_capacity.map(|c| (c * (self.tank_fill / 100.0) / total_consumption.min(self.tank_generation)) * SECONDS_TO_MINUTES)
+          } else {
+            None
+          };
+          HydrogenCalculated { consumption, total_consumption, balance, tank_duration }
+        }
+      }
+      let mut b = HydrogenCalculatedBuilder {
+        generation: c.hydrogen_generation,
+        tank_capacity: c.hydrogen_tank_capacity,
+        tank_fill: self.hydrogen_tank_fill,
+        tank_generation: hydrogen_tank_generation,
+        tank_enabled: self.hydrogen_tank_mode.is_providing(),
+      };
 
       // Idle
-      c.hydrogen_idle = c.hydrogen_resource(hydrogen_consumption_idle, hydrogen_consumption_idle, self.hydrogen_tank_fill, hydrogen_tank_enabled);
+      c.hydrogen_idle = b.hydrogen_resource(hydrogen_consumption_idle, hydrogen_consumption_idle);
       // Non-idle
       // Hydrogen engine
       let actual_hydrogen_consumption_engine = hydrogen_consumption_engine.min(c.hydrogen_generation).max(0.0);
       let mut total_consumption = hydrogen_consumption_engine;
-      c.hydrogen_engine = c.hydrogen_resource(hydrogen_consumption_engine, total_consumption, self.hydrogen_tank_fill, hydrogen_tank_enabled);
+      c.hydrogen_engine = b.hydrogen_resource(hydrogen_consumption_engine, total_consumption);
       // Thrust - Up/Down
       let up_down_consumption = Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Up, Direction::Down);
       total_consumption += up_down_consumption;
-      c.hydrogen_upto_up_down_thruster = c.hydrogen_resource(up_down_consumption, total_consumption, self.hydrogen_tank_fill, hydrogen_tank_enabled);
+      c.hydrogen_upto_up_down_thruster = b.hydrogen_resource(up_down_consumption, total_consumption);
       // Thrust - Front/Back
       let front_back_consumption = Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Front, Direction::Back);
       total_consumption += front_back_consumption;
-      c.hydrogen_upto_front_back_thruster = c.hydrogen_resource(front_back_consumption, total_consumption, self.hydrogen_tank_fill, hydrogen_tank_enabled);
+      c.hydrogen_upto_front_back_thruster = b.hydrogen_resource(front_back_consumption, total_consumption);
       // Thrust - Left/Right
       let left_right_consumption = Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Left, Direction::Right);
       total_consumption += left_right_consumption;
-      c.hydrogen_upto_left_right_thruster = c.hydrogen_resource(left_right_consumption, total_consumption, self.hydrogen_tank_fill, hydrogen_tank_enabled);
+      c.hydrogen_upto_left_right_thruster = b.hydrogen_resource(left_right_consumption, total_consumption);
       // Tank
       let actual_hydrogen_consumption_tank = hydrogen_consumption_tank.min(c.hydrogen_generation).max(0.0);
       total_consumption += hydrogen_consumption_tank;
-      c.hydrogen_upto_tank = c.hydrogen_resource(hydrogen_consumption_tank, total_consumption, self.hydrogen_tank_fill, false);
+      b.tank_enabled = false; // Disable tank duration for tanks.
+      c.hydrogen_upto_tank = b.hydrogen_resource(hydrogen_consumption_tank, total_consumption);
 
       (actual_hydrogen_consumption_tank, actual_hydrogen_consumption_engine)
     };
 
     if self.hydrogen_tank_mode.is_refilling() && self.hydrogen_tank_fill != 100.0 {
       let anti_fill = 1.0 - self.hydrogen_tank_fill / 100.0;
-      c.hydrogen_tank_fill_time = c.hydrogen_tank_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_tank) * LS_TO_MINUTES);
+      c.hydrogen_tank_fill_time = c.hydrogen_tank_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_tank) * SECONDS_TO_MINUTES);
     } else {
       c.hydrogen_tank_fill_time = None;
     }
 
     if self.hydrogen_engine_enabled && self.hydrogen_engine_fill != 100.0 {
       let anti_fill = 1.0 - self.hydrogen_engine_fill / 100.0;
-      c.hydrogen_engine_fill_time = c.hydrogen_engine_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_engine) * LS_TO_MINUTES);
+      c.hydrogen_engine_fill_time = c.hydrogen_engine_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_engine) * SECONDS_TO_MINUTES);
     } else {
       c.hydrogen_engine_fill_time = None;
     }
@@ -644,25 +726,9 @@ pub struct PowerCalculated {
   /// Duration until batteries are empty when discharging (min), or None if there are no batteries
   /// or they are not discharging.
   pub battery_duration: Option<f64>,
-}
-
-impl PowerCalculated {
-  fn new(
-    consumption: f64,
-    total_consumption: f64,
-    generation: f64,
-    battery_capacity: Option<f64>,
-    battery_fill: f64,
-    battery_discharging: bool,
-  ) -> Self {
-    let balance = generation - total_consumption;
-    let battery_duration = if total_consumption != 0.0 && battery_discharging {
-      battery_capacity.map(|c| (c * (battery_fill / 100.0) / total_consumption) * MWH_TO_MINUTES)
-    } else {
-      None
-    };
-    PowerCalculated { consumption, total_consumption, balance, battery_duration }
-  }
+  /// Duration until engines are empty when discharging (min), or None if there are no engines
+  /// or they are not discharging.
+  pub engine_duration: Option<f64>,
 }
 
 #[derive(Default)]
@@ -676,34 +742,4 @@ pub struct HydrogenCalculated {
   /// Duration until hydrogen tanks are empty when discharging (min), or None if there are no 
   /// hydrogen tanks or they are stockpiling. TODO: stockpiling behaviour?
   pub tank_duration: Option<f64>,
-}
-
-impl HydrogenCalculated {
-  fn new(
-    consumption: f64,
-    total_consumption: f64,
-    generation: f64,
-    tank_capacity: Option<f64>,
-    tank_fill: f64,
-    tank_enabled: bool,
-  ) -> Self {
-    let balance = generation - total_consumption;
-    let has_consumption = total_consumption != 0.0;
-    let tank_duration = if has_consumption && tank_enabled {
-      tank_capacity.map(|c| (c * (tank_fill / 100.0) / total_consumption) * LS_TO_MINUTES)
-    } else {
-      None
-    };
-    HydrogenCalculated { consumption, total_consumption, balance, tank_duration }
-  }
-}
-
-impl GridCalculated {
-  fn power_resource(&self, consumption: f64, total_consumption: f64, battery_fill: f64, battery_discharging: bool) -> PowerCalculated {
-    PowerCalculated::new(consumption, total_consumption, self.power_generation, self.battery_capacity, battery_fill, battery_discharging)
-  }
-
-  fn hydrogen_resource(&self, consumption: f64, total_consumption: f64, tank_fill: f64, tank_enabled: bool) -> HydrogenCalculated {
-    HydrogenCalculated::new(consumption, total_consumption, self.hydrogen_generation, self.hydrogen_tank_capacity, tank_fill, tank_enabled)
-  }
 }
