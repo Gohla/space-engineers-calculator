@@ -1,5 +1,6 @@
 use egui::{Button, CollapsingHeader, CollapsingResponse, Color32, Grid, Id, InnerResponse, Response, Stroke, Ui, WidgetText};
 use egui::collapsing_header::CollapsingState;
+use egui::output::OpenUrl;
 
 pub trait UiExtensions {
   fn open_collapsing_header_with_grid<R>(&mut self, header: &str, add_contents: impl FnOnce(&mut Ui) -> R) -> CollapsingResponse<InnerResponse<R>>;
@@ -15,6 +16,10 @@ pub trait UiExtensions {
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R>;
 
   fn danger_button(&mut self, text: impl Into<WidgetText>) -> Response;
+
+  fn url(&mut self, url: impl Into<String>) -> Response;
+
+  fn url_link(&mut self, label: impl Into<WidgetText>, url: impl Into<String>) -> Response;
 }
 
 impl UiExtensions for Ui {
@@ -47,5 +52,22 @@ impl UiExtensions for Ui {
 
   fn danger_button(&mut self, text: impl Into<WidgetText>) -> Response {
     self.add(Button::new(text).stroke(Stroke::new(0.5, Color32::RED)))
+  }
+
+  fn url(&mut self, url: impl Into<String>) -> Response {
+    let url = url.into();
+    let response = self.link(&url);
+    if response.clicked() {
+      self.ctx().output().open_url = Some(OpenUrl { url, new_tab: true });
+    }
+    response
+  }
+
+  fn url_link(&mut self, label: impl Into<WidgetText>, url: impl Into<String>) -> Response {
+    let response = self.link(label);
+    if response.clicked() {
+      self.ctx().output().open_url = Some(OpenUrl { url: url.into(), new_tab: true });
+    }
+    response
   }
 }

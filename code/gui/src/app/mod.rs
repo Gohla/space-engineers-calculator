@@ -33,10 +33,12 @@ pub struct App {
   #[serde(skip)] show_reset_confirm_window: bool,
 
   #[serde(skip)] show_settings_window: bool,
+  #[serde(skip)] show_about_window: bool,
   #[serde(skip)] show_debug_gui_settings_window: bool,
   #[serde(skip)] show_debug_gui_inspection_window: bool,
   #[serde(skip)] show_debug_gui_memory_window: bool,
 
+  first_time: bool,
   enabled_mod_ids: HashSet<u64>,
   dark_mode: bool,
   font_size_modifier: i32,
@@ -135,13 +137,16 @@ impl Default for App {
       show_reset_confirm_window: false,
 
       show_settings_window: false,
+      show_about_window: false,
       show_debug_gui_settings_window: false,
       show_debug_gui_inspection_window: false,
       show_debug_gui_memory_window: false,
 
+      first_time: true,
+
       enabled_mod_ids: Default::default(),
       dark_mode: false,
-      font_size_modifier: 0,
+      font_size_modifier: 4,
       increase_contrast: false,
 
       calculator: GridCalculator::default(),
@@ -211,6 +216,9 @@ impl eframe::App for App {
                   });
                   ui.menu_button("Window", |ui| {
                     if ui.checkbox(&mut self.show_settings_window, "Settings").clicked() {
+                      ui.close_menu();
+                    }
+                    if ui.checkbox(&mut self.show_about_window, "About").clicked() {
                       ui.close_menu();
                     }
                     ui.separator();
