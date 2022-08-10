@@ -8,8 +8,10 @@ use direction::PerDirection;
 use crate::data::blocks::{BlockId, ThrusterType};
 use crate::data::Data;
 use crate::grid::direction::{CountPerDirection, Direction};
+use crate::grid::duration::Duration;
 
 pub mod direction;
+pub mod duration;
 
 // Battery mode
 
@@ -183,8 +185,6 @@ impl Default for GridCalculator {
   }
 }
 
-const HOURS_TO_MINUTES: f64 = 60.0;
-const SECONDS_TO_MINUTES: f64 = 1.0 / 60.0;
 const CHARGE_EFFICIENCY: f64 = 0.8;
 
 impl GridCalculator {
@@ -426,14 +426,14 @@ impl GridCalculator {
         fn power_resource(&self, consumption: f64, total_consumption: f64) -> PowerCalculated {
           let balance = self.generation - total_consumption;
           let battery_duration = if total_consumption != 0.0 && self.battery_discharging {
-            self.battery_capacity.map(|c| (c * (self.battery_fill / 100.0) / total_consumption.min(self.battery_generation)) * HOURS_TO_MINUTES)
+            self.battery_capacity.map(|c| Duration::from_hours(c * (self.battery_fill / 100.0) / total_consumption.min(self.battery_generation)))
           } else {
             None
           };
           let engine_duration = if total_consumption != 0.0 && self.engine_discharging {
             self.engine_capacity.map(|c| {
               let capacity = c * (self.engine_fill / 100.0);
-              (capacity / self.engine_fuel_consumption) * (self.engine_generation / total_consumption.min(self.engine_generation)) * SECONDS_TO_MINUTES
+              Duration::from_seconds((capacity / self.engine_fuel_consumption) * (self.engine_generation / total_consumption.min(self.engine_generation)))
             })
           } else {
             None
@@ -496,13 +496,13 @@ impl GridCalculator {
     };
 
     if self.railgun_charging { // TODO: is this also 80% efficient?
-      c.railgun_charge_time = c.railgun_capacity.map(|c| (c / actual_power_consumption_railgun) * HOURS_TO_MINUTES);
+      c.railgun_charge_duration = c.railgun_capacity.map(|c| Duration::from_hours(c / actual_power_consumption_railgun));
     } else {
-      c.railgun_charge_time = None;
+      c.railgun_charge_duration = None;
     }
 
     // TODO: use efficiency from jump drive data, instead of hardcoded 80% efficiency!
-    c.jump_drive_charge_time = c.jump_drive_capacity.map(|c| (c / (actual_power_consumption_jump_drive * CHARGE_EFFICIENCY)) * HOURS_TO_MINUTES);
+    c.jump_drive_charge_duration = c.jump_drive_capacity.map(|c| Duration::from_hours(c / (actual_power_consumption_jump_drive * CHARGE_EFFICIENCY)));
     if jump_strength != 0.0 {
       c.jump_drive_max_distance_empty = Some((jump_strength / c.total_mass_empty).min(max_jump_distance));
       c.jump_drive_max_distance_filled = Some((jump_strength / c.total_mass_filled).min(max_jump_distance));
@@ -513,9 +513,9 @@ impl GridCalculator {
 
     if self.battery_mode.is_charging() {
       let anti_fill = 1.0 - self.battery_fill / 100.0;
-      c.battery_charge_time = c.battery_capacity.map(|c| (c * anti_fill / (actual_power_consumption_battery * CHARGE_EFFICIENCY)) * HOURS_TO_MINUTES);
+      c.battery_charge_duration = c.battery_capacity.map(|c| Duration::from_hours((c * anti_fill) / (actual_power_consumption_battery * CHARGE_EFFICIENCY)));
     } else {
-      c.battery_charge_time = None;
+      c.battery_charge_duration = None;
     }
 
     // Calculate Hydrogen
@@ -532,7 +532,7 @@ impl GridCalculator {
           let balance = self.generation - total_consumption;
           let has_consumption = total_consumption != 0.0;
           let tank_duration = if has_consumption && self.tank_enabled {
-            self.tank_capacity.map(|c| (c * (self.tank_fill / 100.0) / total_consumption.min(self.tank_generation)) * SECONDS_TO_MINUTES)
+            self.tank_capacity.map(|c| Duration::from_seconds((c * (self.tank_fill / 100.0)) / total_consumption.min(self.tank_generation)))
           } else {
             None
           };
@@ -577,16 +577,16 @@ impl GridCalculator {
 
     if self.hydrogen_tank_mode.is_refilling() && self.hydrogen_tank_fill != 100.0 {
       let anti_fill = 1.0 - self.hydrogen_tank_fill / 100.0;
-      c.hydrogen_tank_fill_time = c.hydrogen_tank_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_tank) * SECONDS_TO_MINUTES);
+      c.hydrogen_tank_fill_duration = c.hydrogen_tank_capacity.map(|c| Duration::from_seconds((c * anti_fill) / actual_hydrogen_consumption_tank));
     } else {
-      c.hydrogen_tank_fill_time = None;
+      c.hydrogen_tank_fill_duration = None;
     }
 
     if self.hydrogen_engine_enabled && self.hydrogen_engine_fill != 100.0 {
       let anti_fill = 1.0 - self.hydrogen_engine_fill / 100.0;
-      c.hydrogen_engine_fill_time = c.hydrogen_engine_capacity.map(|c| (c * anti_fill / actual_hydrogen_consumption_engine) * SECONDS_TO_MINUTES);
+      c.hydrogen_engine_fill_duration = c.hydrogen_engine_capacity.map(|c| Duration::from_seconds((c * anti_fill) / actual_hydrogen_consumption_engine));
     } else {
-      c.hydrogen_engine_fill_time = None;
+      c.hydrogen_engine_fill_duration = None;
     }
 
     c
@@ -655,13 +655,13 @@ pub struct GridCalculated {
   pub railgun_capacity: Option<f64>,
   /// Duration until railguns are full when charging (min), or None if there are no railguns or they
   /// are not charging.
-  pub railgun_charge_time: Option<f64>,
+  pub railgun_charge_duration: Option<Duration>,
 
   /// Total power capacity in batteries (MWh), or None if there are no jump drives
   pub jump_drive_capacity: Option<f64>,
   /// Duration until jump drives are full when charging (min), or None if there are no jump drives
   /// or they are not charging.
-  pub jump_drive_charge_time: Option<f64>,
+  pub jump_drive_charge_duration: Option<Duration>,
   /// Maximum jump distance when empty (km), or None if there are no jump drives
   pub jump_drive_max_distance_empty: Option<f64>,
   /// Maximum jump distance when filled (km), or None if there are no jump drives
@@ -671,7 +671,7 @@ pub struct GridCalculated {
   pub battery_capacity: Option<f64>,
   /// Duration until batteries are full when charging (min), or None if there are no batteries or 
   /// they are not charging.
-  pub battery_charge_time: Option<f64>,
+  pub battery_charge_duration: Option<Duration>,
 
   /// Total hydrogen generation (L/s)
   pub hydrogen_generation: f64,
@@ -692,13 +692,13 @@ pub struct GridCalculated {
   pub hydrogen_tank_capacity: Option<f64>,
   /// Duration until hydrogen tanks are full when refilling (min), or None if there are no hydrogen
   /// tanks or they are not refilling.
-  pub hydrogen_tank_fill_time: Option<f64>,
+  pub hydrogen_tank_fill_duration: Option<Duration>,
 
   /// Total hydrogen capacity in engines (L), or None if there are no hydrogen engines.
   pub hydrogen_engine_capacity: Option<f64>,
   /// Duration until hydrogen engines are full when refilling (min), or None if there are no hydrogen
   /// engines or they are not refilling.
-  pub hydrogen_engine_fill_time: Option<f64>,
+  pub hydrogen_engine_fill_duration: Option<Duration>,
 }
 
 #[derive(Default)]
@@ -725,10 +725,10 @@ pub struct PowerCalculated {
   pub balance: f64,
   /// Duration until batteries are empty when discharging (min), or None if there are no batteries
   /// or they are not discharging.
-  pub battery_duration: Option<f64>,
+  pub battery_duration: Option<Duration>,
   /// Duration until engines are empty when discharging (min), or None if there are no engines
   /// or they are not discharging.
-  pub engine_duration: Option<f64>,
+  pub engine_duration: Option<Duration>,
 }
 
 #[derive(Default)]
@@ -740,6 +740,6 @@ pub struct HydrogenCalculated {
   /// Hydrogen balance upto this group (+-L/s)
   pub balance: f64,
   /// Duration until hydrogen tanks are empty when discharging (min), or None if there are no 
-  /// hydrogen tanks or they are stockpiling. TODO: stockpiling behaviour?
-  pub tank_duration: Option<f64>,
+  /// hydrogen tanks or they are stockpiling.
+  pub tank_duration: Option<Duration>,
 }
