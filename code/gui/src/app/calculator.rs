@@ -19,11 +19,11 @@ impl App {
       ui.horizontal_top(|ui| {
         ui.grid("Options Grid 1", |ui| {
           let mut ui = CalculatorUi::new(ui, self.number_separator_policy, 100.0 + (self.font_size_modifier * 2) as f32);
-          ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
-          ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.001, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
-          ui.edit_suffix_row(RichText::new("Planetary Influence").underline(), "x", &mut self.calculator.planetary_influence, 0.001, 0.0..=1.0, self.calculator_default.planetary_influence)
+          ui.edit_suffix_row("Gravity Multiplier", "x", &mut self.calculator.gravity_multiplier, 0.005, 0.0..=f64::INFINITY, self.calculator_default.gravity_multiplier);
+          ui.edit_suffix_row("Container Multiplier", "x", &mut self.calculator.container_multiplier, 0.005, 0.0..=f64::INFINITY, self.calculator_default.container_multiplier);
+          ui.edit_suffix_row(RichText::new("Planetary Influence").underline(), "x", &mut self.calculator.planetary_influence, 0.005, 0.0..=1.0, self.calculator_default.planetary_influence)
             .on_hover_text_at_pointer("How close to the ground level of a planet's atmosphere the grid is, with 1.0 being on or below ground level, and 0.0 being in vacuum. Lower values negatively affect atmospheric thrusters, and positively affect ion thrusters.");
-          ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 100.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
+          ui.edit_suffix_row("Additional Mass", "kg", &mut self.calculator.additional_mass, 1000.0, 0.0..=f64::INFINITY, self.calculator_default.additional_mass);
           ui.edit_percentage_row("Thruster Power", &mut self.calculator.thruster_power, self.calculator_default.thruster_power);
           ui.edit_percentage_row("Wheel Power", &mut self.calculator.wheel_power, self.calculator_default.wheel_power);
           ui.checkbox_suffix_row("Charge Railguns", "", &mut self.calculator.railgun_charging, self.calculator_default.railgun_charging);
@@ -155,11 +155,11 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
   fn edit_percentage_row(&mut self, label: impl Into<WidgetText>, value: &mut f64, reset_value: f64) -> Response {
-    self.edit_suffix_row(label, "%", value, 0.1, 0.0..=100.0, reset_value)
+    self.edit_suffix_row(label, "%", value, 0.2, 0.0..=100.0, reset_value)
   }
 
   fn edit_count_row(&mut self, label: impl Into<WidgetText>, value: &mut u64) -> Response {
-    self.edit_row(label, None::<&str>, value, 0.01, 0..=u64::MAX, 0)
+    self.edit_row(label, None::<&str>, value, 0.05, 0..=u64::MAX, 0)
   }
 
 
@@ -243,7 +243,7 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
   fn unlabelled_edit_count(&mut self, value: &mut u64) {
-    self.drag(value, 0.01, 0..=u64::MAX)
+    self.drag(value, 0.05, 0..=u64::MAX)
   }
 
 
