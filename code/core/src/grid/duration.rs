@@ -16,7 +16,9 @@ impl Duration {
   #[inline]
   pub fn to_f64_and_unit(&self) -> (f64, &str) {
     let d = self.0;
-    if d >= MILLENNIUM_TO_MINUTES {
+    if d.is_infinite() {
+      (d, "")
+    } else if d >= MILLENNIUM_TO_MINUTES {
       (d / MILLENNIUM_TO_MINUTES, "millennia")
     } else if d >= YEAR_TO_MINUTES {
       (d / YEAR_TO_MINUTES, "years")

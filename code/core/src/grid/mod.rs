@@ -185,8 +185,6 @@ impl Default for GridCalculator {
   }
 }
 
-const CHARGE_EFFICIENCY: f64 = 0.8;
-
 impl GridCalculator {
   pub fn new() -> Self {
     Self::default()
@@ -223,12 +221,6 @@ impl GridCalculator {
     let mut jump_strength = 0.0; // Divide by mass to get max jump distance.
     let mut max_jump_distance = 0.0; // Cap on max jump distance.
 
-    let mut battery_power_generation = 0.0;
-    let mut hydrogen_engine_fuel_consumption = 0.0;
-    let mut hydrogen_engine_power_generation = 0.0;
-
-    let mut hydrogen_tank_generation = 0.0;
-
     c.total_mass_empty += self.additional_mass;
 
     // Non-directional blocks
@@ -243,7 +235,7 @@ impl GridCalculator {
           c.total_volume_ore += volume;
           c.total_volume_ice += volume;
         }
-      } else if let Some(block) = data.blocks.connectors.get(id) {// Connectors.
+      } else if let Some(block) = data.blocks.connectors.get(id) { // Connectors.
         c.total_mass_empty += block.mass(&data.components) * count;
         let volume = block.details.inventory_volume_any * count * self.container_multiplier;
         c.total_volume_any += volume;
@@ -266,20 +258,23 @@ impl GridCalculator {
       } else if let Some(block) = data.blocks.hydrogen_engines.get(id) { // Hydrogen Engines.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
+        let maximum_fuel_consumption = details.max_fuel_consumption * count;
+        let maximum_power_output = details.max_power_generation * count;
+        let maximum_refilling_input = maximum_fuel_consumption * 60.0; // Hydrogen engine input is multiplied by 60 when not full in MyFueledPowerProducer.cs
         if self.hydrogen_engine_enabled {
-          c.power_generation += details.max_power_generation * count;
-          let multiplier = if self.hydrogen_engine_fill != 100.0 {
-            60.0 // Hydrogen engine consumption is multiplied by 60 when not full in MyFueledPowerProducer.cs
+          c.power_generation += maximum_power_output;
+          hydrogen_consumption_engine += if self.hydrogen_engine_fill != 100.0 {
+            maximum_refilling_input
           } else {
-            1.0
+            maximum_fuel_consumption
           };
-          hydrogen_consumption_engine += details.max_fuel_consumption * multiplier * count;
-
-          hydrogen_engine_fuel_consumption += details.max_fuel_consumption * count;
-          hydrogen_engine_power_generation += details.max_power_generation * count;
         }
-        *c.hydrogen_engine_capacity.get_or_insert(0.0) += details.fuel_capacity * count;
-      } else if let Some(block) = data.blocks.reactors.get(id) {  // Reactors.
+        let hydrogen_engine = c.hydrogen_engine.get_or_insert(HydrogenEngineCalculated::default());
+        hydrogen_engine.capacity += details.fuel_capacity * count;
+        hydrogen_engine.maximum_fuel_consumption = maximum_fuel_consumption;
+        hydrogen_engine.maximum_output = maximum_power_output;
+        hydrogen_engine.maximum_refilling_input = maximum_refilling_input;
+      } else if let Some(block) = data.blocks.reactors.get(id) { // Reactors.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
         c.power_generation += details.max_power_generation * count;
@@ -288,21 +283,28 @@ impl GridCalculator {
       } else if let Some(block) = data.blocks.batteries.get(id) { // Batteries.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        if self.battery_mode.is_discharging() {
-          c.power_generation += details.output * count;
-          battery_power_generation += details.output * count;
-        }
+        let input = details.input * count;
+        let output = details.output * count;
         if self.battery_mode.is_charging() {
-          power_consumption_battery += details.input * count;
+          power_consumption_battery += input;
         }
-        *c.battery_capacity.get_or_insert(0.0) += details.capacity * count;
+        if self.battery_mode.is_discharging() {
+          c.power_generation += output;
+        }
+        let battery = c.battery.get_or_insert(BatteryCalculated::default());
+        battery.capacity += details.capacity * count;
+        battery.maximum_input += input;
+        battery.maximum_output += output;
       } else if let Some(block) = data.blocks.jump_drives.get(id) { // Jump drives
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        *c.jump_drive_capacity.get_or_insert(0.0) += block.capacity * count;
+        let input = details.operational_power_consumption * count;
         if self.jump_drive_charging {
-          power_consumption_jump_drive += details.operational_power_consumption * count;
+          power_consumption_jump_drive += input;
         }
+        let jump_drive = c.jump_drive.get_or_insert(JumpDriveCalculated::default());
+        jump_drive.capacity += block.capacity * count;
+        jump_drive.maximum_input = input;
         // Formula based on https://www.spaceengineerswiki.com/Jump_drive
         let max_jump_drive_distance = details.max_jump_distance / 1000.0; // Convert from m to km.
         jump_strength += max_jump_drive_distance * details.max_jump_mass * count;
@@ -310,11 +312,14 @@ impl GridCalculator {
       } else if let Some(block) = data.blocks.railguns.get(id) { // Railguns
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        *c.railgun_capacity.get_or_insert(0.0) += block.capacity * count;
+        let input = details.operational_power_consumption * count;
         power_consumption_idle += details.idle_power_consumption * count;
         if self.railgun_charging {
-          power_consumption_railgun += details.operational_power_consumption * count;
+          power_consumption_railgun += input;
         }
+        let railgun = c.railgun.get_or_insert(RailgunCalculated::default());
+        railgun.capacity += block.capacity * count;
+        railgun.maximum_input = input;
       } else if let Some(block) = data.blocks.generators.get(id) { // Hydrogen Generators.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
@@ -326,17 +331,20 @@ impl GridCalculator {
       } else if let Some(block) = data.blocks.hydrogen_tanks.get(id) { // Hydrogen Tanks.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
+        let maximum_input_output = details.capacity * 0.05; // Hydrogen tank consumption is capacity * 0.05 when not full according to MyGasTank.cs
         if self.hydrogen_tank_mode.is_refilling() {
           power_consumption_idle += details.idle_power_consumption * count;
           power_consumption_utility += details.operational_power_consumption * count;
           hydrogen_consumption_tank = if self.hydrogen_tank_fill != 100.0 {
-            details.capacity * 0.05 // Hydrogen tank consumption is capacity * 0.05 when not full according to MyGasTank.cs
+            maximum_input_output
           } else {
             0.0
           };
-          hydrogen_tank_generation = details.capacity * 0.05; // Same as consumption.
         }
-        *c.hydrogen_tank_capacity.get_or_insert(0.0) += details.capacity * count;
+        let hydrogen_tank = c.hydrogen_tank.get_or_insert(HydrogenTankCalculated::default());
+        hydrogen_tank.capacity += details.capacity * count;
+        hydrogen_tank.maximum_input = maximum_input_output;
+        hydrogen_tank.maximum_output = maximum_input_output;
       } else if let Some(block) = data.blocks.drills.get(id) { // Drills
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
@@ -420,7 +428,7 @@ impl GridCalculator {
         engine_fill: f64,
         engine_fuel_consumption: f64,
         engine_generation: f64,
-        engine_discharging: bool
+        engine_is_generating_power: bool
       }
       impl PowerCalculatedBuilder {
         fn power_resource(&self, consumption: f64, total_consumption: f64) -> PowerCalculated {
@@ -430,7 +438,7 @@ impl GridCalculator {
           } else {
             None
           };
-          let engine_duration = if total_consumption != 0.0 && self.engine_discharging {
+          let engine_duration = if total_consumption != 0.0 && self.engine_is_generating_power {
             self.engine_capacity.map(|c| {
               let capacity = c * (self.engine_fill / 100.0);
               Duration::from_seconds((capacity / self.engine_fuel_consumption) * (self.engine_generation / total_consumption.min(self.engine_generation)))
@@ -443,15 +451,15 @@ impl GridCalculator {
       }
       let b = PowerCalculatedBuilder {
         generation: c.power_generation,
-        battery_capacity: c.battery_capacity,
+        battery_capacity: c.battery.as_ref().map(|b| b.capacity),
         battery_fill: self.battery_fill,
-        battery_generation: battery_power_generation,
+        battery_generation: c.battery.as_ref().map(|b| b.maximum_output).unwrap_or(0.0),
         battery_discharging: self.battery_mode.is_discharging(),
-        engine_capacity: c.hydrogen_engine_capacity,
+        engine_capacity: c.hydrogen_engine.as_ref().map(|e| e.capacity),
         engine_fill: self.hydrogen_engine_fill,
-        engine_fuel_consumption: hydrogen_engine_fuel_consumption,
-        engine_generation: hydrogen_engine_power_generation,
-        engine_discharging: self.hydrogen_engine_enabled,
+        engine_fuel_consumption: c.hydrogen_engine.as_ref().map(|e| e.maximum_fuel_consumption).unwrap_or(0.0),
+        engine_generation: c.hydrogen_engine.as_ref().map(|e| e.maximum_output).unwrap_or(0.0),
+        engine_is_generating_power: self.hydrogen_engine_enabled,
       };
 
       // Idle
@@ -461,7 +469,7 @@ impl GridCalculator {
       // Defense (railgun)
       let actual_power_consumption_railgun = power_consumption_railgun.min(c.power_generation).max(0.0);
       let mut total_consumption = power_consumption_railgun;
-      c.power_railgun = b.power_resource(power_consumption_railgun, total_consumption);
+      c.power_railgun_charge = b.power_resource(power_consumption_railgun, total_consumption);
       // Utility
       total_consumption += power_consumption_utility;
       c.power_upto_utility = b.power_resource(power_consumption_utility, total_consumption);
@@ -471,7 +479,7 @@ impl GridCalculator {
       // Charge jump drive
       let actual_power_consumption_jump_drive = power_consumption_jump_drive.min(c.power_upto_wheel_suspension.balance).max(0.0);
       total_consumption += power_consumption_jump_drive;
-      c.power_upto_jump_drive = b.power_resource(power_consumption_jump_drive, total_consumption);
+      c.power_upto_jump_drive_charge = b.power_resource(power_consumption_jump_drive, total_consumption);
       // Generator
       total_consumption += power_consumption_generator;
       c.power_upto_generator = b.power_resource(power_consumption_generator, total_consumption);
@@ -490,32 +498,29 @@ impl GridCalculator {
       // Charge battery
       let actual_power_consumption_battery = power_consumption_battery.min(c.power_upto_left_right_thruster.balance).max(0.0);
       total_consumption += power_consumption_battery;
-      c.power_upto_battery = b.power_resource(power_consumption_battery, total_consumption);
+      c.power_upto_battery_charge = b.power_resource(power_consumption_battery, total_consumption);
 
       (actual_power_consumption_railgun, actual_power_consumption_jump_drive, actual_power_consumption_battery)
     };
 
-    if self.railgun_charging { // TODO: is this also 80% efficient?
-      c.railgun_charge_duration = c.railgun_capacity.map(|c| Duration::from_hours(c / actual_power_consumption_railgun));
-    } else {
-      c.railgun_charge_duration = None;
+    if let Some(railgun) = &mut c.railgun { // TODO: is this also 80% efficient?
+      railgun.charge_duration = self.railgun_charging.then(|| Duration::from_hours(railgun.capacity / actual_power_consumption_railgun));
     }
 
-    // TODO: use efficiency from jump drive data, instead of hardcoded 80% efficiency!
-    c.jump_drive_charge_duration = c.jump_drive_capacity.map(|c| Duration::from_hours(c / (actual_power_consumption_jump_drive * CHARGE_EFFICIENCY)));
-    if jump_strength != 0.0 {
-      c.jump_drive_max_distance_empty = Some((jump_strength / c.total_mass_empty).min(max_jump_distance));
-      c.jump_drive_max_distance_filled = Some((jump_strength / c.total_mass_filled).min(max_jump_distance));
-    } else {
-      c.jump_drive_max_distance_empty = None;
-      c.jump_drive_max_distance_filled = None;
+    const CHARGE_EFFICIENCY: f64 = 0.8;
+
+    if let Some(jump_drive) = &mut c.jump_drive {
+      // TODO: use efficiency from jump drive data, instead of hardcoded 80% efficiency!
+      let should_charge = self.jump_drive_charging;
+      jump_drive.charge_duration = should_charge.then(|| Duration::from_hours(jump_drive.capacity / (actual_power_consumption_jump_drive * CHARGE_EFFICIENCY)));
+      jump_drive.max_distance_empty = (jump_strength / c.total_mass_empty).min(max_jump_distance);
+      jump_drive.max_distance_filled = (jump_strength / c.total_mass_filled).min(max_jump_distance);
     }
 
-    if self.battery_mode.is_charging() {
+    if let Some(battery) = &mut c.battery {
       let anti_fill = 1.0 - self.battery_fill / 100.0;
-      c.battery_charge_duration = c.battery_capacity.map(|c| Duration::from_hours((c * anti_fill) / (actual_power_consumption_battery * CHARGE_EFFICIENCY)));
-    } else {
-      c.battery_charge_duration = None;
+      let should_charge = self.battery_mode.is_charging() && self.battery_fill != 100.0;
+      battery.charge_duration = should_charge.then(|| Duration::from_hours((battery.capacity * anti_fill) / (actual_power_consumption_battery * CHARGE_EFFICIENCY)));
     }
 
     // Calculate Hydrogen
@@ -525,13 +530,13 @@ impl GridCalculator {
         tank_capacity: Option<f64>,
         tank_fill: f64,
         tank_generation: f64,
-        tank_enabled: bool,
+        tank_is_providing_hydrogen: bool,
       }
       impl HydrogenCalculatedBuilder {
         fn hydrogen_resource(&self, consumption: f64, total_consumption: f64) -> HydrogenCalculated {
           let balance = self.generation - total_consumption;
           let has_consumption = total_consumption != 0.0;
-          let tank_duration = if has_consumption && self.tank_enabled {
+          let tank_duration = if has_consumption && self.tank_is_providing_hydrogen {
             self.tank_capacity.map(|c| Duration::from_seconds((c * (self.tank_fill / 100.0)) / total_consumption.min(self.tank_generation)))
           } else {
             None
@@ -541,10 +546,10 @@ impl GridCalculator {
       }
       let mut b = HydrogenCalculatedBuilder {
         generation: c.hydrogen_generation,
-        tank_capacity: c.hydrogen_tank_capacity,
+        tank_capacity: c.hydrogen_tank.as_ref().map(|t| t.capacity),
         tank_fill: self.hydrogen_tank_fill,
-        tank_generation: hydrogen_tank_generation,
-        tank_enabled: self.hydrogen_tank_mode.is_providing(),
+        tank_generation: c.hydrogen_tank.as_ref().map(|t| t.maximum_output).unwrap_or(0.0),
+        tank_is_providing_hydrogen: self.hydrogen_tank_mode.is_providing(),
       };
 
       // Idle
@@ -553,7 +558,7 @@ impl GridCalculator {
       // Hydrogen engine
       let actual_hydrogen_consumption_engine = hydrogen_consumption_engine.min(c.hydrogen_generation).max(0.0);
       let mut total_consumption = hydrogen_consumption_engine;
-      c.hydrogen_engine = b.hydrogen_resource(hydrogen_consumption_engine, total_consumption);
+      c.hydrogen_engine_fill = b.hydrogen_resource(hydrogen_consumption_engine, total_consumption);
       // Thrust - Up/Down
       let up_down_consumption = Self::thruster_consumption_peak(&hydrogen_consumption_thruster, Direction::Up, Direction::Down);
       total_consumption += up_down_consumption;
@@ -569,24 +574,22 @@ impl GridCalculator {
       // Tank
       let actual_hydrogen_consumption_tank = hydrogen_consumption_tank.min(c.hydrogen_generation).max(0.0);
       total_consumption += hydrogen_consumption_tank;
-      b.tank_enabled = false; // Disable tank duration for tanks.
-      c.hydrogen_upto_tank = b.hydrogen_resource(hydrogen_consumption_tank, total_consumption);
+      b.tank_is_providing_hydrogen = false; // Disable tank duration for tanks.
+      c.hydrogen_upto_tank_fill = b.hydrogen_resource(hydrogen_consumption_tank, total_consumption);
 
       (actual_hydrogen_consumption_tank, actual_hydrogen_consumption_engine)
     };
 
-    if self.hydrogen_tank_mode.is_refilling() && self.hydrogen_tank_fill != 100.0 {
+    if let Some(hydrogen_tank) = &mut c.hydrogen_tank {
       let anti_fill = 1.0 - self.hydrogen_tank_fill / 100.0;
-      c.hydrogen_tank_fill_duration = c.hydrogen_tank_capacity.map(|c| Duration::from_seconds((c * anti_fill) / actual_hydrogen_consumption_tank));
-    } else {
-      c.hydrogen_tank_fill_duration = None;
+      let should_refill = self.hydrogen_tank_mode.is_refilling() && self.hydrogen_tank_fill != 100.0;
+      hydrogen_tank.fill_duration = should_refill.then(|| Duration::from_seconds((hydrogen_tank.capacity * anti_fill) / actual_hydrogen_consumption_tank));
     }
 
-    if self.hydrogen_engine_enabled && self.hydrogen_engine_fill != 100.0 {
+    if let Some(hydrogen_engine) = &mut c.hydrogen_engine {
       let anti_fill = 1.0 - self.hydrogen_engine_fill / 100.0;
-      c.hydrogen_engine_fill_duration = c.hydrogen_engine_capacity.map(|c| Duration::from_seconds((c * anti_fill) / actual_hydrogen_consumption_engine));
-    } else {
-      c.hydrogen_engine_fill_duration = None;
+      let should_refill = self.hydrogen_engine_enabled && self.hydrogen_engine_fill != 100.0;
+      hydrogen_engine.fill_duration = should_refill.then(|| Duration::from_seconds((hydrogen_engine.capacity * anti_fill) / actual_hydrogen_consumption_engine));
     }
 
     c
@@ -633,13 +636,13 @@ pub struct GridCalculated {
   /// Idle power calculation
   pub power_idle: PowerCalculated,
   /// Railgun (charging) power calculation
-  pub power_railgun: PowerCalculated,
+  pub power_railgun_charge: PowerCalculated,
   /// + Utility power calculation
   pub power_upto_utility: PowerCalculated,
   /// + Wheel suspension power calculation
   pub power_upto_wheel_suspension: PowerCalculated,
   /// + Jump drive (charging) power calculation
-  pub power_upto_jump_drive: PowerCalculated,
+  pub power_upto_jump_drive_charge: PowerCalculated,
   /// + Generator power calculation
   pub power_upto_generator: PowerCalculated,
   /// + Up/down thruster power calculation
@@ -649,36 +652,21 @@ pub struct GridCalculated {
   /// + Left/right thruster power calculation
   pub power_upto_left_right_thruster: PowerCalculated,
   /// + Battery (charging) power calculation
-  pub power_upto_battery: PowerCalculated,
+  pub power_upto_battery_charge: PowerCalculated,
 
-  /// Total power capacity in railguns (MWh), or None if there are no railguns
-  pub railgun_capacity: Option<f64>,
-  /// Duration until railguns are full when charging (min), or None if there are no railguns or they
-  /// are not charging.
-  pub railgun_charge_duration: Option<Duration>,
-
-  /// Total power capacity in batteries (MWh), or None if there are no jump drives
-  pub jump_drive_capacity: Option<f64>,
-  /// Duration until jump drives are full when charging (min), or None if there are no jump drives
-  /// or they are not charging.
-  pub jump_drive_charge_duration: Option<Duration>,
-  /// Maximum jump distance when empty (km), or None if there are no jump drives
-  pub jump_drive_max_distance_empty: Option<f64>,
-  /// Maximum jump distance when filled (km), or None if there are no jump drives
-  pub jump_drive_max_distance_filled: Option<f64>,
-
-  /// Total power capacity in batteries (MWh), or None if there are no batteries.
-  pub battery_capacity: Option<f64>,
-  /// Duration until batteries are full when charging (min), or None if there are no batteries or 
-  /// they are not charging.
-  pub battery_charge_duration: Option<Duration>,
+  /// Railgun calculation, or None if there are no railguns.
+  pub railgun: Option<RailgunCalculated>,
+  /// Jump drive calculation, or None if there are no jump drives.
+  pub jump_drive: Option<JumpDriveCalculated>,
+  /// Battery calculation, or None if there are no batteries.
+  pub battery: Option<BatteryCalculated>,
 
   /// Total hydrogen generation (L/s)
   pub hydrogen_generation: f64,
   /// Idle hydrogen calculation
   pub hydrogen_idle: HydrogenCalculated,
   /// + Engine (filling) hydrogen calculation
-  pub hydrogen_engine: HydrogenCalculated,
+  pub hydrogen_engine_fill: HydrogenCalculated,
   /// + Up/down thruster hydrogen calculation
   pub hydrogen_upto_up_down_thruster: HydrogenCalculated,
   /// + Front/back thruster hydrogen calculation
@@ -686,22 +674,15 @@ pub struct GridCalculated {
   /// + Left/right thruster hydrogen calculation
   pub hydrogen_upto_left_right_thruster: HydrogenCalculated,
   /// + Tank (filling) hydrogen calculation
-  pub hydrogen_upto_tank: HydrogenCalculated,
+  pub hydrogen_upto_tank_fill: HydrogenCalculated,
 
-  /// Total hydrogen capacity in tanks (L), or None if there are no hydrogen tanks.
-  pub hydrogen_tank_capacity: Option<f64>,
-  /// Duration until hydrogen tanks are full when refilling (min), or None if there are no hydrogen
-  /// tanks or they are not refilling.
-  pub hydrogen_tank_fill_duration: Option<Duration>,
-
-  /// Total hydrogen capacity in engines (L), or None if there are no hydrogen engines.
-  pub hydrogen_engine_capacity: Option<f64>,
-  /// Duration until hydrogen engines are full when refilling (min), or None if there are no hydrogen
-  /// engines or they are not refilling.
-  pub hydrogen_engine_fill_duration: Option<Duration>,
+  /// Hydrogen tank calculation, or None if there are no hydrogen tanks.
+  pub hydrogen_tank: Option<HydrogenTankCalculated>,
+  /// Hydrogen engine calculation, or None if there are no hydrogen engines.
+  pub hydrogen_engine: Option<HydrogenEngineCalculated>,
 }
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct ThrusterAccelerationCalculated {
   /// Force (N)
   pub force: f64,
@@ -715,7 +696,7 @@ pub struct ThrusterAccelerationCalculated {
   pub acceleration_filled_gravity: Option<f64>,
 }
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct PowerCalculated {
   /// Power consumption of this group (MW)
   pub consumption: f64,
@@ -727,11 +708,48 @@ pub struct PowerCalculated {
   /// or they are not discharging.
   pub battery_duration: Option<Duration>,
   /// Duration until engines are empty when discharging (min), or None if there are no engines
-  /// or they are not discharging.
+  /// or they are not enabled.
   pub engine_duration: Option<Duration>,
 }
 
 #[derive(Default)]
+pub struct RailgunCalculated {
+  /// Total power capacity in railguns (MWh)
+  pub capacity: f64,
+  /// Maximum power input (MW)
+  pub maximum_input: f64,
+  /// Duration until railguns are full when charging (min), or None if railguns are not charging.
+  pub charge_duration: Option<Duration>,
+}
+
+#[derive(Default)]
+pub struct JumpDriveCalculated {
+  /// Total power capacity in jump drives (MWh)
+  pub capacity: f64,
+  /// Maximum power input (MW)
+  pub maximum_input: f64,
+  /// Duration until jump drives are full when charging (min), or None if jump drives are not 
+  /// charging.
+  pub charge_duration: Option<Duration>,
+  /// Maximum jump distance when empty (km)
+  pub max_distance_empty: f64,
+  /// Maximum jump distance when filled (km)
+  pub max_distance_filled: f64,
+}
+
+#[derive(Default)]
+pub struct BatteryCalculated {
+  /// Total power capacity in batteries (MWh)
+  pub capacity: f64,
+  /// Maximum power input (MW)
+  pub maximum_input: f64,
+  /// Maximum power output (MW)
+  pub maximum_output: f64,
+  /// Duration until batteries are full when charging (min), or None if batteries are not charging.
+  pub charge_duration: Option<Duration>,
+}
+
+#[derive(Default, Copy, Clone)]
 pub struct HydrogenCalculated {
   /// Hydrogen consumption of this group (L/s)
   pub consumption: f64,
@@ -742,4 +760,30 @@ pub struct HydrogenCalculated {
   /// Duration until hydrogen tanks are empty when discharging (min), or None if there are no 
   /// hydrogen tanks or they are stockpiling.
   pub tank_duration: Option<Duration>,
+}
+
+#[derive(Default)]
+pub struct HydrogenTankCalculated {
+  /// Total hydrogen capacity in hydrogen tanks (L)
+  pub capacity: f64,
+  /// Maximum hydrogen input (L/s)
+  pub maximum_input: f64,
+  /// Maximum hydrogen output (L/s)
+  pub maximum_output: f64,
+  /// Duration until hydrogen tanks are full(min), or None if hydrogen tanks are disabled.
+  pub fill_duration: Option<Duration>,
+}
+
+#[derive(Default)]
+pub struct HydrogenEngineCalculated {
+  /// Total hydrogen capacity in hydrogen engines (L)
+  pub capacity: f64,
+  /// Maximum fuel consumption (L/s)
+  pub maximum_fuel_consumption: f64,
+  /// Maximum power output (MW)
+  pub maximum_output: f64,
+  /// Maximum hydrogen input when refilling (L/s)
+  pub maximum_refilling_input: f64,
+  /// Duration until hydrogen engines are full (min), or None if hydrogen engines are disabled.
+  pub fill_duration: Option<Duration>,
 }

@@ -159,7 +159,7 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
   fn edit_count_row(&mut self, label: impl Into<WidgetText>, value: &mut u64) -> Response {
-    self.edit_row(label, None::<&str>, value, 0.05, 0..=u64::MAX, 0)
+    self.edit_row(label, None::<&str>, value, 0.02, 0..=u64::MAX, 0)
   }
 
 
@@ -243,7 +243,7 @@ impl<'ui> CalculatorUi<'ui> {
   }
 
   fn unlabelled_edit_count(&mut self, value: &mut u64) {
-    self.drag(value, 0.05, 0..=u64::MAX)
+    self.drag(value, 0.02, 0..=u64::MAX)
   }
 
 

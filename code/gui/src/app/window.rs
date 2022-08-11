@@ -135,8 +135,8 @@ impl App {
 }
 
 const ABOUT_TEXT: &'static str = "Space Engineers Calculator is a handy app to calculate whether \
-your grid (ship) has enough thrust, power generation, and hydrogen generation to keep up. It also \
-calculates charging durations, maximum jump distances, and more.
+your grid (ship) design has enough thrust, power generation, and hydrogen generation to keep up.\
+It also calculates charging durations, maximum jump distances, and more.
 
 This calculator does not simulate a grid down to the level of armor blocks, as that would be \
 infeasible. Instead, only the most impactful blocks are simulated. The mass of blocks not covered \
