@@ -145,7 +145,7 @@ impl Default for App {
       first_time: true,
 
       enabled_mod_ids: Default::default(),
-      dark_mode: false,
+      dark_mode: true,
       font_size_modifier: 4,
       increase_contrast: false,
 

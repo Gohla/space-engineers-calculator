@@ -110,17 +110,17 @@ impl App {
         });
         ui.separator();
         Grid::new("Links Grid").show(ui, |ui| {
-          ui.label(RichText::new("Project Website").strong());
-          ui.url_link("github.com/Gohla/space_engineers_calc", "https://github.com/Gohla/space_engineers_calc");
+          ui.label(RichText::new("Home").strong());
+          ui.url_link("github.com/Gohla/space-engineers-calculator", "https://github.com/Gohla/space-engineers-calculator");
           ui.end_row();
           ui.label(RichText::new("Questions").strong());
-          ui.url_link("github.com/Gohla/space_engineers_calc/discussions/categories/q-a", "https://github.com/Gohla/space_engineers_calc/discussions/categories/q-a");
+          ui.url_link("github.com/Gohla/space-engineers-calculator/discussions/categories/q-a", "https://github.com/Gohla/space-engineers-calculator/discussions/categories/q-a");
           ui.end_row();
           ui.label(RichText::new("Ideas").strong());
-          ui.url_link("github.com/Gohla/space_engineers_calc/discussions/categories/ideas", "https://github.com/Gohla/space_engineers_calc/discussions/categories/ideas");
+          ui.url_link("github.com/Gohla/space-engineers-calculator/discussions/categories/ideas", "https://github.com/Gohla/space-engineers-calculator/discussions/categories/ideas");
           ui.end_row();
           ui.label(RichText::new("Report Issue").strong());
-          ui.url_link("github.com/Gohla/space_engineers_calc/issues", "https://github.com/Gohla/space_engineers_calc/issues");
+          ui.url_link("github.com/Gohla/space-engineers-calculator/issues", "https://github.com/Gohla/space-engineers-calculator/issues");
           ui.end_row();
         });
         ui.separator();
