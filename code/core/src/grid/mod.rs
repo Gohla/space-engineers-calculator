@@ -271,9 +271,9 @@ impl GridCalculator {
         }
         let hydrogen_engine = c.hydrogen_engine.get_or_insert(HydrogenEngineCalculated::default());
         hydrogen_engine.capacity += details.fuel_capacity * count;
-        hydrogen_engine.maximum_fuel_consumption = maximum_fuel_consumption;
-        hydrogen_engine.maximum_output = maximum_power_output;
-        hydrogen_engine.maximum_refilling_input = maximum_refilling_input;
+        hydrogen_engine.maximum_fuel_consumption += maximum_fuel_consumption;
+        hydrogen_engine.maximum_output += maximum_power_output;
+        hydrogen_engine.maximum_refilling_input += maximum_refilling_input;
       } else if let Some(block) = data.blocks.reactors.get(id) { // Reactors.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
@@ -304,7 +304,7 @@ impl GridCalculator {
         }
         let jump_drive = c.jump_drive.get_or_insert(JumpDriveCalculated::default());
         jump_drive.capacity += block.capacity * count;
-        jump_drive.maximum_input = input;
+        jump_drive.maximum_input += input;
         // Formula based on https://www.spaceengineerswiki.com/Jump_drive
         let max_jump_drive_distance = details.max_jump_distance / 1000.0; // Convert from m to km.
         jump_strength += max_jump_drive_distance * details.max_jump_mass * count;
@@ -319,7 +319,7 @@ impl GridCalculator {
         }
         let railgun = c.railgun.get_or_insert(RailgunCalculated::default());
         railgun.capacity += block.capacity * count;
-        railgun.maximum_input = input;
+        railgun.maximum_input += input;
       } else if let Some(block) = data.blocks.generators.get(id) { // Hydrogen Generators.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
@@ -331,7 +331,7 @@ impl GridCalculator {
       } else if let Some(block) = data.blocks.hydrogen_tanks.get(id) { // Hydrogen Tanks.
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;
-        let maximum_input_output = details.capacity * 0.05; // Hydrogen tank consumption is capacity * 0.05 when not full according to MyGasTank.cs
+        let maximum_input_output = details.capacity * count * 0.05; // Hydrogen tank consumption is capacity * 0.05 when not full according to MyGasTank.cs
         if self.hydrogen_tank_mode.is_refilling() {
           power_consumption_idle += details.idle_power_consumption * count;
           power_consumption_utility += details.operational_power_consumption * count;
@@ -343,8 +343,8 @@ impl GridCalculator {
         }
         let hydrogen_tank = c.hydrogen_tank.get_or_insert(HydrogenTankCalculated::default());
         hydrogen_tank.capacity += details.capacity * count;
-        hydrogen_tank.maximum_input = maximum_input_output;
-        hydrogen_tank.maximum_output = maximum_input_output;
+        hydrogen_tank.maximum_input += maximum_input_output;
+        hydrogen_tank.maximum_output += maximum_input_output;
       } else if let Some(block) = data.blocks.drills.get(id) { // Drills
         let details = &block.details;
         c.total_mass_empty += block.mass(&data.components) * count;

@@ -133,25 +133,25 @@ impl App {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         let railgun = self.calculated.railgun.as_ref();
         ui.show_optional_row("Capacity:", railgun.map(|r| format!("{:.2}", r.capacity)), "MWh");
-        ui.show_optional_row("Maximum input:", railgun.map(|r| format!("{:.2}", r.maximum_input)), "MW");
-        ui.show_optional_duration_row("Charge duration:", railgun.and_then(|r| r.charge_duration));
+        ui.show_optional_row("Maximum Input:", railgun.map(|r| format!("{:.2}", r.maximum_input)), "MW");
+        ui.show_optional_duration_row("Charge Duration:", railgun.and_then(|r| r.charge_duration));
       });
       ui.open_collapsing_header_with_grid("Jump Drive", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         let jump_drive = self.calculated.jump_drive.as_ref();
         ui.show_optional_row("Capacity:", jump_drive.map(|j| format!("{:.2}", j.capacity)), "MWh");
-        ui.show_optional_duration_row("Charge duration:", jump_drive.and_then(|j| j.charge_duration));
-        ui.show_optional_row("Maximum input:", jump_drive.map(|j| format!("{:.2}", j.maximum_input)), "MW");
-        ui.show_optional_row("Max range (empty):", jump_drive.map(|j| format!("{:.2}", j.max_distance_empty)), "km");
-        ui.show_optional_row("Max range (filled):", jump_drive.map(|j| format!("{:.2}", j.max_distance_filled)), "km");
+        ui.show_optional_duration_row("Charge Duration:", jump_drive.and_then(|j| j.charge_duration));
+        ui.show_optional_row("Maximum Input:", jump_drive.map(|j| format!("{:.2}", j.maximum_input)), "MW");
+        ui.show_optional_row("Max Range (Empty):", jump_drive.map(|j| format!("{:.2}", j.max_distance_empty)), "km");
+        ui.show_optional_row("Max Range (Filled):", jump_drive.map(|j| format!("{:.2}", j.max_distance_filled)), "km");
       });
       ui.open_collapsing_header_with_grid("Battery", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
         let battery = self.calculated.battery.as_ref();
         ui.show_optional_row("Capacity:", battery.map(|b| format!("{:.2}", b.capacity)), "MWh");
-        ui.show_optional_row("Maximum input:", battery.map(|b| format!("{:.2}", b.maximum_input)), "MW");
-        ui.show_optional_row("Maximum output:", battery.map(|b| format!("{:.2}", b.maximum_output)), "MW");
-        ui.show_optional_duration_row("Charge duration:", battery.and_then(|b| b.charge_duration));
+        ui.show_optional_row("Maximum Input:", battery.map(|b| format!("{:.2}", b.maximum_input)), "MW");
+        ui.show_optional_row("Maximum Output:", battery.map(|b| format!("{:.2}", b.maximum_output)), "MW");
+        ui.show_optional_duration_row("Charge Duration:", battery.and_then(|b| b.charge_duration));
       });
     });
     ui.open_collapsing_header("Hydrogen", |ui| {
@@ -210,7 +210,7 @@ impl App {
         ui.show_optional_row("Capacity:", hydrogen_tank.map(|c| format!("{}", c.capacity.round())), "L");
         ui.show_optional_row("Maximum Input:", hydrogen_tank.map(|c| format!("{}", c.maximum_input.round())), "L/s");
         ui.show_optional_row("Maximum Output:", hydrogen_tank.map(|c| format!("{}", c.maximum_output.round())), "L/s");
-        ui.show_optional_duration_row("Fill duration:", hydrogen_tank.and_then(|t| t.fill_duration));
+        ui.show_optional_duration_row("Fill Duration:", hydrogen_tank.and_then(|t| t.fill_duration));
       });
       ui.open_collapsing_header_with_grid("Hydrogen Engine", |ui| {
         let mut ui = ResultUi::new(ui, self.number_separator_policy);
@@ -219,7 +219,7 @@ impl App {
         ui.show_optional_row("Maximum Fuel Consumption:", hydrogen_engine.map(|c| format!("{}", c.maximum_fuel_consumption.round())), "L/s");
         ui.show_optional_row("Maximum Output:", hydrogen_engine.map(|c| format!("{:.2}", c.maximum_output)), "MW");
         ui.show_optional_row("Maximum Refilling Input:", hydrogen_engine.map(|c| format!("{}", c.maximum_refilling_input.round())), "L/s");
-        ui.show_optional_duration_row("Fill duration:", hydrogen_engine.and_then(|e| e.fill_duration));
+        ui.show_optional_duration_row("Fill Duration:", hydrogen_engine.and_then(|e| e.fill_duration));
       });
     });
   }
