@@ -454,12 +454,12 @@ impl GridCalculator {
         battery_capacity: c.battery.as_ref().map(|b| b.capacity),
         battery_fill: self.battery_fill,
         battery_generation: c.battery.as_ref().map(|b| b.maximum_output).unwrap_or(0.0),
-        battery_discharging: self.battery_mode.is_discharging(),
+        battery_discharging: self.battery_mode.is_discharging() && self.battery_fill != 0.0,
         engine_capacity: c.hydrogen_engine.as_ref().map(|e| e.capacity),
         engine_fill: self.hydrogen_engine_fill,
         engine_fuel_consumption: c.hydrogen_engine.as_ref().map(|e| e.maximum_fuel_consumption).unwrap_or(0.0),
         engine_generation: c.hydrogen_engine.as_ref().map(|e| e.maximum_output).unwrap_or(0.0),
-        engine_is_generating_power: self.hydrogen_engine_enabled,
+        engine_is_generating_power: self.hydrogen_engine_enabled && self.hydrogen_engine_fill != 0.0,
       };
 
       // Idle
@@ -534,14 +534,19 @@ impl GridCalculator {
       }
       impl HydrogenCalculatedBuilder {
         fn hydrogen_resource(&self, consumption: f64, total_consumption: f64) -> HydrogenCalculated {
-          let balance = self.generation - total_consumption;
+          let balance_without_tank = self.generation - total_consumption;
+          let balance_with_tank = if self.tank_is_providing_hydrogen {
+            self.generation + self.tank_generation - total_consumption
+          } else {
+            balance_without_tank
+          };
           let has_consumption = total_consumption != 0.0;
           let tank_duration = if has_consumption && self.tank_is_providing_hydrogen {
             self.tank_capacity.map(|c| Duration::from_seconds((c * (self.tank_fill / 100.0)) / total_consumption.min(self.tank_generation)))
           } else {
             None
           };
-          HydrogenCalculated { consumption, total_consumption, balance, tank_duration }
+          HydrogenCalculated { consumption, total_consumption, balance_without_tank, balance_with_tank, tank_duration }
         }
       }
       let mut b = HydrogenCalculatedBuilder {
@@ -549,7 +554,7 @@ impl GridCalculator {
         tank_capacity: c.hydrogen_tank.as_ref().map(|t| t.capacity),
         tank_fill: self.hydrogen_tank_fill,
         tank_generation: c.hydrogen_tank.as_ref().map(|t| t.maximum_output).unwrap_or(0.0),
-        tank_is_providing_hydrogen: self.hydrogen_tank_mode.is_providing(),
+        tank_is_providing_hydrogen: self.hydrogen_tank_mode.is_providing() && self.hydrogen_tank_fill != 0.0,
       };
 
       // Idle
@@ -755,8 +760,10 @@ pub struct HydrogenCalculated {
   pub consumption: f64,
   /// Total hydrogen consumption upto this group (L/s)
   pub total_consumption: f64,
-  /// Hydrogen balance upto this group (+-L/s)
-  pub balance: f64,
+  /// Hydrogen balance upto this group, without hydrogen provided by tanks (+-L/s)
+  pub balance_without_tank: f64,
+  /// Hydrogen balance upto this group, with hydrogen provided by tanks (+-L/s)
+  pub balance_with_tank: f64,
   /// Duration until hydrogen tanks are empty when discharging (min), or None if there are no 
   /// hydrogen tanks or they are stockpiling.
   pub tank_duration: Option<Duration>,

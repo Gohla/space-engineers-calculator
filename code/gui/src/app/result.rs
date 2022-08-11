@@ -171,8 +171,9 @@ impl App {
         ui.label("");
         ui.label("");
         ui.vertical_separator_unpadded();
-        ui.label(RichText::new("Balance").underline())
-          .on_hover_text_at_pointer("Does not include hydrogen provided by hydrogen tanks (yet).");
+        ui.label("Balance");
+        ui.label("");
+        ui.label("");
         ui.vertical_separator_unpadded();
         ui.label("Duration");
         ui.end_row();
@@ -183,7 +184,11 @@ impl App {
         ui.vertical_separator_unpadded();
         ui.label("Total");
         ui.vertical_separator_unpadded();
-        ui.label("");
+        ui.label(RichText::new("w/o Tanks").underline())
+          .on_hover_text_at_pointer("Hydrogen balance in the row, without tanks providing hydrogen.");
+        ui.vertical_separator_unpadded();
+        ui.label(RichText::new("w Tanks").underline())
+          .on_hover_text_at_pointer("Hydrogen balance in the row, with tanks providing hydrogen.");
         ui.vertical_separator_unpadded();
         ui.label(RichText::new("Tanks").underline())
           .on_hover_text_at_pointer("Duration until hydrogen tanks are empty at the total consumption in the row. Does not take into account filling the tank via generators or other tanks.");
@@ -332,7 +337,9 @@ impl<'ui> ResultUi<'ui> {
     self.ui.vertical_separator_unpadded();
     self.right_align_value_with_unit(hydrogen_formatter(hydrogen.total_consumption), "L/s");
     self.ui.vertical_separator_unpadded();
-    self.right_align_value_with_unit(hydrogen_formatter(hydrogen.balance), "L/s");
+    self.right_align_value_with_unit(hydrogen_formatter(hydrogen.balance_without_tank), "L/s");
+    self.ui.vertical_separator_unpadded();
+    self.right_align_value_with_unit(hydrogen_formatter(hydrogen.balance_with_tank), "L/s");
     self.ui.vertical_separator_unpadded();
     self.right_align_optional_duration(hydrogen.tank_duration);
     self.ui.end_row();
