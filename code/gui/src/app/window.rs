@@ -103,6 +103,13 @@ impl App {
           ui.label(RichText::new("About").strong());
           ui.label(ABOUT_TEXT);
         });
+        #[cfg(target_arch = "wasm32")] {
+          ui.separator();
+          ui.horizontal_wrapped(|ui| {
+            ui.label(RichText::new("Scaling").strong());
+            ui.label("Text may look blurry when the website is scaled. Make sure this website is displayed at 100% scale (using the Ctrl/Cmd +/- hotkeys) and instead increase the font size modifier in the settings.");
+          });
+        }
         ui.separator();
         ui.horizontal_wrapped(|ui| {
           ui.label(RichText::new("Storage").strong());
