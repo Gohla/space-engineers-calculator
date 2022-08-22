@@ -154,7 +154,7 @@ impl Default for App {
 
       saved_calculators: Default::default(),
       current_calculator: None,
-      current_calculator_saved: false
+      current_calculator_saved: false,
     }
   }
 }
@@ -234,7 +234,7 @@ impl eframe::App for App {
                       }
                     });
                   });
-                  ui.with_layout(Layout::right_to_left(), |ui| {
+                  ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if self.dark_mode {
                       if ui.add(Button::new("☀")).clicked() {
                         self.dark_mode = false;

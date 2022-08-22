@@ -6,9 +6,9 @@ edition = "2021"
 
 [dependencies]
 secalc_core = { path = "../core" }
-egui = "0.18"
-egui_extras = "0.18"
-eframe = { version = "0.18", features = ["persistence"] }
+egui = "0.19"
+egui_extras = "0.19"
+eframe = { version = "0.19", features = ["persistence"] }
 thousands = "0.2"
 serde = { version = "1", features = ["derive"] }
 tracing = "0.1"

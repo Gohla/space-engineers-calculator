@@ -251,12 +251,12 @@ impl<'ui> ResultUi<'ui> {
 
 
   fn right_align_label(&mut self, label: impl Into<WidgetText>) {
-    self.ui.with_layout(Layout::right_to_left(), |ui| ui.label(label));
+    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| ui.label(label));
   }
 
 
   fn right_align_value_with_unit(&mut self, value: impl Borrow<str>, unit: impl Into<WidgetText>) {
-    self.ui.with_layout(Layout::right_to_left(), |ui| {
+    self.ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
       ui.label(unit);
       ui.monospace(value.borrow().separate_by_policy(self.number_separator_policy));
     });

@@ -66,9 +66,13 @@ fn main() {
     body.append_child(&canvas).unwrap();
 
     // Start application in the canvas.
+    let options = eframe::WebOptions {
+      ..eframe::WebOptions::default()
+    };
     eframe::start_web(
       canvas_id,
-      Box::new(|ctx| Box::new(App::new(ctx)))
+      options,
+      Box::new(|ctx| Box::new(App::new(ctx))),
     ).unwrap();
   }
 }

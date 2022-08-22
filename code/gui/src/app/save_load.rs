@@ -1,4 +1,5 @@
 use eframe::App as AppT;
+use eframe::emath::Align;
 use egui::{Align2, Context, Layout, RichText, TextEdit, Window};
 use egui_extras::{Size, TableBuilder};
 
@@ -14,7 +15,7 @@ impl App {
     self.show_save_as_confirm_window(ctx, frame);
     self.show_reset_confirm_window(ctx);
   }
-  
+
   fn show_load_window(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
     if self.show_load_window {
       Window::new("Load")
@@ -26,7 +27,7 @@ impl App {
           let mut delete_clicked = None;
           TableBuilder::new(ui)
             .striped(true)
-            .cell_layout(Layout::left_to_right())
+            .cell_layout(Layout::left_to_right(Align::Center))
             .scroll(true)
             .column(Size::remainder().at_least(255.0))
             .column(Size::remainder().at_least(115.0))
