@@ -1841,8 +1841,9 @@ dependencies = [
 
 [[package]]
 name = "steamlocate"
-version = "1.0.1"
-source = "git+https://github.com/LovecraftianHorror/steamlocate-rs?branch=fully-switch-from-steamy-vdf#42be47af0ffae175dbe510bbe7dc6ccf2f742a9f"
+version = "2.0.0-alpha.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b1568c4a70a26c4373fe1131ffa4eff055459631b6e40c6bc118615f2d870c3"
 dependencies = [
  "dirs",
  "keyvalues-parser",
