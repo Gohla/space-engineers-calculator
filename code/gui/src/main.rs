@@ -43,7 +43,7 @@ fn main() {
       "Space Engineers Calculator",
       options,
       Box::new(|ctx| Box::new(App::new(ctx))),
-    );
+    ).expect("failed to start eframe");
   }
   #[cfg(target_arch = "wasm32")] {
     use web_sys::HtmlLinkElement;
@@ -69,10 +69,15 @@ fn main() {
     let options = eframe::WebOptions {
       ..eframe::WebOptions::default()
     };
-    eframe::start_web(
-      canvas_id,
-      options,
-      Box::new(|ctx| Box::new(App::new(ctx))),
-    ).unwrap();
+    wasm_bindgen_futures::spawn_local(async {
+      eframe::WebRunner::new()
+        .start(
+          canvas_id,
+          options,
+          Box::new(|ctx| Box::new(App::new(ctx))),
+        )
+        .await
+        .expect("failed to start eframe");
+    });
   }
 }

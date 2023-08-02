@@ -10,7 +10,7 @@ pub trait UiExtensions {
     &mut self,
     id_source: impl std::hash::Hash,
     add_header: impl FnOnce(&mut Ui) -> HR,
-    add_body: impl FnOnce(&mut Ui) -> BR
+    add_body: impl FnOnce(&mut Ui) -> BR,
   ) -> (Response, InnerResponse<HR>, Option<InnerResponse<BR>>);
 
   fn grid<R>(&mut self, id_source: impl std::hash::Hash, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R>;
@@ -41,7 +41,7 @@ impl UiExtensions for Ui {
     &mut self,
     id_source: impl std::hash::Hash,
     add_header: impl FnOnce(&mut Ui) -> HR,
-    add_body: impl FnOnce(&mut Ui) -> BR
+    add_body: impl FnOnce(&mut Ui) -> BR,
   ) -> (Response, InnerResponse<HR>, Option<InnerResponse<BR>>) {
     CollapsingState::load_with_default_open(self.ctx(), Id::new(id_source), true)
       .show_header(self, add_header)
@@ -65,7 +65,7 @@ impl UiExtensions for Ui {
     let url = url.into();
     let response = self.link(&url);
     if response.clicked() {
-      self.ctx().output().open_url = Some(OpenUrl { url, new_tab: true });
+      self.ctx().output_mut(|o| o.open_url.replace(OpenUrl { url, new_tab: true }));
     }
     response
   }
@@ -73,7 +73,7 @@ impl UiExtensions for Ui {
   fn url_link(&mut self, label: impl Into<WidgetText>, url: impl Into<String>) -> Response {
     let response = self.link(label);
     if response.clicked() {
-      self.ctx().output().open_url = Some(OpenUrl { url: url.into(), new_tab: true });
+      self.ctx().output_mut(|o| o.open_url.replace(OpenUrl { url: url.into(), new_tab: true }));
     }
     response
   }

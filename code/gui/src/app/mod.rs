@@ -1,6 +1,4 @@
 use std::collections::{HashMap, HashSet};
-
-use eframe::epaint::Rgba;
 use egui::{Align, Button, CentralPanel, Color32, Context, Frame, Layout, menu, Rounding, ScrollArea, Separator, Style, Vec2, Visuals};
 use egui::style::Margin;
 use egui_extras::{Size, StripBuilder};
@@ -298,7 +296,7 @@ impl eframe::App for App {
     eframe::set_value(storage, eframe::APP_KEY, self);
   }
 
-  fn clear_color(&self, visuals: &Visuals) -> Rgba {
-    visuals.window_fill().into()
+  fn clear_color(&self, visuals: &Visuals) -> [f32; 4] {
+    visuals.window_fill().to_normalized_gamma_f32()
   }
 }

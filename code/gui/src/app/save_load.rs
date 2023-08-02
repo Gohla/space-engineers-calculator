@@ -1,7 +1,7 @@
 use eframe::App as AppT;
 use eframe::emath::Align;
 use egui::{Align2, Context, Layout, RichText, TextEdit, Window};
-use egui_extras::{Size, TableBuilder};
+use egui_extras::{Column, TableBuilder};
 
 use crate::App;
 use crate::widget::UiExtensions;
@@ -28,9 +28,9 @@ impl App {
           TableBuilder::new(ui)
             .striped(true)
             .cell_layout(Layout::left_to_right(Align::Center))
-            .scroll(true)
-            .column(Size::remainder().at_least(255.0))
-            .column(Size::remainder().at_least(115.0))
+            .vscroll(true)
+            .column(Column::remainder().at_least(255.0))
+            .column(Column::remainder().at_least(115.0))
             .body(|mut body| {
               for (name, calculator) in &self.saved_calculators {
                 body.row(26.0, |mut row| {
