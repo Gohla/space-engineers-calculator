@@ -2,35 +2,34 @@ use std::fs::{File, OpenOptions};
 use std::path::PathBuf;
 
 use anyhow::{Context, Result};
+use clap::{Parser, Subcommand};
 use steamlocate::SteamDir;
-use structopt::StructOpt;
 
 use secalc_core::data::Data;
 use secalc_core::data::extract::ExtractConfig;
 
-#[derive(Debug, StructOpt)]
-#[structopt(name = "SECalc", about = "Space Engineers Calculator")]
-struct Opt {
-  #[structopt(subcommand)]
-  command: Command
+#[derive(Parser, Debug)]
+#[command(name = "SECalc", about = "Space Engineers Calculator")]
+struct Cli {
+  #[command(subcommand)]
+  command: Command,
 }
 
-#[derive(Debug, StructOpt)]
+#[derive(Subcommand, Debug)]
 enum Command {
-  #[structopt()]
   /// Extracts game data into a format that SECalc can handle
   ExtractGameData {
-    #[structopt(long, short, parse(from_os_str), env = "SECALC_EXTRACT_SE_DIRECTORY")]
+    #[arg(long, short, env = "SECALC_EXTRACT_SE_DIRECTORY")]
     /// Space Engineers directory to extract game data from. Automatically inferred if installed via Steam when not set
     se_directory: Option<PathBuf>,
-    #[structopt(long, parse(from_os_str), env = "SECALC_EXTRACT_SE_WORKSHOP_DIRECTORY")]
+    #[arg(long, env = "SECALC_EXTRACT_SE_WORKSHOP_DIRECTORY")]
     /// Space engineers workshop (mod) directory. Automatically inferred if installed via Steam when not set. No mods are extracted if this directory is not found
     se_workshop_directory: Option<PathBuf>,
-    #[structopt(parse(from_os_str), env = "SECALC_EXTRACT_CONFIG_FILE")]
+    #[arg(env = "SECALC_EXTRACT_CONFIG_FILE")]
     /// Extract configuration file
     config_file: PathBuf,
     /// File to write extracted data to
-    #[structopt(parse(from_os_str), env = "SECALC_EXTRACT_OUTPUT_FILE")]
+    #[arg(env = "SECALC_EXTRACT_OUTPUT_FILE")]
     output_file: PathBuf,
   },
 }
@@ -38,8 +37,8 @@ enum Command {
 fn main() -> Result<()> {
   dotenv::dotenv()
     .context("Failed to read .env file")?;
-  let opt: Opt = Opt::from_args();
-  match opt.command {
+  let cli = Cli::parse();
+  match cli.command {
     Command::ExtractGameData {
       se_directory,
       se_workshop_directory,
@@ -60,7 +59,7 @@ fn main() -> Result<()> {
         .context("Failed to create a writer for writing game data to file")?;
       data.to_json(data_writer)
         .context("Failed to write game data to file")?;
-    },
+    }
   }
   Ok(())
 }

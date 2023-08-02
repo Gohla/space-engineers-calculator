@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 secalc_core = { path = "../core", features = ["extract"] }
-structopt = "0.3"
+clap = { version = "4", features = ["derive", "env"] }
 steamlocate = "2.0.0-alpha.0"
 ron = "0.8"
 dotenv = "0.15"
