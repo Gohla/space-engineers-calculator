@@ -1,0 +1,40 @@
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+tab_width = 2
+ij_continuation_indent_size = 2
+ij_formatter_off_tag = @formatter:off
+ij_formatter_on_tag = @formatter:on
+ij_formatter_tags_enabled = true
+ij_any_class_brace_style = end_of_line
+ij_any_method_brace_style = end_of_line
+ij_any_block_brace_style = end_of_line
+ij_any_space_before_for_left_brace = false
+ij_any_finally_on_new_line = false
+
+[*.rs]
+ij_rust_keep_blank_lines_in_code = 2
+ij_rust_keep_blank_lines_in_declarations = 2
+ij_rust_keep_line_breaks = true
+
+[*.md]
+max_line_length = off
+ij_wrap_on_typing = false
+ij_any_wrap_long_lines = false
+ij_markdown_wrap_text_if_long = false
+ij_markdown_wrap_text_inside_blockquotes = false
+
+[*.js]
+ij_any_space_before_for_left_brace = true
+ij_any_space_before_for_parentheses = false
+ij_any_space_before_if_left_brace = true
+ij_any_space_before_if_parentheses = false
+ij_any_spaces_within_braces = true
+ij_typescript_spaces_within_imports = true
+ij_javascript_spaces_within_imports = true
+ij_typescript_spaces_within_object_literal_braces = true
+ij_javascript_spaces_within_object_literal_braces = true
