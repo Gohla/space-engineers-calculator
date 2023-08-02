@@ -1,0 +1,3 @@
+# Install https://github.com/jakobhellermann/wasm-server-runner: `cargo install wasm-server-runner`.
+[target.wasm32-unknown-unknown]
+runner = "wasm-server-runner"

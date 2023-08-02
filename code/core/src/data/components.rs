@@ -52,7 +52,6 @@ pub mod extract {
     #[error(transparent)]
     XmlFail {
       #[from]
-      #[backtrace]
       source: XmlError
     },
   }

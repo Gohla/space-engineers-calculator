@@ -13,20 +13,36 @@ use crate::error::ErrorExt;
 
 // XML errors
 
+/// Type alias for [`Backtrace`], ensuring `thiserror` does not use nightly features.
+#[cfg(not(nightly))]
+pub type BT = Backtrace;
+
 #[derive(Error, Debug)]
 pub enum XmlError {
+  #[cfg(nightly)]
   #[error("Unexpected XML structure")]
   StructureFail(Backtrace),
+  #[cfg(not(nightly))]
+  #[error("Unexpected XML structure")]
+  StructureFail(BT),
+  #[cfg(nightly)]
   #[error("Could not parse text or attribute of an XML element")]
   ParseTextFail(#[from] Box<dyn std::error::Error + 'static + Send + Sync>, Backtrace),
+  #[cfg(not(nightly))]
+  #[error("Could not parse text or attribute of an XML element")]
+  ParseTextFail(#[source] Box<dyn std::error::Error + 'static + Send + Sync>, BT),
 }
 
 impl From<ParseFloatError> for XmlError {
-  fn from(e: ParseFloatError) -> Self { Self::ParseTextFail(e.into_boxed(), Backtrace::capture()) }
+  fn from(e: ParseFloatError) -> Self {
+    Self::ParseTextFail(e.into_boxed(),  Backtrace::capture())
+  }
 }
 
 impl From<ParseBoolError> for XmlError {
-  fn from(e: ParseBoolError) -> Self { Self::ParseTextFail(e.into_boxed(), Backtrace::capture()) }
+  fn from(e: ParseBoolError) -> Self {
+    Self::ParseTextFail(e.into_boxed(),  Backtrace::capture())
+  }
 }
 
 // XML convenience extension

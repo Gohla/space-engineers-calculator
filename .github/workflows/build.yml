@@ -1,23 +1,20 @@
-name: Build
+name: build
 on: [ push, pull_request ]
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, windows-2022, macos-12 ]
-        rust-toolchain: [ nightly-2023-01-27 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         experimental: [ false ]
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v3
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust-toolchain }}
-      - name: Cache
+      - name: install-rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: cache-rust
         uses: actions/cache@v3
         with:
           path: |
@@ -26,6 +23,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Build
+          key: build-rust-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: build-rust-${{ runner.os }}
+      - name: build
         run: cargo build

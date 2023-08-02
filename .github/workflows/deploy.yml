@@ -1,4 +1,4 @@
-name: Deploy
+name: deploy
 on:
   push:
     branches:
@@ -7,15 +7,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: nightly-2023-01-27
           targets: wasm32-unknown-unknown
-      - name: Cache
-        uses: actions/cache@v3
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/bin/
@@ -24,15 +20,16 @@ jobs:
             ~/.cargo/git/db/
             target/
             target-wasm/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install wasm-bindgen CLI
-        run: cargo install wasm-bindgen-cli || true
-      - name: Build
-        run: |
+          key: deploy-rust-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: deploy-rust-${{ runner.os }}
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-binstall
+      - run: cargo binstall --no-confirm --no-symlinks wasm-bindgen-cli
+      - run: |
           cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
           wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./code/gui/web

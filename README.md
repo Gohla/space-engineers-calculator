@@ -4,14 +4,7 @@ Calculator for designing Space Engineers ships. A live version of this calculato
 
 ## Requirements
 
-The calculator is written in Rust. Installation instructions
-for [Rust can be found here](https://www.rust-lang.org/tools/install).
-
-After installing rust, install a nightly toolchain with:
-
-```
-rustup toolchain install nightly
-```
+The calculator is written in Rust. Installation instructions for [Rust can be found here](https://www.rust-lang.org/tools/install).
 
 ### Web
 
@@ -40,7 +33,7 @@ cargo install wasm-server-runner
 Run the native calculator GUI with:
 
 ```
-cargo +nightly run --bin secalc_gui
+cargo run --bin secalc_gui
 ```
 
 ### Web
@@ -49,7 +42,7 @@ Run the web calculator GUI with:
 
 ```
 cd code/gui/web
-cargo +nightly run --bin secalc_gui --target wasm32-unknown-unknown --target-dir ../../../target-wasm
+cargo run --bin secalc_gui --target wasm32-unknown-unknown --target-dir ../../../target-wasm
 ```
 
 This will start a local web server, with the link to the webserver being shown in stdout.
@@ -57,7 +50,7 @@ This will start a local web server, with the link to the webserver being shown i
 To build the web calculator GUI for hosting on a different website, run:
 
 ```
-cargo +nightly build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
+cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
 wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
 ```
 

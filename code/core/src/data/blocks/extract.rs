@@ -399,7 +399,6 @@ pub enum ExtractError {
   #[error(transparent)]
   XmlFail {
     #[from]
-    #[backtrace]
     source: XmlError
   },
 }
