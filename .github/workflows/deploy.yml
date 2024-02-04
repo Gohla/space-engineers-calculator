@@ -22,7 +22,7 @@ jobs:
         with:
           tool: cargo-binstall
       - name: install trunk, wasm-bindgen-cli
-        run: cargo binstall --no-confirm trunk wasm-bindgen-cli
+        run: cargo binstall --no-confirm --force trunk wasm-bindgen-cli
       - name: build
         run: trunk build --release
       - name: deploy
