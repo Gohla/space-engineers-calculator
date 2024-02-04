@@ -16,11 +16,13 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-all-crates: true
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-binstall
       - name: install trunk, wasm-bindgen-cli
-        run: cargo binstall --no-confirm --no-symlinks trunk wasm-bindgen-cli
+        run: cargo binstall --no-confirm trunk wasm-bindgen-cli
       - name: build
         run: trunk build --release
       - name: deploy
