@@ -20,6 +20,9 @@ ij_any_finally_on_new_line = false
 ij_rust_keep_blank_lines_in_code = 2
 ij_rust_keep_blank_lines_in_declarations = 2
 ij_rust_keep_line_breaks = true
+ij_rust_preserve_punctuation = true
+ij_rust_allow_one_line_match = true
+
 
 [*.md]
 max_line_length = off

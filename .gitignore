@@ -1,9 +1,12 @@
-# Rust
-/target
-/target-wasm
-**/wasm_out
-**/*.rs.bk
+# macOS
+*.DS_Store
 
 # IntelliJ
-/.idea
-/*.iml
+/.idea/*
+*.iml
+# Allow sharing of IntelliJ run configurations.
+!/.idea/runConfigurations/
+!/.idea/runConfigurations/*
+
+# Cargo
+/target

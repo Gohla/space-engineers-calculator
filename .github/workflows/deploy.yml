@@ -1,36 +1,31 @@
 name: deploy
+
 on:
   push:
     branches:
       - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-            target-wasm/
-          key: deploy-rust-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: deploy-rust-${{ runner.os }}
+      - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-binstall
-      - run: cargo binstall --no-confirm --no-symlinks wasm-bindgen-cli
-      - run: |
-          cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
-          wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
-      - uses: peaceiris/actions-gh-pages@v3
+      - name: install trunk, wasm-bindgen-cli
+        run: cargo binstall --no-confirm --no-symlinks trunk wasm-bindgen-cli
+      - name: build
+        run: trunk build --release
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./code/gui/web
+          publish_dir: ./package/gui/dist
           cname: secalc.gohla.nl

@@ -1,0 +1,13 @@
+[package]
+name = "secalc_cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+secalc_core = { workspace = true, features = ["extract"] }
+clap = { version = "4", features = ["derive", "env"] }
+steamlocate = "2.0.0-beta.2"
+ron = "0.8"
+dotenvy.workspace = true
+anyhow = "1"

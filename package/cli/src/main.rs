@@ -1,7 +1,7 @@
 use std::fs::{File, OpenOptions};
 use std::path::PathBuf;
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 use clap::{Parser, Subcommand};
 use steamlocate::SteamDir;
 
@@ -35,7 +35,7 @@ enum Command {
 }
 
 fn main() -> Result<()> {
-  dotenv::dotenv()
+  dotenvy::dotenv()
     .context("Failed to read .env file")?;
   let cli = Cli::parse();
   match cli.command {
@@ -45,10 +45,19 @@ fn main() -> Result<()> {
       config_file,
       output_file
     } => {
-      let mut steam_dir = SteamDir::locate();
-      let se_directory = se_directory.or(get_se_directory(&mut steam_dir))
-        .context("Space Engineers directory was not set, and failed to automatically infer the directory")?;
+      let se_directory = if let Some(se_directory) = se_directory {
+        se_directory
+      } else {
+        let steam_dir = SteamDir::locate()
+          .context("Space Engineers directory was not set, and could not be inferred due to no Steam installation being found")?;
+        let Some((space_engineers_app, library)) = steam_dir.find_app(244850)? else {
+          return Err(anyhow!("Space Engineers directory was not set, and could not be inferred due to it not being installed via Steam"));
+        };
+        library.resolve_app_dir(&space_engineers_app)
+      };
+
       let se_workshop_directory = se_workshop_directory.or(get_se_workshop_directory(&se_directory));
+
       let config_reader = File::open(config_file)
         .context("Failed to open extract config file for reading")?;
       let extract_config: ExtractConfig = ron::de::from_reader(config_reader)
@@ -62,10 +71,6 @@ fn main() -> Result<()> {
     }
   }
   Ok(())
-}
-
-fn get_se_directory(steam_dir: &mut Option<SteamDir>) -> Option<PathBuf> {
-  steam_dir.as_mut().and_then(|steam_dir| steam_dir.app(&244850).map(|app| app.path.clone()))
 }
 
 fn get_se_workshop_directory(se_directory: &PathBuf) -> Option<PathBuf> {

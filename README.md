@@ -14,17 +14,7 @@ To build and/or run the web version, you need to add the `wasm32-unknown-unknown
 rustup target add wasm32-unknown-unknown
 ```
 
-And you need to install the [wasm-bindgen CLI](https://rustwasm.github.io/wasm-bindgen/reference/cli.html) with:
-
-```
-cargo install -f wasm-bindgen-cli
-```
-
-Finally, you need to install [wasm-server-runner](https://github.com/jakobhellermann/wasm-server-runner) with:
-
-```
-cargo install wasm-server-runner
-```
+And you need to [install trunk](https://trunkrs.dev/#install).
 
 ## Running
 
@@ -41,23 +31,7 @@ cargo run --bin secalc_gui
 Run the web calculator GUI with:
 
 ```
-cd code/gui/web
-cargo run --bin secalc_gui --target wasm32-unknown-unknown --target-dir ../../../target-wasm
+trunk serve
 ```
 
 This will start a local web server, with the link to the webserver being shown in stdout.
-
-To build the web calculator GUI for hosting on a different website, run:
-
-```
-cargo build --package secalc_gui --target wasm32-unknown-unknown --target-dir target-wasm --release
-wasm-bindgen --out-dir code/gui/web/wasm_out --target web --no-typescript target-wasm/wasm32-unknown-unknown/release/secalc_gui.wasm
-```
-
-Or if you have [PowerShell](https://docs.microsoft.com/en-us/powershell/) installed, run:
-
-```
-./build_wasm.ps1
-```
-
-Then, you can copy the contents of `code/gui/web` to a web server to host it there.

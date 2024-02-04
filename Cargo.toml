@@ -2,15 +2,20 @@ cargo-features = ["named-profiles", "profile-overrides"]
 
 [workspace]
 members = [
-    "code/*",
+  "package/*",
 ]
 default-members = [
-    "code/*",
+  "package/*",
 ]
 resolver = "2"
 
+[workspace.package]
+version = "0.1.0"
+authors = ["Gabriel Konat <gabrielkonat@gmail.com>"]
+edition = "2021"
+publish = false
 
-[patch.crates-io]
-#egui = { git = "https://github.com/emilk/egui", branch = "master" }
-#eframe = { git = "https://github.com/emilk/egui", branch = "master" }
-#egui_extras = { git = "https://github.com/emilk/egui", branch = "master" }
+[workspace.dependencies]
+secalc_core = { path = "package/core" }
+serde = "1"
+dotenvy = "0.15"

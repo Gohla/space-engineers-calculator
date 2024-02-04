@@ -13,7 +13,7 @@ fn main() {
   }
 
   #[cfg(not(target_arch = "wasm32"))] { // Setup environment variables from .env on native.
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
   }
 
   // Setup tracing.

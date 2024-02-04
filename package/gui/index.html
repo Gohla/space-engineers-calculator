@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta name="description"
+        content="A handy app to calculate whether your grid (ship) design has enough thrust, power generation, and hydrogen generation to keep up. It also calculates charging durations, maximum jump distances, and more."
+  >
+  <title>Space Engineers Calculator</title>
+  <base data-trunk-public-url/>
+  <style>
+    html {
+      /* Remove touch delay: */
+      touch-action: manipulation;
+    }
+
+    body {
+      /* Light mode background color for what is not covered by the egui canvas,
+      or where the egui canvas is translucent. */
+      background: #909090;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        /* Dark mode background color for what is not covered by the egui canvas,
+        or where the egui canvas is translucent. */
+        background: #404040;
+      }
+    }
+
+    /* Allow canvas to fill entire web page: */
+    html, body {
+      overflow: hidden;
+      margin: 0 !important;
+      padding: 0 !important;
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Position canvas in center-top: */
+    canvas {
+      margin-right: auto;
+      margin-left: auto;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, 0%);
+    }
+  </style>
+</head>
+<body>
+<link data-trunk rel="rust" href="Cargo.toml"/>
+</body>
+</html>
