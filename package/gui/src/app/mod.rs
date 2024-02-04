@@ -97,12 +97,12 @@ impl App {
       }
       light
     };
-    visuals.widgets.noninteractive.rounding = Rounding::none();
-    visuals.widgets.inactive.rounding = Rounding::none();
-    visuals.widgets.hovered.rounding = Rounding::none();
-    visuals.widgets.active.rounding = Rounding::none();
-    visuals.widgets.open.rounding = Rounding::none();
-    visuals.window_rounding = Rounding::none();
+    visuals.widgets.noninteractive.rounding = Rounding::ZERO;
+    visuals.widgets.inactive.rounding = Rounding::ZERO;
+    visuals.widgets.hovered.rounding = Rounding::ZERO;
+    visuals.widgets.active.rounding = Rounding::ZERO;
+    visuals.widgets.open.rounding = Rounding::ZERO;
+    visuals.window_rounding = Rounding::ZERO;
     style.visuals = visuals;
     // Apply style
     ctx.set_style(style);

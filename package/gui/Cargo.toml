@@ -6,9 +6,9 @@ edition.workspace = true
 
 [dependencies]
 secalc_core.workspace = true
-egui = "0.22"
-egui_extras = "0.22"
-eframe = { version = "0.22", features = ["persistence"] }
+egui = "0.25"
+egui_extras = "0.25"
+eframe = { version = "0.25", features = ["persistence"] }
 thousands = "0.2"
 serde = { workspace = true, features = ["derive"] }
 tracing = "0.1"
@@ -21,4 +21,3 @@ dotenvy.workspace = true
 console_error_panic_hook = "0.1"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
-web-sys = { version = "0.3", features = ["Document", "HtmlHeadElement", "HtmlLinkElement"] }

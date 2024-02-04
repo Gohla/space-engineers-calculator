@@ -1,3 +1,4 @@
+use eframe::emath::Rangef;
 use egui::{Button, CollapsingHeader, CollapsingResponse, Color32, Grid, Id, InnerResponse, Response, Sense, Stroke, Ui, vec2, Widget, WidgetText};
 use egui::collapsing_header::CollapsingState;
 use egui::output::OpenUrl;
@@ -96,7 +97,7 @@ impl Widget for HorizontalSeparator {
     let (rect, response) = ui.allocate_exact_size(size, Sense::hover());
     if ui.is_rect_visible(response.rect) {
       let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
-      let (min, max) = rect.x_range().into_inner();
+      let Rangef { min, max } = rect.x_range();
       let spacing_div_two = ui.style().spacing.item_spacing.x / 2.0;
       let x = min - spacing_div_two..=max + spacing_div_two; // Draw half spacing left and right, ignoring spacing.
       ui.painter().hline(x, rect.center().y, stroke);
@@ -114,7 +115,7 @@ impl Widget for VerticalSeparator {
     let (rect, response) = ui.allocate_exact_size(size, Sense::hover());
     if ui.is_rect_visible(response.rect) {
       let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
-      let (min, max) = rect.y_range().into_inner();
+      let Rangef { min, max } = rect.y_range();
       let spacing_div_two = ui.style().spacing.item_spacing.y / 2.0;
       let y = min - spacing_div_two..=max + spacing_div_two; // Draw half spacing above and below, ignoring spacing.
       ui.painter().vline(rect.center().x, y, stroke);

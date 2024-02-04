@@ -6,7 +6,7 @@ use crate::widget::UiExtensions;
 
 impl App {
   pub fn show_settings_windows(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
-    // Return immediately if GUI is disabled. Using disabled windows is not possible as they can 
+    // Return immediately if GUI is disabled. Using disabled windows is not possible as they can
     // overlap on top of modal windows.
     if !self.enable_gui { return; }
 

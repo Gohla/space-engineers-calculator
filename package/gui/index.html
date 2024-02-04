@@ -7,29 +7,27 @@
   <meta name="description"
         content="A handy app to calculate whether your grid (ship) design has enough thrust, power generation, and hydrogen generation to keep up. It also calculates charging durations, maximum jump distances, and more."
   >
+
   <title>Space Engineers Calculator</title>
+
+  <link data-trunk rel="rust" data-wasm-opt="2"/>
   <base data-trunk-public-url/>
+
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="white">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#404040">
+
   <style>
     html {
-      /* Remove touch delay: */
       touch-action: manipulation;
     }
-
     body {
-      /* Light mode background color for what is not covered by the egui canvas,
-      or where the egui canvas is translucent. */
       background: #909090;
     }
-
     @media (prefers-color-scheme: dark) {
       body {
-        /* Dark mode background color for what is not covered by the egui canvas,
-        or where the egui canvas is translucent. */
         background: #404040;
       }
     }
-
-    /* Allow canvas to fill entire web page: */
     html, body {
       overflow: hidden;
       margin: 0 !important;
@@ -38,19 +36,47 @@
       width: 100%;
     }
 
-    /* Position canvas in center-top: */
-    canvas {
+    .centered {
       margin-right: auto;
       margin-left: auto;
       display: block;
       position: absolute;
-      top: 0;
+      top: 50%;
       left: 50%;
-      transform: translate(-50%, 0%);
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .lds-dual-ring {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+    }
+    .lds-dual-ring:after {
+      content: " ";
+      display: block;
+      width: 64px;
+      height: 64px;
+      margin: 8px;
+      border-radius: 50%;
+      border: 6px solid #fff;
+      border-color: #fff transparent #fff transparent;
+      animation: lds-dual-ring 1.2s linear infinite;
+    }
+    @keyframes lds-dual-ring {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 </head>
+
 <body>
-<link data-trunk rel="rust" href="Cargo.toml"/>
+<div class="lds-dual-ring centered"></div>
+<canvas id="canvas" class="centered"></canvas>
 </body>
+
 </html>
