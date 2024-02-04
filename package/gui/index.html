@@ -10,7 +10,7 @@
 
   <title>Space Engineers Calculator</title>
 
-  <link data-trunk rel="rust" data-wasm-opt="2"/>
+  <link data-trunk rel="rust" data-wasm-opt="4"/>
   <base data-trunk-public-url/>
 
   <meta name="theme-color" media="(prefers-color-scheme: light)" content="white">
@@ -35,16 +35,14 @@
       height: 100%;
       width: 100%;
     }
-
-    .centered {
+    canvas {
       margin-right: auto;
       margin-left: auto;
       display: block;
       position: absolute;
-      top: 50%;
+      top: 0;
       left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+      transform: translate(-50%, 0%);
     }
 
     .lds-dual-ring {
@@ -71,12 +69,22 @@
         transform: rotate(360deg);
       }
     }
+    .centered {
+      margin-right: auto;
+      margin-left: auto;
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
 <div class="lds-dual-ring centered"></div>
-<canvas id="canvas" class="centered"></canvas>
+<canvas id="canvas"></canvas>
 </body>
 
 </html>

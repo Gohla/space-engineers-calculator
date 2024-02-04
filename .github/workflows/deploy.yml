@@ -21,8 +21,8 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-binstall
-      - name: install trunk, wasm-bindgen-cli
-        run: cargo binstall --no-confirm --force trunk wasm-bindgen-cli
+      - name: install tools
+        run: cargo binstall --no-confirm --force trunk wasm-bindgen-cli wasm-opt
       - name: build
         run: trunk build --release
       - name: deploy
