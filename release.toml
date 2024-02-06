@@ -1,0 +1,3 @@
+tag-name = "release/{{version}}"
+tag-message = "Release version {{version}}"
+pre-release-commit-message = "Release version {{version}}"

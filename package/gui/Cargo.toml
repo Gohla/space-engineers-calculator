@@ -3,12 +3,16 @@ name = "secalc_gui"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+description = "Space Engineers Calculator GUI"
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
 
 [dependencies]
 secalc_core.workspace = true
-egui = "0.25"
-egui_extras = "0.25"
-eframe = { version = "0.25", features = ["persistence"] }
+egui = "0.26"
+egui_extras = "0.26"
+eframe = { version = "0.26", features = ["persistence"] }
 thousands = "0.2"
 serde = { workspace = true, features = ["derive"] }
 tracing = "0.1"
@@ -21,3 +25,12 @@ dotenvy.workspace = true
 console_error_panic_hook = "0.1"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
+
+[package.metadata.release]
+pre-release-replacements = [
+  { file = "../../CHANGELOG.md", search = "## \\[Unreleased\\]", replace = "[{{version}}] - {{date}}", exactly = 1 },
+  { file = "../../CHANGELOG.md", search = "\\[Unreleased\\]:", replace = "[{{version}}]:", exactly = 1 },
+  { file = "../../CHANGELOG.md", search = "\\.\\.\\.HEAD", replace = "...{{tag_name}}", exactly = 1 },
+  { file = "../../CHANGELOG.md", search = "<!-- next-header -->", replace = "<!-- next-header -->\n\n## [Unreleased]\n", exactly = 1 },
+  { file = "../../CHANGELOG.md", search = "<!-- next-url -->", replace = "<!-- next-url -->\n[Unreleased]: https://github.com/Gohla/space-engineers-calculator/compare/{{tag_name}}...HEAD", exactly = 1 },
+]

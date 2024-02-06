@@ -1,4 +1,4 @@
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]

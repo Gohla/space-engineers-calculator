@@ -2,7 +2,7 @@ use std::backtrace::Backtrace;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use regex::{Regex, RegexSet};
 use roxmltree::{Document, Node};
 use thiserror::Error;
@@ -40,7 +40,7 @@ impl BlockData {
     for component in def.child_elem("Components")?.children_elems("Component") {
       let component_id = component.parse_attribute("Subtype")?;
       let count: f64 = component.parse_attribute("Count")?;
-      *components.entry(component_id).or_default() += count;
+      *components.entry(component_id).or_insert(0.0) += count;
     }
     let has_physics = def.parse_child_elem_opt("HasPhysics")?.unwrap_or(true);
 

@@ -1,4 +1,4 @@
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use serde::{Deserialize, Serialize};
 
 use super::localization::Localization;
@@ -36,7 +36,7 @@ impl Component {
 pub mod extract {
   use std::path::{Path, PathBuf};
 
-  use linked_hash_map::LinkedHashMap;
+  use hashlink::LinkedHashMap;
   use roxmltree::Document;
   use thiserror::Error;
 

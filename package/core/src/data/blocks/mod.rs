@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Deref;
 
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use serde::{Deserialize, Serialize};
 
 use super::components::Components;
@@ -178,7 +178,7 @@ pub struct JumpDrive {
   /// Base maximum jump distance (m)
   pub max_jump_distance: f64,
   /// Maximum jump mass (kg) at which `max_jump_distance` can be jumped. Grids that have a higher
-  /// mass have a lower maximum jump distance based on the formula: 
+  /// mass have a lower maximum jump distance based on the formula:
   /// `max_jump_distance * max_jump_mass * <num_jump_drives> / <total mass>`
   pub max_jump_mass: f64,
 }
@@ -188,7 +188,7 @@ pub struct JumpDrive {
 pub struct Railgun {
   /// Power capacity (MWh)
   pub capacity: f64,
-  /// Operational power consumption (MW); when charging 
+  /// Operational power consumption (MW); when charging
   pub operational_power_consumption: f64,
   /// Idle power consumption (MW)
   pub idle_power_consumption: f64,

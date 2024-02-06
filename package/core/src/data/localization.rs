@@ -1,4 +1,4 @@
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]
@@ -31,7 +31,7 @@ impl Localization {
 pub mod extract {
   use std::path::{Path, PathBuf};
 
-  use linked_hash_map::LinkedHashMap;
+  use hashlink::LinkedHashMap;
   use roxmltree::Document;
   use thiserror::Error;
   use walkdir::WalkDir;
@@ -84,7 +84,7 @@ pub mod extract {
         updated_localizations |= self.update_from_sbl_file(path)?;
       }
       if !updated_localizations {
-        // Try to look for MyTexts.resx file in case the mod has no .sbl files or no english or 
+        // Try to look for MyTexts.resx file in case the mod has no .sbl files or no english or
         // default localization in an .sbl file.
         let my_texts_resx_file_paths = WalkDir::new(&search_path)
           .into_iter()

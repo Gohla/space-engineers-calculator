@@ -1,4 +1,4 @@
-use linked_hash_map::LinkedHashMap;
+use hashlink::LinkedHashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Default, Clone, Serialize, Deserialize, Debug)]
@@ -31,7 +31,7 @@ impl GasProperty {
 pub mod extract {
   use std::path::{Path, PathBuf};
 
-  use linked_hash_map::LinkedHashMap;
+  use hashlink::LinkedHashMap;
   use roxmltree::Document;
   use thiserror::Error;
 

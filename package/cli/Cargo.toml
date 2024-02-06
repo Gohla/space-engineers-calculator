@@ -3,6 +3,10 @@ name = "secalc_cli"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
+description = "Space Engineers Calculator CLI"
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
 
 [dependencies]
 secalc_core = { workspace = true, features = ["extract"] }
