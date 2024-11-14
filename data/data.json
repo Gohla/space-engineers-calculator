@@ -989,12 +989,16 @@
       "DisplayName_Block_JumpDrive": "Jump Drive",
       "DisplayName_Block_LandingGear": "Landing Gear",
       "DisplayName_Block_LargeAtmoThrust": "Large Atmospheric Thruster",
+      "DisplayName_Block_LargeFlatAtmoThrust": "Large Flat Atmospheric Thruster",
+      "DisplayName_Block_SmallFlatAtmoThrust": "Flat Atmospheric Thruster",
       "DisplayName_Block_LargeAtmoThrustSciFi": "Sci-Fi Large Atmospheric Thruster",
       "DisplayName_Block_SmallAtmoThrustSciFi": "Sci-Fi Atmospheric Thruster",
       "DisplayName_Block_LargeCargoContainer": "Large Cargo Container",
       "DisplayName_Block_LargeHydrogenThrust": "Large Hydrogen Thruster",
       "DisplayName_Block_LargeReactor": "Large Reactor",
       "DisplayName_Block_LargeThrust": "Large Ion Thruster",
+      "DisplayName_Block_SmallProtoThrust": "Prototech Thruster",
+      "DisplayName_Block_LargeProtoThrust": "Large Prototech Thruster",
       "DisplayName_Block_LaserAntenna": "Laser Antenna",
       "DisplayName_Block_LightAngledArmorCorner": "Angled Armor Corner",
       "DisplayName_Block_LightAngledArmorSlope": "Angled Armor Slope",
@@ -1217,6 +1221,10 @@
       "DisplayName_Item_Potassium": "Potassium",
       "DisplayName_Item_PowerCell": "Power Cell",
       "DisplayName_Item_PreciseAutomaticRifle": "MR-8P Rifle",
+      "DisplayName_Item_PrototechPropulsionUnit": "Prototech Propulsion Unit",
+      "DisplayName_Item_PrototechPanel": "Prototech Panel",
+      "DisplayName_Item_PrototechFrame": "Prototech Frame",
+      "DisplayName_Item_PrototechCoolingUnit": "Prototech Cooling Unit",
       "DisplayName_Item_RadioCommunicationComponents": "Radio-comm Comp.",
       "DisplayName_Item_RapidFireAutomaticRifle": "MR-50A Rifle",
       "DisplayName_Item_ReactorComponents": "Reactor Comp.",
@@ -6317,8 +6325,8 @@
         "details": {
           "ty": "Atmospheric",
           "fuel_gas_id": null,
-          "force": 648000.0,
-          "max_consumption": 2.4,
+          "force": 230000.0,
+          "max_consumption": 1,
           "min_consumption": 2e-6,
           "min_planetary_influence": 0.3,
           "max_planetary_influence": 1.0,
@@ -6327,6 +6335,40 @@
           "needs_atmosphere_for_influence": true
         }
       },
+
+      "Thrust.LargeBlockSmallFlatAtmosphericThrust": {
+        "data": {
+          "id": "Thrust.LargeBlockSmallFlatAtmosphericThrust",
+          "name": "DisplayName_Block_SmallFlatAtmoThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 15.0,
+            "Construction": 20.0,
+            "LargeTube": 3.0,
+            "MetalGrid": 3.0,
+            "Motor": 30.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 200000.0,
+          "max_consumption": 0.8,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+
+
+
       "Thrust.SmallBlockSmallAtmosphericThrust": {
         "data": {
           "id": "Thrust.SmallBlockSmallAtmosphericThrust",
@@ -6357,6 +6399,39 @@
           "needs_atmosphere_for_influence": true
         }
       },
+      "Thrust.SmallBlockSmallFlatAtmosphericThrust": {
+        "data": {
+          "id": "Thrust.SmallBlockSmallFlatAtmosphericThrust",
+          "name": "DisplayName_Block_SmallFlatAtmoThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 2.0,
+            "Construction": 11.0,
+            "LargeTube": 1.0,
+            "MetalGrid": 1.0,
+            "Motor": 6.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 32000.0,
+          "max_consumption": 0.2,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+
+
+
       "Thrust.LargeBlockSmallHydrogenThrust": {
         "data": {
           "id": "Thrust.LargeBlockSmallHydrogenThrust",
@@ -6560,6 +6635,8 @@
           "needs_atmosphere_for_influence": false
         }
       },
+
+
       "Thrust.LargeBlockSmallThrust": {
         "data": {
           "id": "Thrust.LargeBlockSmallThrust",
@@ -6619,6 +6696,36 @@
           "needs_atmosphere_for_influence": true
         }
       },
+      "Thrust.LargeBlockLargeFlatAtmosphericThrust": {
+        "data": {
+          "id": "Thrust.LargeBlockLargeFlatAtmosphericThrust",
+          "name": "DisplayName_Block_LargeFlatAtmoThrust",
+          "size": "Large",
+          "components": {
+            "SteelPlate": 90.0,
+            "Construction": 25.0,
+            "LargeTube": 20.0,
+            "MetalGrid": 15.0,
+            "Motor": 400.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 2600000.0,
+          "max_consumption": 6.7,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
       "Thrust.SmallBlockLargeAtmosphericThrust": {
         "data": {
           "id": "Thrust.SmallBlockLargeAtmosphericThrust",
@@ -6641,6 +6748,36 @@
           "fuel_gas_id": null,
           "force": 576000.0,
           "max_consumption": 2.4,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.3,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 0.0,
+          "effectiveness_at_max_influence": 1.0,
+          "needs_atmosphere_for_influence": true
+        }
+      },
+      "Thrust.SmallBlockLargeFlatAtmosphericThrust": {
+        "data": {
+          "id": "Thrust.SmallBlockLargeFlatAtmosphericThrust",
+          "name": "DisplayName_Block_LargeFlatAtmoThrust",
+          "size": "Small",
+          "components": {
+            "SteelPlate": 8.0,
+            "Construction": 14.0,
+            "LargeTube": 2.0,
+            "MetalGrid": 3.0,
+            "Motor": 30.0
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Atmospheric",
+          "fuel_gas_id": null,
+          "force": 230000.0,
+          "max_consumption": 1.0,
           "min_consumption": 2e-6,
           "min_planetary_influence": 0.3,
           "max_planetary_influence": 1.0,
@@ -6815,6 +6952,70 @@
           "fuel_gas_id": null,
           "force": 4320000.0,
           "max_consumption": 33.6,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.SmallBlockProtoThrust": {
+        "data": {
+          "id": "Thrust.SmallBlockProtoThrust",
+          "name": "DisplayName_Block_SmallProtoThrust",
+          "size": "Small",
+          "components": {
+            "PrototechPropulsionUnit": 3,
+            "PrototechPanel": 2,
+            "PrototechFrame": 1,
+            "PrototechCoolingUnit": 5,
+            "Construction": 12.0,
+            "LargeTube": 1.0,
+            "MetalGrid":5
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 561600.0,
+          "max_consumption": 4.8,
+          "min_consumption": 2e-6,
+          "min_planetary_influence": 0.0,
+          "max_planetary_influence": 1.0,
+          "effectiveness_at_min_influence": 1.0,
+          "effectiveness_at_max_influence": 0.2,
+          "needs_atmosphere_for_influence": false
+        }
+      },
+      "Thrust.LargeBlockProtoThrust": {
+        "data": {
+          "id": "Thrust.LargeBlockProtoThrust",
+          "name": "DisplayName_Block_LargeProtoThrust",
+          "size": "Large",
+          "components": {
+            "PrototechPropulsionUnit": 60,
+            "PrototechPanel": 200,
+            "PrototechFrame": 1,
+            "PrototechCoolingUnit": 5,
+            "Construction": 325.0,
+            "LargeTube": 160.0,
+            "MetalGrid": 250
+          },
+          "has_physics": true,
+          "mod_id": null,
+          "hidden": false,
+          "rename": null
+        },
+        "details": {
+          "ty": "Ion",
+          "fuel_gas_id": null,
+          "force": 14040000.0,
+          "max_consumption": 67.2,
           "min_consumption": 2e-6,
           "min_planetary_influence": 0.0,
           "max_planetary_influence": 1.0,
